@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brandy Analytics</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg:      #EDE5D0;
+      --surface: #E5DCC6;
+      --card:    #F5F0E8;
+      --forest:  #3B4A2E;
+      --forest-deep: #2A3620;
+      --golden:  #8B6419;
+      --ink:     #1C2318;
+      --muted:   rgba(59,74,46,0.5);
+      --border:  rgba(59,74,46,0.12);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+    h1, h2, h3 { font-family: Georgia, serif; }
+
+    /* ── LOGIN GATE ── */
+    #login-gate {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; background: var(--forest-deep);
+    }
+    .login-box {
+      background: var(--card); border-radius: 16px; padding: 48px 40px;
+      width: 100%; max-width: 380px; text-align: center;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+    }
+    .login-logo { font-family: Georgia, serif; font-size: 28px; color: var(--forest); letter-spacing: 0.08em; margin-bottom: 6px; }
+    .login-sub { font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--golden); margin-bottom: 32px; }
+    .login-box input {
+      width: 100%; padding: 13px 16px; border: 1.5px solid var(--border);
+      border-radius: 8px; background: var(--bg); color: var(--ink);
+      font-size: 15px; outline: none; margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+    .login-box input:focus { border-color: var(--forest); }
+    .login-btn {
+      width: 100%; padding: 13px; background: var(--forest); color: #fff;
+      border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+      letter-spacing: 0.06em; cursor: pointer; transition: background 0.2s;
+    }
+    .login-btn:hover { background: var(--forest-deep); }
+    .login-error { color: #C0392B; font-size: 13px; margin-top: 10px; display: none; }
+
+    /* ── DASHBOARD ── */
+    #dashboard { display: none; }
+
+    header {
+      background: var(--forest-deep); color: #fff;
+      padding: 18px 40px; display: flex; align-items: center; justify-content: space-between;
+    }
+    header h1 { font-size: 20px; letter-spacing: 0.06em; }
+    .header-sub { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-top: 2px; }
+    .logout-btn {
+      background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 16px; border-radius: 6px; font-size: 12px; cursor: pointer;
+      transition: background 0.2s; letter-spacing: 0.05em;
+    }
+    .logout-btn:hover { background: rgba(255,255,255,0.2); }
+
+    .dash-wrap { max-width: 1200px; margin: 0 auto; padding: 36px 40px 80px; }
+
+    /* KPI CARDS */
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 36px; }
+    .kpi-card {
+      background: var(--card); border-radius: 12px; padding: 24px;
+      border: 1px solid var(--border);
+    }
+    .kpi-label { font-size: 10px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+    .kpi-value { font-size: 36px; font-family: Georgia, serif; color: var(--forest); font-weight: 700; }
+    .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .kpi-card.highlight .kpi-value { color: var(--golden); }
+
+    /* CHARTS ROW */
+    .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 24px; }
+    .chart-card {
+      background: var(--card); border-radius: 12px; padding: 24px;
+      border: 1px solid var(--border);
+    }
+    .chart-title { font-size: 13px; font-weight: 600; color: var(--forest); margin-bottom: 20px; letter-spacing: 0.04em; }
+
+    /* PAGES TABLE */
+    .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .table-card {
+      background: var(--card); border-radius: 12px; padding: 24px;
+      border: 1px solid var(--border);
+    }
+    .table-card h3 { font-size: 13px; font-weight: 600; color: var(--forest); margin-bottom: 16px; letter-spacing: 0.04em; }
+    table { width: 100%; border-collapse: collapse; }
+    th { font-size: 10px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); padding: 0 0 10px; text-align: left; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 0; font-size: 13px; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    .tag {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .tag-instapay { background: #EEF5FF; color: #005BD3; }
+    .tag-cod      { background: #F0FAF0; color: #2A7A2A; }
+
+    .empty-state { text-align: center; padding: 32px; color: var(--muted); font-size: 13px; }
+
+    @media (max-width: 900px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .charts-row, .bottom-row { grid-template-columns: 1fr; }
+      .dash-wrap { padding: 24px 20px 60px; }
+      header { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div id="login-gate">
+  <div class="login-box">
+    <div class="login-logo">Brandy</div>
+    <div class="login-sub">Analytics — Admin Only</div>
+    <input type="password" id="pw-input" placeholder="Enter password" onkeydown="if(event.key==='Enter') checkPassword()" />
+    <button class="login-btn" onclick="checkPassword()">Enter Dashboard</button>
+    <div class="login-error" id="login-error">Incorrect password. Try again.</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <header>
+    <div>
+      <h1>Brandy Analytics</h1>
+      <div class="header-sub">Admin Dashboard · Live Data</div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Lock Dashboard</button>
+    <button class="logout-btn" style="margin-right:10px;background:rgba(192,57,43,0.3);border-color:rgba(192,57,43,0.4);" onclick="resetData()">Reset Data</button>
+  </header>
+
+  <div class="dash-wrap">
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Visitors</div>
+        <div class="kpi-value" id="kpi-visitors">0</div>
+        <div class="kpi-sub">Unique sessions</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Visits</div>
+        <div class="kpi-value" id="kpi-pageviews">0</div>
+        <div class="kpi-sub">Times site was opened</div>
+      </div>
+      <div class="kpi-card highlight">
+        <div class="kpi-label">Total Orders</div>
+        <div class="kpi-value" id="kpi-orders">0</div>
+        <div class="kpi-sub">Completed checkouts</div>
+      </div>
+      <div class="kpi-card highlight">
+        <div class="kpi-label">Total Revenue</div>
+        <div class="kpi-value" id="kpi-revenue">0</div>
+        <div class="kpi-sub">EGP earned</div>
+      </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">Revenue — Last 14 Days (EGP)</div>
+        <canvas id="revenue-chart" height="100"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Traffic by Page</div>
+        <canvas id="pages-chart" height="160"></canvas>
+      </div>
+    </div>
+
+    <!-- TABLES -->
+    <div class="bottom-row">
+      <div class="table-card">
+        <h3>Recent Orders</h3>
+        <div id="orders-table"></div>
+      </div>
+      <div class="table-card">
+        <h3>Funnel Overview</h3>
+        <table>
+          <thead><tr><th>Stage</th><th>Count</th><th>Rate</th></tr></thead>
+          <tbody id="funnel-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="brandy-analytics.js"></script>
+<script>
+  const PASSWORD = 'brandy2026';
+  const AUTH_KEY = 'brandy_auth';
+
+  function checkPassword() {
+    const val = document.getElementById('pw-input').value;
+    if (val === PASSWORD) {
+      sessionStorage.setItem(AUTH_KEY, '1');
+      showDashboard();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
+  }
+
+  function logout() {
+    sessionStorage.removeItem(AUTH_KEY);
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('login-gate').style.display = 'flex';
+    document.getElementById('pw-input').value = '';
+  }
+
+  function resetData() {
+    if (!confirm('This will erase all analytics data and start fresh. Are you sure?')) return;
+    localStorage.removeItem('brandy_analytics');
+    localStorage.removeItem('brandy_visitor_id');
+    alert('Data cleared. Analytics will now track correctly from scratch.');
+    renderDashboard();
+  }
+
+  function showDashboard() {
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    renderDashboard();
+  }
+
+  // Auto-login if already authenticated this session
+  if (sessionStorage.getItem(AUTH_KEY) === '1') showDashboard();
+
+  function getLast14Days() {
+    const days = [];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      days.push(d.toISOString().slice(0, 10));
+    }
+    return days;
+  }
+
+  function renderDashboard() {
+    const raw = localStorage.getItem('brandy_analytics');
+    const data = raw ? JSON.parse(raw) : { sessions: [], pageViews: [], visits: [], cartAdds: [], orders: [] };
+    if (!data.sessions)  data.sessions  = [];
+    if (!data.pageViews) data.pageViews = [];
+    if (!data.visits)    data.visits    = [];
+    if (!data.cartAdds)  data.cartAdds  = [];
+    if (!data.orders)    data.orders    = [];
+
+    // Auto-clean: strip any entries from the analytics admin page and old-format sessions
+    data.sessions  = data.sessions.filter(s => s.page !== 'analytics.html' && s.id);
+    data.pageViews = data.pageViews.filter(v => v.page !== 'analytics.html');
+    data.visits    = data.visits.filter(v => v.time);
+    localStorage.setItem('brandy_analytics', JSON.stringify(data));
+
+    const { sessions, pageViews, visits, cartAdds, orders } = data;
+
+    // KPIs
+    document.getElementById('kpi-visitors').textContent   = sessions.length;
+    document.getElementById('kpi-pageviews').textContent  = visits.length;
+    document.getElementById('kpi-orders').textContent     = orders.length;
+    const revenue = orders.reduce((s, o) => s + (o.total || 0), 0);
+    document.getElementById('kpi-revenue').textContent    = revenue.toLocaleString();
+
+    // Revenue chart (last 14 days)
+    const days = getLast14Days();
+    const revenueByDay = days.map(d => orders.filter(o => o.date === d).reduce((s, o) => s + (o.total || 0), 0));
+    const revenueCtx = document.getElementById('revenue-chart').getContext('2d');
+    new Chart(revenueCtx, {
+      type: 'line',
+      data: {
+        labels: days.map(d => d.slice(5)),
+        datasets: [{
+          label: 'Revenue (EGP)',
+          data: revenueByDay,
+          borderColor: '#3B4A2E',
+          backgroundColor: 'rgba(59,74,46,0.08)',
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#3B4A2E',
+          pointRadius: 4,
+        }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { grid: { display: false } } } }
+    });
+
+    // Pages chart
+    const pageNames = ['index3.html', 'product1.html', 'cart.html', 'checkout.html', 'privacy.html'];
+    const pageCounts = pageNames.map(p => pageViews.filter(v => v.page === p).length);
+    const pageLabels = ['Home', 'Product', 'Cart', 'Checkout', 'Privacy'];
+    const pagesCtx = document.getElementById('pages-chart').getContext('2d');
+    new Chart(pagesCtx, {
+      type: 'doughnut',
+      data: {
+        labels: pageLabels,
+        datasets: [{
+          data: pageCounts,
+          backgroundColor: ['#3B4A2E','#8B6419','#C4B896','#8A8070','#E5DCC6'],
+          borderWidth: 0,
+        }]
+      },
+      options: { plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } } }, cutout: '60%' }
+    });
+
+    // Recent orders table
+    const ordersEl = document.getElementById('orders-table');
+    if (orders.length === 0) {
+      ordersEl.innerHTML = '<div class="empty-state">No orders yet</div>';
+    } else {
+      const recent = [...orders].reverse().slice(0, 8);
+      ordersEl.innerHTML = `
+        <table>
+          <thead><tr><th>Order</th><th>Date</th><th>Total</th><th>Payment</th></tr></thead>
+          <tbody>${recent.map(o => `
+            <tr>
+              <td>${o.id}</td>
+              <td>${o.date || '—'}</td>
+              <td><strong>${(o.total||0).toLocaleString()} EGP</strong></td>
+              <td><span class="tag tag-${o.payment}">${o.payment}</span></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>`;
+    }
+
+    // Funnel
+    const convRate = visits.length > 0 ? ((orders.length / visits.length) * 100).toFixed(1) : '0.0';
+    const cartRate = visits.length > 0 ? ((cartAdds.length / visits.length) * 100).toFixed(1) : '0.0';
+    document.getElementById('funnel-table').innerHTML = `
+      <tr><td>Unique Visitors</td><td>${sessions.length}</td><td style="font-size:11px;color:var(--muted)">Different people</td></tr>
+      <tr><td>Total Visits</td><td>${visits.length}</td><td style="font-size:11px;color:var(--muted)">Times site was opened</td></tr>
+      <tr><td>Added to Cart</td><td>${cartAdds.length}</td><td>${cartRate}%</td></tr>
+      <tr><td>Completed Order</td><td>${orders.length}</td><td>${convRate}%</td></tr>
+      <tr><td>Avg. Order Value</td><td colspan="2">${orders.length ? Math.round(revenue/orders.length).toLocaleString() + ' EGP' : '—'}</td></tr>
+    `;
+  }
+</script>
+</body>
+</html>

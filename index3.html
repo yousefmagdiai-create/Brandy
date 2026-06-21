@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Brandy — Accelerate Your Ambition</title>
+  <script src="brandy-analytics.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     /* ── TOKENS (light palette) ── */
@@ -876,11 +877,43 @@
       <p style="font-size:15px;font-weight:300;color:rgba(237,229,208,0.6);line-height:1.8;margin-bottom:40px;">
         Early access to new arrivals, exclusive drops, and styling notes — straight to your inbox.
       </p>
-      <form class="newsletter-row" onsubmit="return false;">
-        <input type="email" placeholder="your@email.com" class="newsletter-input" aria-label="Email address">
-        <button type="submit" class="btn-primary-light" style="flex-shrink:0;padding:14px 24px;">Subscribe</button>
+      <form class="newsletter-row" onsubmit="handleSubscribe(event)">
+        <input type="email" id="newsletter-email" placeholder="your@email.com" class="newsletter-input" aria-label="Email address" required>
+        <button type="submit" id="newsletter-btn" class="btn-primary-light" style="flex-shrink:0;padding:14px 24px;">Subscribe</button>
       </form>
-      <p style="margin-top:14px;font-size:11px;color:rgba(237,229,208,0.25);">No spam, ever. Unsubscribe any time.</p>
+      <p id="newsletter-msg" style="margin-top:14px;font-size:11px;color:rgba(237,229,208,0.25);">No spam, ever. Unsubscribe any time.</p>
+
+      <script>
+        async function handleSubscribe(e) {
+          e.preventDefault();
+          const email = document.getElementById('newsletter-email').value.trim();
+          const btn = document.getElementById('newsletter-btn');
+          const msg = document.getElementById('newsletter-msg');
+          if (!email) return;
+          btn.textContent = 'Sending...';
+          btn.disabled = true;
+          try {
+            await fetch('https://api.web3forms.com/submit', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                access_key: '4cbe72ef-c430-4ccb-8b7d-543b25f347b4',
+                subject: 'New Subscriber — Brandy',
+                from_name: 'Brandy Website',
+                to_email: 'dym2026outlet@gmail.com',
+                message: `New newsletter subscriber:\n\nEmail: ${email}\nTime: ${new Date().toLocaleString()}`
+              })
+            });
+            btn.textContent = 'Subscribed!';
+            msg.textContent = 'You\'re in! Welcome to Brandy.';
+            msg.style.color = 'rgba(196,184,150,0.9)';
+            document.getElementById('newsletter-email').value = '';
+          } catch {
+            btn.textContent = 'Subscribe';
+            btn.disabled = false;
+          }
+        }
+      </script>
     </div>
   </section>
 

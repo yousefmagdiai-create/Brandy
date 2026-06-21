@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout — Brandy</title>
+  <script src="brandy-analytics.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1019,6 +1020,42 @@
       sessionStorage.removeItem('brandy_buynow');
       document.getElementById('checkout-content').classList.add('hide');
       document.getElementById('success-screen').classList.add('show');
+      const cart = (JSON.parse(localStorage.getItem('brandy_cart')) || []).map(i => ({ ...i, price: parsePrice(i.price) }));
+      BrandyAnalytics.trackPurchase(total, cart, selectedPayment, selectedArea);
+
+      const email = document.getElementById('email') ? document.getElementById('email').value.trim() : '';
+      const itemLines = cart.length
+        ? cart.map(i => `• ${i.name} (${i.color || ''}, ${i.size || ''}) x${i.qty} — ${(i.price * i.qty).toLocaleString()} EGP`).join('\n')
+        : '• (Buy Now item)';
+      fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: '4cbe72ef-c430-4ccb-8b7d-543b25f347b4',
+          subject: `🛍️ New Order — ${fname} ${lname} — ${total} EGP`,
+          from_name: 'Brandy Orders',
+          to_email: 'dym2026outlet@gmail.com',
+          message: [
+            `NEW ORDER RECEIVED`,
+            `─────────────────────`,
+            `Name:     ${fname} ${lname}`,
+            `Phone:    ${phone}`,
+            `Email:    ${email || 'Not provided'}`,
+            `Area:     ${areaName}`,
+            `Payment:  ${selectedPayment === 'instapay' ? 'InstaPay' : 'Cash on Delivery'}`,
+            ``,
+            `ITEMS`,
+            `─────────────────────`,
+            itemLines,
+            ``,
+            `Subtotal: ${cartSubtotal.toLocaleString()} EGP`,
+            `Delivery: ${fee} EGP`,
+            `TOTAL:    ${total.toLocaleString()} EGP`,
+            ``,
+            `Time: ${new Date().toLocaleString()}`
+          ].join('\n')
+        })
+      }).catch(() => {});
 
       let msg = '';
       if (selectedPayment === 'instapay') {

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Off-White — Brandy</title>
+  <script src="brandy-analytics.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -475,6 +476,7 @@
       if (existing) { existing.qty += 1; }
       else { cart.push({ id: 'product1', name: 'Off-White T-Shirt', price: 700, image: 'IMG 1999 (1).png', color, size, qty: 1 }); }
       saveCart(cart);
+      BrandyAnalytics.trackAddToCart('Off-White T-Shirt', 700);
       showToast(color, size);
     }
 
