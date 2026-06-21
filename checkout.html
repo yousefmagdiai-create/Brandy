@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — Brandy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #FFFFFF;
+      color: #1A1A1A;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes checkPop { 0% { transform:scale(0); } 60% { transform:scale(1.2); } 100% { transform:scale(1); } }
+
+    /* ── LAYOUT ── */
+    .checkout-layout { display: flex; min-height: 100vh; }
+
+    /* ── LEFT PANEL ── */
+    .left-panel {
+      flex: 1;
+      background: #FFFFFF;
+      padding: 40px 56px 80px;
+      overflow-y: auto;
+      max-width: 620px;
+    }
+
+    /* ── RIGHT PANEL ── */
+    .right-panel {
+      width: 400px;
+      background: #F5F5F5;
+      border-left: 1px solid #E0E0E0;
+      padding: 40px 36px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    /* ── BRAND ── */
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #1A1A1A;
+      margin-bottom: 36px;
+      display: block;
+      text-decoration: none;
+    }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 32px; }
+    .section-header { margin-bottom: 8px; }
+    .section-title { font-size: 18px; font-weight: 600; color: #1A1A1A; }
+    .section-note { font-size: 12px; color: #6D7175; margin-bottom: 14px; }
+
+    /* ── FORM FIELDS ── */
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .field { margin-bottom: 12px; }
+    .field:last-child { margin-bottom: 0; }
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #6D7175;
+      margin-bottom: 5px;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      font-family: inherit;
+      font-size: 14px;
+      color: #1A1A1A;
+      background: #FFFFFF;
+      border: 1px solid #D0D0D0;
+      border-radius: 5px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.15s;
+      appearance: none; -webkit-appearance: none;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: #005BD3;
+      box-shadow: 0 0 0 3px rgba(0,91,211,0.1);
+    }
+    .field input::placeholder, .field textarea::placeholder { color: #B8B8B8; }
+    .field input.error, .field textarea.error { border-color: #E02020; box-shadow: 0 0 0 3px rgba(224,32,32,0.1); }
+    .field-error { font-size: 11px; color: #E02020; margin-top: 5px; display: none; }
+    .field-error.show { display: block; }
+    .area-grid.error .area-card:not(.selected), .payment-options.error .pay-option:not(.selected) { border-color: #E02020; }
+    .group-error { font-size: 11px; color: #E02020; margin-top: 6px; display: none; }
+    .group-error.show { display: block; }
+
+    /* ── LOCATION VERIFY ── */
+    .loc-wrap { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+    .loc-gps-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 16px; border: 1.5px solid #005BD3; border-radius: 5px;
+      background: #fff; color: #005BD3; font-family: inherit; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: background 0.2s, color 0.2s; width: fit-content;
+    }
+    .loc-gps-btn:hover { background: #EEF5FF; }
+    .loc-or { font-size: 12px; color: #6D7175; }
+    .loc-paste-row { display: flex; gap: 8px; }
+    .loc-paste-row input {
+      flex: 1; font-family: inherit; font-size: 13px; color: #1A1A1A;
+      border: 1px solid #D0D0D0; border-radius: 5px; padding: 10px 14px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .loc-paste-row input:focus { border-color: #005BD3; box-shadow: 0 0 0 3px rgba(0,91,211,0.1); }
+    .loc-paste-row input::placeholder { color: #B8B8B8; }
+    .loc-verify-btn {
+      padding: 10px 16px; background: #1A1A1A; color: #fff; border: none; border-radius: 5px;
+      font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: background 0.2s; white-space: nowrap;
+    }
+    .loc-verify-btn:hover { background: #333; }
+    .loc-status { font-size: 12px; margin-top: 6px; display: none; padding: 10px 14px; border-radius: 5px; }
+    .loc-status.show { display: block; }
+    .loc-status.valid { background: #EDFAF3; color: #0A7A40; border: 1px solid #A8E6C4; }
+    .loc-status.invalid { background: #FFF0F0; color: #C0392B; border: 1px solid #F5C6C6; }
+    .loc-status.loading { background: #F5F5F5; color: #6D7175; border: 1px solid #E0E0E0; }
+    .field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236D7175' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+    .field textarea { resize: vertical; min-height: 80px; }
+
+    /* ── DELIVERY AREAS ── */
+    .area-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .area-card {
+      border: 1px solid #D0D0D0;
+      border-radius: 5px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .area-card:hover { border-color: #9E9E9E; }
+    .area-card.selected { border-color: #005BD3; background: #EEF5FF; }
+    .area-card input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+    .area-name { font-size: 13px; font-weight: 600; color: #1A1A1A; margin-bottom: 2px; }
+    .area-fee { font-size: 12px; color: #6D7175; }
+    .area-check {
+      position: absolute; top: 12px; right: 12px;
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 1.5px solid #D0D0D0;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .area-card.selected .area-check { background: #005BD3; border-color: #005BD3; }
+    .area-card.selected .area-check::after { content:''; width:5px; height:5px; border-radius:50%; background:#fff; }
+
+    /* ── PAYMENT OPTIONS ── */
+    .payment-options { display: flex; flex-direction: column; gap: 8px; }
+    .pay-option {
+      border: 1px solid #D0D0D0;
+      border-radius: 5px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .pay-option:hover { border-color: #9E9E9E; }
+    .pay-option.selected { border-color: #005BD3; background: #EEF5FF; }
+    .pay-option input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+    .pay-radio {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 1.5px solid #D0D0D0;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .pay-option.selected .pay-radio { background: #005BD3; border-color: #005BD3; }
+    .pay-option.selected .pay-radio::after { content:''; width:5px; height:5px; border-radius:50%; background:#fff; }
+    .pay-info { flex: 1; }
+    .pay-name { font-size: 14px; font-weight: 500; color: #1A1A1A; }
+    .pay-desc { font-size: 12px; color: #6D7175; margin-top: 3px; line-height: 1.5; }
+    .pay-logo {
+      width: 36px; height: 36px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* ── INSTAPAY DETAILS PANEL ── */
+    .pay-details-panel {
+      display: none;
+      margin-top: 10px;
+      padding: 16px;
+      background: #FFFFFF;
+      border: 1px solid #E0E0E0;
+      border-radius: 5px;
+    }
+    .pay-details-panel.show { display: block; animation: fadeUp 0.25s ease; }
+    .pay-detail-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 0; border-bottom: 1px solid #F2F2F2;
+    }
+    .pay-detail-row:last-of-type { border-bottom: none; }
+    .pay-detail-label { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: #6D7175; }
+    .pay-detail-value { font-size: 13px; font-weight: 600; color: #1A1A1A; }
+    .copy-btn {
+      font-size: 11px; font-weight: 600;
+      color: #005BD3; background: none; border: none; cursor: pointer;
+      padding: 2px 6px; transition: color 0.2s;
+    }
+    .copy-btn:hover { color: #003D9C; }
+    .whatsapp-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; margin-top: 14px; padding: 11px;
+      background: #25D366; color: #fff;
+      font-family: inherit; font-size: 12px; font-weight: 600;
+      border: none; cursor: pointer; text-decoration: none;
+      border-radius: 5px; transition: background 0.2s;
+    }
+    .whatsapp-btn:hover { background: #1EBE5D; }
+    .whatsapp-note { font-size: 11px; color: #6D7175; text-align: center; margin-top: 8px; line-height: 1.5; }
+
+    /* ── COD PANEL ── */
+    .cod-panel {
+      display: none;
+      margin-top: 10px;
+      padding: 14px 16px;
+      background: #F9F9F9;
+      border: 1px solid #E8E8E8;
+      border-radius: 5px;
+    }
+    .cod-panel.show { display: block; animation: fadeUp 0.25s ease; }
+
+    /* ── COMPLETE ORDER BTN ── */
+    .place-order-btn {
+      width: 100%;
+      padding: 16px;
+      background: #005BD3;
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      margin-top: 24px;
+    }
+    .place-order-btn:hover { background: #0047A0; transform: translateY(-1px); }
+    .place-order-btn:active { transform: translateY(0); }
+    .place-order-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ── LOCKED PAYMENT SECTION ── */
+    .section-locked { opacity: 0.4; pointer-events: none; user-select: none; }
+    .section-locked-note {
+      font-size: 12px; color: #6D7175;
+      margin-bottom: 14px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .section-locked-note svg { flex-shrink: 0; }
+
+    .privacy-link {
+      display: block;
+      margin-top: 20px;
+      font-size: 12px;
+      color: #005BD3;
+      text-decoration: none;
+    }
+    .privacy-link:hover { text-decoration: underline; }
+
+    /* ── ORDER SUMMARY (right panel) ── */
+    .summary-item {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #E0E0E0;
+    }
+    .summary-img-wrap { position: relative; flex-shrink: 0; }
+    .summary-img {
+      width: 64px; height: 80px;
+      object-fit: cover;
+      border: 1px solid #D0D0D0;
+      border-radius: 5px;
+      display: block;
+    }
+    .summary-img-badge {
+      position: absolute; top: -8px; right: -8px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #6D7175; color: #fff;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .summary-item-name { font-size: 14px; font-weight: 500; color: #1A1A1A; margin-bottom: 4px; }
+    .summary-item-meta { font-size: 12px; color: #6D7175; line-height: 1.6; }
+    .summary-item-price { font-size: 14px; font-weight: 600; color: #1A1A1A; margin-left: auto; flex-shrink: 0; }
+
+    .summary-line { display: flex; justify-content: space-between; padding: 9px 0; }
+    .summary-line-label { font-size: 13px; color: #6D7175; }
+    .summary-line-value { font-size: 13px; color: #1A1A1A; }
+
+    .summary-total {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 16px 0 0;
+      border-top: 1px solid #E0E0E0;
+      margin-top: 6px;
+    }
+    .summary-total-label { font-size: 16px; font-weight: 600; color: #1A1A1A; }
+    .summary-total-right { text-align: right; }
+    .summary-total-value { font-size: 22px; font-weight: 700; color: #1A1A1A; }
+    .summary-total-sub { font-size: 11px; color: #6D7175; margin-top: 3px; }
+
+    /* ── SUCCESS SCREEN ── */
+    .success-screen {
+      display: none;
+      max-width: 500px;
+      margin: 80px auto;
+      text-align: center;
+      padding: 0 24px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .success-screen.show { display: block; }
+    .success-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: #005BD3;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+      animation: checkPop 0.5s ease;
+    }
+    .checkout-content.hide { display: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 860px) {
+      .checkout-layout { flex-direction: column-reverse; }
+      .right-panel { width: 100%; height: auto; position: static; border-left: none; border-bottom: 1px solid #E0E0E0; }
+      .left-panel { padding: 28px 20px 64px; max-width: 100%; }
+      .field-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SUCCESS SCREEN -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <p style="font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#6D7175;margin-bottom:10px;">Order Confirmed</p>
+    <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:500;color:#1A1A1A;margin-bottom:14px;">Thank you!</h2>
+    <p id="success-msg" style="font-size:14px;color:#6D7175;line-height:1.8;margin-bottom:28px;"></p>
+    <a href="index3.html" style="display:inline-flex;align-items:center;gap:8px;background:#005BD3;color:#fff;font-family:inherit;font-size:13px;font-weight:600;padding:13px 28px;text-decoration:none;border-radius:5px;transition:background 0.2s;">
+      Continue Shopping
+    </a>
+  </div>
+
+  <!-- CHECKOUT CONTENT -->
+  <div class="checkout-content" id="checkout-content">
+    <div class="checkout-layout">
+
+      <!-- LEFT PANEL -->
+      <div class="left-panel">
+        <a href="index3.html" class="brand-name">Brandy</a>
+
+        <!-- CONTACT -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">Contact</h2>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>First name *</label>
+              <input type="text" id="fname" placeholder="Ahmed" required>
+              <span class="field-error" id="err-fname">Please enter your first name.</span>
+            </div>
+            <div class="field">
+              <label>Last name *</label>
+              <input type="text" id="lname" placeholder="Mohamed" required>
+              <span class="field-error" id="err-lname">Please enter your last name.</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Phone number *</label>
+            <input type="tel" id="phone" placeholder="01XXXXXXXXX" required>
+            <span class="field-error" id="err-phone">Please enter a valid Egyptian phone number (e.g. 010XXXXXXXX).</span>
+          </div>
+          <div class="field">
+            <label>Email address (optional)</label>
+            <input type="email" id="email" placeholder="you@example.com">
+          </div>
+        </div>
+
+        <!-- BILLING ADDRESS -->
+        <div class="section">
+          <div class="section-header">
+            <h2 class="section-title">Billing address</h2>
+          </div>
+          <div class="field" style="margin-bottom:16px;">
+            <label>Delivery area *</label>
+            <div class="area-grid">
+              <div class="area-card" id="area-cairo" onclick="selectArea('cairo')">
+                <input type="radio" name="area" value="cairo">
+                <div class="area-check"></div>
+                <p class="area-name">Cairo</p>
+                <p class="area-fee">50 EGP delivery</p>
+              </div>
+              <div class="area-card" id="area-october" onclick="selectArea('october')">
+                <input type="radio" name="area" value="october">
+                <div class="area-check"></div>
+                <p class="area-name">6th of October</p>
+                <p class="area-fee">80 EGP delivery</p>
+              </div>
+            </div>
+          </div>
+          <span class="group-error" id="err-area">Please select a delivery area.</span>
+
+          <!-- LOCATION VERIFICATION -->
+          <div class="field" style="margin-top:16px;margin-bottom:16px;">
+            <label>Verify your location *</label>
+            <div class="loc-wrap">
+              <button type="button" class="loc-gps-btn" onclick="useMyLocation()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+                Use my current location
+              </button>
+              <span class="loc-or">— or paste a Google Maps link or coordinates —</span>
+              <div class="loc-paste-row">
+                <input type="text" id="maps-link" placeholder="maps.app.goo.gl/...  or  30.0453, 31.2243">
+                <button type="button" class="loc-verify-btn" onclick="verifyMapsLink()">Verify</button>
+              </div>
+              <p style="font-size:11px;color:#6D7175;line-height:1.6;margin-top:2px;">
+                Paste any Google Maps link, or: open Google Maps → long-press your location → tap the coordinates at the top (e.g. 30.0453, 31.2243) → paste here.
+              </p>
+            </div>
+            <div class="loc-status" id="loc-status"></div>
+            <span class="group-error" id="err-location" style="margin-top:8px;">Please verify your location before placing your order.</span>
+          </div>
+
+          <div class="field">
+            <label>Apartment, suite, etc. (optional)</label>
+            <input type="text" id="apt" placeholder="">
+          </div>
+          <div class="field">
+            <label>Delivery notes (optional)</label>
+            <textarea id="notes" placeholder="Any special instructions for the delivery..."></textarea>
+          </div>
+        </div>
+
+        <!-- PAYMENT -->
+        <div class="section section-locked" id="payment-section">
+          <div class="section-header">
+            <h2 class="section-title">Payment</h2>
+          </div>
+          <p class="section-locked-note" id="payment-locked-note">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Select your delivery area above to continue.
+          </p>
+          <p class="section-note" id="payment-secure-note" style="display:none;">All transactions are secure and encrypted.</p>
+          <div class="payment-options" id="payment-options-group">
+
+            <!-- INSTAPAY -->
+            <div class="pay-option" id="pay-instapay" onclick="selectPayment('instapay')">
+              <input type="radio" name="payment" value="instapay">
+              <div class="pay-radio"></div>
+              <div class="pay-info">
+                <p class="pay-name">Instapay</p>
+                <p class="pay-desc">Pay securely using Instapay. After placing your order, you will receive our Instapay details to complete the payment.</p>
+              </div>
+              <div class="pay-logo" style="background:#1A3C6B;color:#fff;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              </div>
+            </div>
+            <div class="pay-details-panel" id="panel-instapay">
+              <p style="font-size:12px;font-weight:600;color:#1A1A1A;margin-bottom:12px;">Send the exact amount to:</p>
+              <div class="pay-detail-row">
+                <span class="pay-detail-label">Phone</span>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="pay-detail-value">01122266184</span>
+                  <button class="copy-btn" onclick="copyText('01122266184', this)">Copy</button>
+                </div>
+              </div>
+              <div class="pay-detail-row">
+                <span class="pay-detail-label">InstaPay ID</span>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="pay-detail-value" style="font-size:12px;">magdy.hassan1967@instapay</span>
+                  <button class="copy-btn" onclick="copyText('magdy.hassan1967@instapay', this)">Copy</button>
+                </div>
+              </div>
+              <div class="pay-detail-row">
+                <span class="pay-detail-label">Amount</span>
+                <span class="pay-detail-value" id="instapay-amount" style="color:#005BD3;">—</span>
+              </div>
+              <a id="whatsapp-btn" href="#" target="_blank" class="whatsapp-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                Send Payment Screenshot on WhatsApp
+              </a>
+              <p class="whatsapp-note">After transferring, tap the button above to send your payment screenshot to confirm your order.</p>
+            </div>
+
+            <!-- TELDA (coming soon) -->
+            <div class="pay-option" style="opacity:0.45;cursor:not-allowed;" title="Coming soon">
+              <div class="pay-radio"></div>
+              <div class="pay-info">
+                <p class="pay-name">Telda</p>
+                <p class="pay-desc">Coming soon</p>
+              </div>
+              <div class="pay-logo" style="background:#1A1A1A;color:#fff;font-family:inherit;font-size:13px;font-weight:800;">T</div>
+            </div>
+
+            <!-- CASH ON DELIVERY -->
+            <div class="pay-option" id="pay-cod" onclick="selectPayment('cod')">
+              <input type="radio" name="payment" value="cod">
+              <div class="pay-radio"></div>
+              <div class="pay-info">
+                <p class="pay-name">Cash on Delivery</p>
+                <p class="pay-desc">Pay when your order arrives</p>
+              </div>
+              <div class="pay-logo" style="background:#F0F0F0;border:1px solid #E0E0E0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6D7175" stroke-width="1.75" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+              </div>
+            </div>
+            <div class="cod-panel" id="panel-cod">
+              <p style="font-size:13px;color:#1A1A1A;line-height:1.65;">
+                You will pay <strong id="cod-amount">—</strong> in cash when your order is delivered.<br>
+                <span style="font-size:12px;color:#6D7175;">Please have the exact amount ready for the courier.</span>
+              </p>
+            </div>
+
+          </div>
+          <span class="group-error" id="err-payment">Please select a payment method.</span>
+        </div>
+
+        <button class="place-order-btn" id="place-order-btn" onclick="placeOrder()">
+          Complete order
+        </button>
+
+        <a href="privacy.html" class="privacy-link">Privacy policy</a>
+      </div>
+
+      <!-- RIGHT PANEL: ORDER SUMMARY -->
+      <div class="right-panel">
+        <div id="summary-items"></div>
+
+        <div class="summary-line">
+          <span class="summary-line-label">Subtotal</span>
+          <span class="summary-line-value" id="subtotal-display">—</span>
+        </div>
+        <div class="summary-line">
+          <span class="summary-line-label">Shipping</span>
+          <span class="summary-line-value" id="delivery-fee-display">—</span>
+        </div>
+
+        <div class="summary-total">
+          <span class="summary-total-label">Total</span>
+          <div class="summary-total-right">
+            <div style="display:flex;align-items:baseline;gap:5px;">
+              <span style="font-size:12px;color:#6D7175;font-weight:500;">EGP</span>
+              <span class="summary-total-value" id="total-display">700.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const DELIVERY = { cairo: 50, october: 80 };
+    let selectedArea = null;
+    let selectedPayment = null;
+    let cartSubtotal = 0;
+
+    function parsePrice(p) { return typeof p === 'number' ? p : parseInt(String(p).replace(/[^0-9]/g, '')) || 0; }
+
+    // Load cart from localStorage and render items in the summary
+    (function() {
+      try {
+        let cart = (JSON.parse(localStorage.getItem('brandy_cart')) || []).map(i => ({ ...i, price: parsePrice(i.price) }));
+        // Merge buy-now item from sessionStorage if present
+        const buyNowRaw = sessionStorage.getItem('brandy_buynow');
+        if (buyNowRaw) {
+          const bn = { ...JSON.parse(buyNowRaw), price: parsePrice(JSON.parse(buyNowRaw).price) };
+          const existing = cart.find(i => i.id === bn.id && i.size === bn.size && i.color === bn.color);
+          if (existing) { existing.qty += bn.qty; } else { cart = [bn, ...cart]; }
+        }
+        cartSubtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+        const container = document.getElementById('summary-items');
+        if (cart.length === 0) {
+          container.innerHTML = '<p style="font-size:13px;color:#6D7175;margin-bottom:16px;">Your cart is empty.</p>';
+        } else {
+          container.innerHTML = cart.map(item => `
+            <div class="summary-item">
+              <div class="summary-img-wrap">
+                <img src="${item.image}" alt="${item.name}" class="summary-img">
+                <div class="summary-img-badge">${item.qty}</div>
+              </div>
+              <div style="flex:1;">
+                <p class="summary-item-name">${item.name}</p>
+                <p class="summary-item-meta">${[item.color ? 'Color: ' + item.color : '', item.size ? 'Size: ' + item.size : ''].filter(Boolean).join('&nbsp;&nbsp;/&nbsp;&nbsp;')}</p>
+              </div>
+              <span class="summary-item-price">EGP ${(item.price * item.qty).toFixed(2)}</span>
+            </div>
+          `).join('');
+        }
+        document.getElementById('subtotal-display').textContent = 'EGP ' + cartSubtotal.toFixed(2);
+        document.getElementById('total-display').textContent = cartSubtotal.toFixed(2);
+      } catch(e) {}
+    })();
+
+    function selectArea(area) {
+      selectedArea = area;
+      document.querySelectorAll('.area-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById('area-' + area).classList.add('selected');
+      // Unlock payment section
+      const paySection = document.getElementById('payment-section');
+      paySection.classList.remove('section-locked');
+      document.getElementById('payment-locked-note').style.display = 'none';
+      document.getElementById('payment-secure-note').style.display = '';
+      document.getElementById('err-area').classList.remove('show');
+      // Reset location verification when area changes
+      locationVerified = false;
+      const locEl = document.getElementById('loc-status');
+      locEl.className = 'loc-status';
+      locEl.textContent = '';
+      document.getElementById('err-location').classList.remove('show');
+      updateTotals();
+    }
+
+    function selectPayment(method) {
+      if (method === 'telda') return;
+      selectedPayment = method;
+      document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selected'));
+      document.querySelectorAll('.pay-details-panel, .cod-panel').forEach(p => p.classList.remove('show'));
+      document.getElementById('pay-' + method).classList.add('selected');
+      document.getElementById('panel-' + method).classList.add('show');
+      document.getElementById('err-payment').classList.remove('show');
+      updateTotals();
+    }
+
+    function updateTotals() {
+      const fee = selectedArea ? DELIVERY[selectedArea] : 0;
+      const total = cartSubtotal + fee;
+      document.getElementById('delivery-fee-display').textContent = selectedArea ? 'EGP ' + fee.toFixed(2) : '—';
+      document.getElementById('total-display').textContent = total.toFixed(2);
+      document.getElementById('instapay-amount').textContent = total + ' EGP';
+      document.getElementById('cod-amount').textContent = total + ' EGP';
+
+      const name = (document.getElementById('fname').value || 'Customer').trim();
+      const phone = (document.getElementById('phone').value || '').trim();
+      const area = selectedArea === 'cairo' ? 'Cairo' : selectedArea === 'october' ? '6th of October' : '';
+      try {
+        const cart = (JSON.parse(localStorage.getItem('brandy_cart')) || []).map(i => ({ ...i, price: parsePrice(i.price) }));
+        const itemLines = cart.map(i => `• ${i.name} (${i.color || ''}, ${i.size || ''}) x${i.qty} — ${i.price * i.qty} EGP`).join('\n');
+        const msg = encodeURIComponent(
+          `Hello Brandy! 👋\n\nI just placed an order:\n\n${itemLines}\n\n` +
+          `• Total Paid: ${total} EGP\n` +
+          `• Name: ${name}\n` +
+          `• Phone: ${phone}\n` +
+          `• Area: ${area}\n\n` +
+          `Please find my payment screenshot attached.`
+        );
+        document.getElementById('whatsapp-btn').href = `https://wa.me/201122266138?text=${msg}`;
+      } catch(e) {}
+    }
+
+    function copyText(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = orig; }, 2000);
+      });
+    }
+
+    ['fname', 'phone'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updateTotals);
+    });
+
+    const EGY_PHONE = /^01[0125][0-9]{8}$/;
+    function isValidPhone(val) { return EGY_PHONE.test(val.replace(/\s|-/g, '')); }
+
+    // ── LOCATION VERIFICATION ──
+    let locationVerified = false;
+
+    const AREA_BOUNDS = {
+      cairo:   { minLat: 29.85, maxLat: 30.45, minLng: 31.08, maxLng: 31.90 },
+      october: { minLat: 29.82, maxLat: 30.15, minLng: 30.72, maxLng: 31.08 }
+    };
+
+    function showLocStatus(type, msg) {
+      const el = document.getElementById('loc-status');
+      el.className = 'loc-status show ' + type;
+      el.textContent = msg;
+    }
+
+    function validateCoords(lat, lng) {
+      if (!selectedArea) {
+        showLocStatus('invalid', 'Please select a delivery area first.');
+        return;
+      }
+      const b = AREA_BOUNDS[selectedArea];
+      const areaName = selectedArea === 'cairo' ? 'Cairo' : '6th of October';
+      if (lat >= b.minLat && lat <= b.maxLat && lng >= b.minLng && lng <= b.maxLng) {
+        locationVerified = true;
+        showLocStatus('valid', '✓ Location verified — within ' + areaName + '.');
+        document.getElementById('err-location').classList.remove('show');
+      } else {
+        locationVerified = false;
+        showLocStatus('invalid', '✗ This location is not within ' + areaName + '. Please select the correct delivery area or share a location inside ' + areaName + '.');
+      }
+    }
+
+    function useMyLocation() {
+      if (!navigator.geolocation) {
+        showLocStatus('invalid', 'Geolocation is not supported by your browser. Please paste a Google Maps link instead.');
+        return;
+      }
+      showLocStatus('loading', 'Getting your location…');
+      navigator.geolocation.getCurrentPosition(
+        pos => validateCoords(pos.coords.latitude, pos.coords.longitude),
+        () => showLocStatus('invalid', 'Could not access your location. Please allow location access or paste a Google Maps link.')
+      );
+    }
+
+    // Parse raw coordinates: "30.0453, 31.2243"
+    function tryRawCoords(input) {
+      const m = input.trim().match(/^(-?\d{1,3}\.?\d*)\s*[,\s]\s*(-?\d{1,3}\.?\d*)$/);
+      if (!m) return null;
+      const lat = parseFloat(m[1]), lng = parseFloat(m[2]);
+      if (lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180 && !(lat === 0 && lng === 0))
+        return { lat, lng };
+      return null;
+    }
+
+    function validLatLng(lat, lng) {
+      return lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180 && !(lat === 0 && lng === 0);
+    }
+
+    // Extract lat/lng from any URL or HTML text
+    function extractCoordsFromText(text) {
+      if (!text) return null;
+      const patterns = [
+        // @lat,lng in URL path (most common Google Maps format)
+        /@(-?\d{1,3}\.\d{4,}),(-?\d{1,3}\.\d{4,})/,
+        // ?q=lat,lng or &q=lat,lng
+        /[?&]q=(-?\d{1,3}\.\d{4,}),(-?\d{1,3}\.\d{4,})/,
+        // ?ll=lat,lng
+        /[?&]ll=(-?\d{1,3}\.\d{4,}),(-?\d{1,3}\.\d{4,})/,
+        // !3d<lat>!4d<lng> in data param
+        /!3d(-?\d{1,3}\.\d{4,})!4d(-?\d{1,3}\.\d{4,})/,
+        // center=lat,lng
+        /center=(-?\d{1,3}\.\d{4,}),(-?\d{1,3}\.\d{4,})/,
+        // /lat,lng/ in path
+        /\/(-?\d{1,3}\.\d{5,}),(-?\d{1,3}\.\d{5,})\//,
+        // JSON "latitude":..., "longitude":...
+        /"latitude"\s*:\s*(-?\d{1,3}\.\d{4,})[^}]{0,120}"longitude"\s*:\s*(-?\d{1,3}\.\d{4,})/,
+        // JSON "lat":..., "lng":... (short form used in Google's internal JSON)
+        /"lat"\s*:\s*(-?\d{1,3}\.\d{4,})[^}]{0,60}"lng"\s*:\s*(-?\d{1,3}\.\d{4,})/,
+        // [lat, lng] array with 6+ decimal places
+        /\[(-?\d{1,3}\.\d{6,}),\s*(-?\d{1,3}\.\d{6,})\]/,
+        // URL-encoded @: %4030.0453%2C31.2243
+        /%40(-?\d{1,3}\.\d{4,})%2C(-?\d{1,3}\.\d{4,})/i,
+      ];
+      for (const p of patterns) {
+        const m = text.match(p);
+        if (!m) continue;
+        const lat = parseFloat(m[1]), lng = parseFloat(m[2]);
+        if (validLatLng(lat, lng)) return { lat, lng };
+      }
+      return null;
+    }
+
+    // Pull canonical / og:url from HTML — the canonical URL for a Google Maps page
+    // contains the @lat,lng that we can then parse
+    function extractCanonicalUrl(html) {
+      if (!html) return null;
+      const ps = [
+        /<link[^>]+rel=["']canonical["'][^>]*href=["']([^"']+)["']/i,
+        /<link[^>]+href=["']([^"']+)["'][^>]*rel=["']canonical["']/i,
+        /property=["']og:url["'][^>]+content=["']([^"']+)["']/i,
+        /content=["']([^"']+)["'][^>]+property=["']og:url["']/i,
+      ];
+      for (const p of ps) {
+        const m = html.match(p);
+        if (m && m[1] && /google\.com\/maps|maps\.google/i.test(m[1])) return m[1];
+      }
+      return null;
+    }
+
+    // Pull JS/meta redirect destination from HTML
+    function extractRedirectUrl(html) {
+      if (!html) return null;
+      const ps = [
+        /window\.location(?:\.replace)?\s*\(\s*['"]([^'"]+)['"]\s*\)/,
+        /location\.href\s*=\s*['"]([^'"]+)['"]/,
+        /meta[^>]+http-equiv=['"]refresh['"][^>]+content=['"][^;]*;\s*url=([^'">\s]+)/i
+      ];
+      for (const p of ps) {
+        const m = html.match(p);
+        if (m && m[1].startsWith('http')) return m[1];
+      }
+      return null;
+    }
+
+    // Extract the q= search query from any Google Maps URL (place name / address)
+    function extractMapsQuery(url) {
+      if (!url) return null;
+      try {
+        const q = new URL(url).searchParams.get('q');
+        if (q && q.trim().length > 3) return decodeURIComponent(q.replace(/\+/g, ' ')).trim();
+      } catch(e) {}
+      const m = url.match(/[?&]q=([^&#]+)/);
+      if (m) { try { return decodeURIComponent(m[1].replace(/\+/g, ' ')).trim(); } catch(e) {} }
+      return null;
+    }
+
+    // Extract place name from /maps/place/ URL path
+    function extractPlaceName(url) {
+      const m = url.match(/maps\/(?:place|search)\/([^/@?&#]+)/);
+      if (!m) return null;
+      const name = decodeURIComponent(m[1].replace(/\+/g, ' ')).split(',')[0].trim();
+      return name.length > 2 ? name : null;
+    }
+
+    async function fetchTimeout(url, ms, extraHeaders) {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), ms);
+      try {
+        const r = await fetch(url, { signal: ctrl.signal, headers: extraHeaders || {} });
+        clearTimeout(t); return r;
+      } catch(e) { clearTimeout(t); throw e; }
+    }
+
+    // Google Maps tile coordinates → lat/lng (Web Mercator)
+    function tileToLatLng(zoom, tileX, tileY) {
+      const n = Math.pow(2, zoom);
+      const lng = (tileX / n) * 360 - 180;
+      const latRad = Math.atan(Math.sinh(Math.PI * (1 - 2 * tileY / n)));
+      return { lat: latRad * 180 / Math.PI, lng };
+    }
+
+    // Extract coordinates from Google Maps tile URL embedded in any text
+    function extractCoordsFromTileUrl(text) {
+      if (!text) return null;
+      // Tile URLs look like: maps/vt/pb=...!1i{zoom}!2i{tileX}!3i{tileY}...
+      const m = text.match(/maps\/vt\/[^"'\s]*?!1i(\d+)!2i(\d+)!3i(\d+)/);
+      if (!m) return null;
+      const zoom = parseInt(m[1]), tileX = parseInt(m[2]), tileY = parseInt(m[3]);
+      if (zoom < 5 || zoom > 22) return null;
+      const { lat, lng } = tileToLatLng(zoom, tileX, tileY);
+      return validLatLng(lat, lng) ? { lat, lng } : null;
+    }
+
+    function deepExtract(html, knownUrl) {
+      let coords = extractCoordsFromText(knownUrl);
+      if (coords) return coords;
+      const canonUrl = extractCanonicalUrl(html);
+      if (canonUrl) { coords = extractCoordsFromText(canonUrl); if (coords) return coords; }
+      coords = extractCoordsFromText(html);
+      if (coords) return coords;
+      const redir = extractRedirectUrl(html);
+      return redir ? extractCoordsFromText(redir) : null;
+    }
+
+    async function geocodeQuery(query) {
+      if (!query || !selectedArea) return null;
+      const r = await fetchTimeout(
+        'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query) + '&format=json&limit=3&countrycodes=eg',
+        8000
+      );
+      if (!r.ok) return null;
+      const results = await r.json();
+      if (results.length === 0) return null;
+      return { lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon) };
+    }
+
+    // Extract place name from Jina AI title: "Place Name - Google Maps" → "Place Name"
+    function placeNameFromTitle(title) {
+      if (!title) return null;
+      const name = title.replace(/\s*[-–—]\s*Google Maps.*$/i, '').trim();
+      return name.length > 2 ? name : null;
+    }
+
+    async function verifyMapsLink() {
+      const raw = document.getElementById('maps-link').value.trim();
+      if (!raw) { showLocStatus('invalid', 'Please paste your coordinates or a Google Maps link.'); return; }
+
+      // 1. Raw coordinates: "30.0453, 31.2243"
+      const rawCoords = tryRawCoords(raw);
+      if (rawCoords) { validateCoords(rawCoords.lat, rawCoords.lng); return; }
+
+      // 2. Full URL with coordinates already embedded
+      const direct = extractCoordsFromText(raw);
+      if (direct) { validateCoords(direct.lat, direct.lng); return; }
+
+      showLocStatus('loading', 'Resolving link…');
+
+      // 3. Jina AI reader — fetches and renders the Maps page, returning map tile URLs
+      //    whose x/y/zoom encode the exact location. Works for both short and full links.
+      const tryJinaContent = async (content, title) => {
+        // a. tile coordinates from rendered content (most reliable)
+        const tileCoords = extractCoordsFromTileUrl(content);
+        if (tileCoords) { validateCoords(tileCoords.lat, tileCoords.lng); return true; }
+        // b. embedded coords in any URL within content
+        const urlCoords = extractCoordsFromText(content);
+        if (urlCoords) { validateCoords(urlCoords.lat, urlCoords.lng); return true; }
+        // c. geocode place name from page title as last resort
+        const name = placeNameFromTitle(title);
+        if (name) {
+          const geo = await geocodeQuery(name + ', Egypt');
+          if (geo) { validateCoords(geo.lat, geo.lng); return true; }
+        }
+        return false;
+      };
+
+      // 3a. Direct fetch to Jina AI (works if they support CORS)
+      try {
+        const r = await fetchTimeout('https://r.jina.ai/' + raw, 15000, { 'Accept': 'application/json' });
+        if (r.ok) {
+          const d = await r.json();
+          const data = d.data || {};
+          if (await tryJinaContent(data.content || '', data.title || '')) return;
+        }
+      } catch(e) {}
+
+      // 3b. Jina AI via allorigins proxy (handles CORS if direct fails)
+      try {
+        const jinaUrl = 'https://r.jina.ai/' + raw;
+        const r = await fetchTimeout('https://api.allorigins.win/get?url=' + encodeURIComponent(jinaUrl), 15000);
+        if (r.ok) {
+          const outer = await r.json();
+          const inner = JSON.parse(outer.contents || '{}');
+          const data = inner.data || {};
+          if (await tryJinaContent(data.content || '', data.title || '')) return;
+        }
+      } catch(e) {}
+
+      // 4. Fallback: try extracting coords directly from the URL's HTML via allorigins
+      try {
+        const r = await fetchTimeout('https://api.allorigins.win/get?url=' + encodeURIComponent(raw), 10000);
+        if (r.ok) {
+          const d = await r.json();
+          const finalUrl = (d.status && d.status.url) || '';
+          const coords = deepExtract(d.contents || '', finalUrl);
+          if (coords) { validateCoords(coords.lat, coords.lng); return; }
+        }
+      } catch(e) {}
+
+      showLocStatus('invalid',
+        'Could not read this link. Please use the "Use my current location" button above, ' +
+        'or open Google Maps → long-press your location → tap the coordinates shown ' +
+        '(e.g. 30.0453, 31.2243) → paste them here.'
+      );
+    }
+
+    // Clear field error on input
+    function clearErr(inputId, errId) {
+      document.getElementById(inputId).addEventListener('input', () => {
+        document.getElementById(inputId).classList.remove('error');
+        document.getElementById(errId).classList.remove('show');
+      });
+    }
+    clearErr('fname', 'err-fname');
+    clearErr('lname', 'err-lname');
+
+    // Phone: clear error on input, re-validate on blur
+    document.getElementById('phone').addEventListener('input', () => {
+      document.getElementById('phone').classList.remove('error');
+      document.getElementById('err-phone').classList.remove('show');
+    });
+    document.getElementById('phone').addEventListener('blur', () => {
+      const val = document.getElementById('phone').value.trim();
+      if (val && !isValidPhone(val)) {
+        document.getElementById('phone').classList.add('error');
+        document.getElementById('err-phone').classList.add('show');
+      }
+    });
+
+    function setErr(inputId, errId, show) {
+      document.getElementById(inputId).classList.toggle('error', show);
+      document.getElementById(errId).classList.toggle('show', show);
+    }
+    function setGroupErr(errId, show) {
+      document.getElementById(errId).classList.toggle('show', show);
+    }
+
+    function placeOrder() {
+      const fname = document.getElementById('fname').value.trim();
+      const lname = document.getElementById('lname').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const phoneValid = phone && isValidPhone(phone);
+
+      // Validate all fields and show errors simultaneously
+      setErr('fname', 'err-fname', !fname);
+      setErr('lname', 'err-lname', !lname);
+      setErr('phone', 'err-phone', !phoneValid);
+
+      setGroupErr('err-area', !selectedArea);
+      setGroupErr('err-location', !locationVerified);
+      setGroupErr('err-payment', !selectedPayment);
+
+      if (!fname || !lname || !phoneValid || !selectedArea || !locationVerified || !selectedPayment) {
+        const first = document.querySelector('.field-error.show, .group-error.show');
+        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      const fee = DELIVERY[selectedArea];
+      const total = cartSubtotal + fee;
+      const areaName = selectedArea === 'cairo' ? 'Cairo' : '6th of October';
+
+      sessionStorage.removeItem('brandy_buynow');
+      document.getElementById('checkout-content').classList.add('hide');
+      document.getElementById('success-screen').classList.add('show');
+
+      let msg = '';
+      if (selectedPayment === 'instapay') {
+        msg = `Your order has been received! Please complete your InstaPay transfer of <strong>${total} EGP</strong> to <strong>magdy.hassan1967@instapay</strong> and send a screenshot to WhatsApp <strong>01122266138</strong> to confirm. We'll start preparing your order once payment is verified.`;
+      } else {
+        msg = `Your order has been received! Our team will contact you on <strong>${phone}</strong> to arrange delivery to <strong>${areaName}</strong>. Please have <strong>${total} EGP</strong> ready for the courier.`;
+      }
+      document.getElementById('success-msg').innerHTML = msg;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brandy — Accelerate Your Ambition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── TOKENS (light palette) ── */
+    :root {
+      --bg:          #EDE5D0;
+      --surface:     #E5DCC6;
+      --card:        #F5F0E8;
+      --border:      rgba(59,74,46,0.1);
+      --border-hover:rgba(59,74,46,0.22);
+      --forest:      #3B4A2E;
+      --forest-deep: #2A3620;
+      --forest-glow: rgba(59,74,46,0.12);
+      --golden:      #8B6419;
+      --golden-vis:  #8B6419;
+      --golden-glow: rgba(139,100,25,0.08);
+      --natural:     #C4B896;
+      --cream:       #EDE5D0;
+      --mystic:      #8A8070;
+      --muted:       rgba(59,74,46,0.5);
+      --ink:         #1C2318;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px;
+    }
+
+    h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes orb-drift-a {
+      0%,100% { transform: translate(0,0) scale(1); opacity: 0.7; }
+      33%      { transform: translate(40px,-60px) scale(1.08); opacity: 0.9; }
+      66%      { transform: translate(-30px,40px) scale(0.94); opacity: 0.6; }
+    }
+    @keyframes orb-drift-b {
+      0%,100% { transform: translate(0,0) scale(1); opacity: 0.6; }
+      33%      { transform: translate(-50px,30px) scale(1.06); opacity: 0.8; }
+      66%      { transform: translate(35px,-50px) scale(0.96); opacity: 0.5; }
+    }
+    @keyframes bob {
+      0%,100% { transform: translateY(0px) rotate(0.5deg); }
+      50%      { transform: translateY(-14px) rotate(-0.5deg); }
+    }
+    @keyframes sway {
+      0%,100% { transform: rotate(-3deg) translateX(0px); }
+      50%      { transform: rotate(3deg) translateX(4px); }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes pulse-glow {
+      0%,100% { box-shadow: 0 0 0 0 rgba(139,100,25,0); }
+      50%      { box-shadow: 0 0 0 6px rgba(139,100,25,0.15); }
+    }
+    @keyframes stitch {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.3; }
+    }
+
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .d1 { transition-delay: 0.1s; } .d2 { transition-delay: 0.2s; } .d3 { transition-delay: 0.3s; } .d4 { transition-delay: 0.4s; }
+
+    /* ── NAV ── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      padding: 20px 48px;
+      transition: background 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
+    }
+    #nav.scrolled {
+      background: rgba(237,229,208,0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 4px 24px rgba(59,74,46,0.06);
+      padding: 14px 48px;
+    }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo img { height: 44px; width: auto; }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      transition: color 0.2s ease;
+      position: relative; padding-bottom: 2px;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: 0; left: 0;
+      width: 0; height: 1px; background: var(--golden);
+      transition: width 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .nav-links a:hover { color: var(--forest); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a:focus-visible { outline: 2px solid var(--golden); outline-offset: 4px; }
+    .nav-right { display: flex; align-items: center; gap: 4px; }
+    .icon-btn {
+      width: 36px; height: 36px; border-radius: 50%; border: none;
+      background: transparent; color: var(--muted); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .icon-btn:hover { background: rgba(59,74,46,0.07); color: var(--forest); transform: scale(1.1); }
+    .icon-btn:active { transform: scale(0.94); }
+    .icon-btn:focus-visible { outline: 2px solid var(--golden); outline-offset: 2px; }
+
+    /* ── BUTTONS ── */
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--forest); color: var(--cream);
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 14px 30px; border: none; cursor: pointer;
+      box-shadow: 0 4px 18px rgba(59,74,46,0.22), 0 1px 4px rgba(59,74,46,0.12);
+      transition: background 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+    }
+    .btn-primary:hover { background: var(--forest-deep); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(59,74,46,0.3); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:focus-visible { outline: 2px solid var(--golden); outline-offset: 3px; }
+    .btn-primary-light {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--cream); color: var(--ink);
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 14px 30px; border: none; cursor: pointer;
+      box-shadow: 0 4px 18px rgba(237,229,208,0.3);
+      transition: background 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-primary-light:hover { background: #fff; transform: translateY(-2px); }
+    .btn-primary-light:active { transform: translateY(0); }
+    .btn-primary-light:focus-visible { outline: 2px solid var(--golden); outline-offset: 3px; }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--forest);
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 13px 30px; border: 1.5px solid var(--forest); cursor: pointer;
+      transition: background 0.25s ease, color 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-ghost:hover { background: var(--forest); color: var(--cream); transform: translateY(-2px); }
+    .btn-ghost:active { transform: translateY(0); }
+    .btn-ghost:focus-visible { outline: 2px solid var(--golden); outline-offset: 3px; }
+    .btn-ghost-light {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: rgba(237,229,208,0.7);
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 13px 30px; border: 1.5px solid rgba(237,229,208,0.35); cursor: pointer;
+      transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-ghost-light:hover { background: rgba(237,229,208,0.1); border-color: rgba(237,229,208,0.6); color: var(--cream); transform: translateY(-2px); }
+    .btn-ghost-light:active { transform: translateY(0); }
+    .btn-ghost-light:focus-visible { outline: 2px solid var(--golden); outline-offset: 3px; }
+
+    .label { font-size: 10px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--golden-vis); }
+    .label-light { font-size: 10px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--natural); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh; position: relative; overflow: hidden;
+      display: flex; align-items: center;
+      background: var(--bg);
+    }
+    .hero-orb-a {
+      position: absolute; width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(59,74,46,0.14) 0%, transparent 70%);
+      top: -200px; left: -200px; pointer-events: none;
+      animation: orb-drift-a 12s ease-in-out infinite; filter: blur(60px);
+    }
+    .hero-orb-b {
+      position: absolute; width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(139,100,25,0.12) 0%, transparent 70%);
+      bottom: -150px; right: -100px; pointer-events: none;
+      animation: orb-drift-b 16s ease-in-out infinite; filter: blur(70px);
+    }
+    .hero-orb-c {
+      position: absolute; width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(196,184,150,0.2) 0%, transparent 70%);
+      top: 40%; right: 30%; pointer-events: none;
+      animation: orb-drift-a 20s ease-in-out infinite reverse; filter: blur(50px);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(59,74,46,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,74,46,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    }
+    .hero-inner {
+      max-width: 1200px; margin: 0 auto; padding: 140px 48px 80px;
+      width: 100%; position: relative; z-index: 2;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    }
+    .hero-heading {
+      font-size: clamp(44px, 6vw, 76px);
+      font-weight: 500; line-height: 1.0; letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--forest) 0%, var(--golden) 55%, var(--forest) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 6s linear infinite;
+      background-size: 200% auto;
+    }
+    .hero-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      animation: bob 5s ease-in-out infinite;
+      box-shadow: 0 24px 80px rgba(59,74,46,0.12), 0 8px 24px rgba(59,74,46,0.07);
+      position: relative;
+    }
+    .hero-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(59,74,46,0.03) 0%, transparent 50%, rgba(139,100,25,0.02) 100%);
+      pointer-events: none; z-index: 1;
+    }
+    .garment-deco {
+      position: absolute; top: 80px; right: 60px;
+      animation: sway 6s ease-in-out infinite;
+      transform-origin: top center;
+      opacity: 0.12; pointer-events: none;
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-section {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      padding: 16px 0; overflow: hidden;
+    }
+    .marquee-track { display: flex; animation: marquee 25s linear infinite; width: max-content; }
+    .marquee-item {
+      display: flex; align-items: center; gap: 28px; padding: 0 28px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--muted); white-space: nowrap;
+    }
+    .marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--golden); opacity: 0.6; flex-shrink: 0; }
+
+    /* ── FEATURE GRID ── */
+    .feature-grid {
+      max-width: 1200px; margin: 0 auto; padding: 96px 48px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;
+    }
+    .feat-card {
+      background: var(--card); border: 1px solid var(--border);
+      padding: 36px 36px 40px; position: relative; overflow: hidden; cursor: default;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .feat-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 20px 60px rgba(59,74,46,0.1), 0 4px 16px rgba(59,74,46,0.06);
+      transform: translateY(-3px);
+    }
+    .feat-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(59,74,46,0.04) 0%, transparent 60%);
+      pointer-events: none; opacity: 0; transition: opacity 0.3s ease;
+    }
+    .feat-card:hover::after { opacity: 1; }
+    .feat-card.large { grid-column: span 2; }
+    .feat-icon {
+      width: 44px; height: 44px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 28px; color: var(--forest);
+      transition: border-color 0.3s ease, color 0.3s ease;
+    }
+    .feat-card:hover .feat-icon { border-color: var(--border-hover); color: var(--golden); }
+    .feat-heading { font-size: 20px; font-weight: 500; color: var(--ink); margin-bottom: 10px; letter-spacing: -0.02em; }
+    .feat-body { font-size: 13px; font-weight: 400; color: var(--ink); opacity: 0.75; line-height: 1.8; }
+    .feat-illustration {
+      margin-top: 28px; border: 1px solid var(--border); background: var(--surface);
+      padding: 20px; position: relative; overflow: hidden;
+    }
+    .stitch-line { stroke-dasharray: 6 4; animation: stitch 1.5s ease-in-out infinite; }
+    .thread-path { stroke-dasharray: 600; stroke-dashoffset: 600; transition: stroke-dashoffset 1.5s ease; }
+    .feat-card.visible-card .thread-path { stroke-dashoffset: 0; }
+
+    .size-grid { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 16px; }
+    .size-chip {
+      width: 36px; height: 36px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+      cursor: pointer;
+    }
+    .size-chip:hover { background: rgba(59,74,46,0.06); border-color: var(--border-hover); color: var(--forest); transform: scale(1.1); }
+    .size-chip.active { background: var(--forest); color: var(--cream); border-color: var(--forest); }
+
+    .swatch-row { display: flex; gap: 8px; margin-top: 16px; }
+    .swatch-dot {
+      width: 20px; height: 20px; border-radius: 50%; cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+    }
+    .swatch-dot:hover { transform: scale(1.4); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px currentColor; }
+    .garment-svg { animation: sway 4s ease-in-out infinite; transform-origin: top center; }
+
+    /* ── COLLECTIONS ── */
+    .collections { max-width: 1200px; margin: 0 auto; padding: 0 48px 96px; }
+    .coll-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 48px; }
+    .coll-card {
+      position: relative; overflow: hidden; cursor: pointer;
+      border: 1px solid var(--border); transition: border-color 0.3s ease;
+    }
+    .coll-card:hover { border-color: var(--border-hover); }
+    .coll-card img {
+      width: 100%; height: 380px; object-fit: cover; display: block;
+      transition: transform 0.65s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.4s ease;
+      filter: brightness(0.8);
+    }
+    .coll-card:hover img { transform: scale(1.05); filter: brightness(0.9); }
+    .coll-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(28,35,24,0.8) 0%, rgba(28,35,24,0.15) 60%, transparent 100%); }
+    .coll-color { position: absolute; inset: 0; background: var(--forest); mix-blend-mode: multiply; opacity: 0; transition: opacity 0.4s ease; }
+    .coll-card:hover .coll-color { opacity: 0.2; }
+    .coll-label { position: absolute; bottom: 28px; left: 28px; }
+    .coll-card:focus-visible { outline: 2px solid var(--golden); outline-offset: 3px; }
+
+    /* ── PRODUCT STRIP ── */
+    .products-section { padding: 0 0 96px; overflow: hidden; }
+    .products-header { max-width: 1200px; margin: 0 auto 40px; padding: 0 48px; display: flex; align-items: flex-end; justify-content: space-between; }
+    .products-scroll {
+      display: flex; gap: 12px; padding: 0 48px;
+      overflow-x: auto; scrollbar-width: none; scroll-snap-type: x mandatory;
+    }
+    .products-scroll::-webkit-scrollbar { display: none; }
+    .product-card {
+      flex: 0 0 260px; scroll-snap-align: start;
+      background: var(--card); border: 1px solid var(--border);
+      overflow: hidden; cursor: pointer;
+      transition: border-color 0.3s ease, transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94), box-shadow 0.3s ease;
+    }
+    .product-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(59,74,46,0.1);
+    }
+    .product-card:focus-visible { outline: 2px solid var(--golden); outline-offset: 3px; }
+    .product-img { position: relative; aspect-ratio: 3/4; overflow: hidden; }
+    .product-img img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94); filter: brightness(0.92);
+    }
+    .product-card:hover .product-img img { transform: scale(1.05); filter: brightness(1); }
+    .product-img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(28,35,24,0.55) 0%, transparent 55%); }
+    .quick-add-btn {
+      position: absolute; bottom: 12px; left: 50%;
+      transform: translateX(-50%) translateY(8px); opacity: 0;
+      white-space: nowrap;
+      font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      background: var(--cream); color: var(--ink);
+      padding: 9px 20px; border: none; cursor: pointer;
+      transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34,1.56,0.64,1), background 0.2s ease;
+    }
+    .product-card:hover .quick-add-btn { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .quick-add-btn:hover { background: #fff; }
+    .product-info { padding: 16px 18px 20px; }
+
+    /* ── STORY ── */
+    .story-section {
+      max-width: 1200px; margin: 0 auto; padding: 0 48px 96px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    .story-stat { margin-bottom: 32px; }
+    .story-stat-num {
+      font-size: 56px; font-weight: 500; letter-spacing: -0.04em; line-height: 1;
+      background: linear-gradient(135deg, var(--forest) 0%, var(--golden) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .story-stat-label { font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+    .story-divider { width: 1px; height: 40px; background: var(--border); margin: 24px 0; }
+    .story-image-wrap { position: relative; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 20px 60px rgba(59,74,46,0.1); }
+    .story-image-wrap img { width: 100%; height: 480px; object-fit: cover; display: block; filter: brightness(0.88) saturate(0.95); }
+    .story-image-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, transparent 55%, rgba(59,74,46,0.25)); }
+    .story-quote {
+      position: absolute; bottom: 0; left: 0; right: 0; padding: 24px 28px;
+      background: linear-gradient(to top, rgba(28,35,24,0.9) 0%, transparent 100%);
+    }
+
+    /* ── DIVIDER ── */
+    .glow-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--natural) 30%, var(--golden) 50%, var(--natural) 70%, transparent 100%);
+      max-width: 1200px; margin: 0 auto 96px; opacity: 0.5;
+    }
+
+    /* ── VALUES (dark forest section) ── */
+    .values-section-wrap { background: var(--forest); }
+    .values-section { max-width: 1200px; margin: 0 auto; padding: 96px 48px; }
+    .values-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(237,229,208,0.08); margin-top: 48px; }
+    .value-card {
+      background: var(--forest); padding: 40px 36px;
+      transition: background 0.3s ease;
+    }
+    .value-card:nth-child(2) { background: rgba(255,255,255,0.03); }
+    .value-card:hover { background: rgba(255,255,255,0.05); }
+    .value-icon {
+      width: 44px; height: 44px; border: 1px solid rgba(237,229,208,0.18);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--natural); margin-bottom: 28px;
+      transition: border-color 0.3s ease, color 0.3s ease;
+    }
+    .value-card:hover .value-icon { border-color: rgba(196,184,150,0.4); color: var(--golden); }
+
+    /* ── CTA ── */
+    .cta-section {
+      position: relative; overflow: hidden;
+      background: var(--forest-deep);
+      padding: 96px 48px;
+    }
+    .cta-orb-a {
+      position: absolute; width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(59,74,46,0.7) 0%, transparent 70%);
+      top: -150px; left: -100px; pointer-events: none; filter: blur(80px);
+      animation: orb-drift-a 14s ease-in-out infinite;
+    }
+    .cta-orb-b {
+      position: absolute; width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(139,100,25,0.5) 0%, transparent 70%);
+      bottom: -100px; right: -80px; pointer-events: none; filter: blur(70px);
+      animation: orb-drift-b 18s ease-in-out infinite;
+    }
+    .cta-inner { max-width: 680px; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
+    .cta-grid-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(237,229,208,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(237,229,208,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+    }
+    .newsletter-row { display: flex; gap: 0; max-width: 440px; margin: 0 auto; }
+    .newsletter-input {
+      flex: 1; min-width: 0;
+      background: rgba(237,229,208,0.07); border: 1px solid rgba(237,229,208,0.15);
+      border-right: none; color: var(--cream);
+      font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 300;
+      padding: 14px 18px; outline: none;
+      transition: border-color 0.3s ease, background 0.3s ease;
+    }
+    .newsletter-input::placeholder { color: rgba(237,229,208,0.35); }
+    .newsletter-input:focus { border-color: rgba(196,184,150,0.4); background: rgba(237,229,208,0.1); }
+
+    /* ── FOOTER ── */
+    footer { background: var(--ink); border-top: 1px solid rgba(196,184,150,0.08); padding: 56px 48px 36px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    .footer-logo { height: 36px; width: auto; margin-bottom: 16px; }
+    .footer-tagline { font-size: 12px; font-weight: 300; color: rgba(196,184,150,0.45); line-height: 1.7; margin-bottom: 20px; }
+    .footer-social { display: flex; gap: 4px; }
+    .footer-col-title { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(196,184,150,0.5); margin-bottom: 18px; }
+    .footer-links { list-style: none; }
+    .footer-links li + li { margin-top: 10px; }
+    .footer-links a { font-size: 13px; font-weight: 300; color: rgba(196,184,150,0.4); text-decoration: none; transition: color 0.2s ease; }
+    .footer-links a:hover { color: var(--cream); }
+    .footer-links a:focus-visible { outline: 2px solid var(--golden); outline-offset: 2px; }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 24px; border-top: 1px solid rgba(196,184,150,0.08); flex-wrap: wrap; gap: 12px;
+    }
+    .footer-copy { font-size: 11px; color: rgba(196,184,150,0.25); letter-spacing: 0.04em; }
+    .footer-legal { display: flex; gap: 20px; }
+    .footer-legal a { font-size: 11px; color: rgba(196,184,150,0.25); text-decoration: none; transition: color 0.2s; }
+    .footer-legal a:hover { color: rgba(196,184,150,0.6); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .hero-inner { grid-template-columns: 1fr; padding: 120px 32px 60px; }
+      .garment-deco { display: none; }
+      .feature-grid { grid-template-columns: 1fr 1fr; padding: 64px 32px; }
+      .feat-card.large { grid-column: span 2; }
+      .collections { padding: 0 32px 64px; }
+      .coll-grid { grid-template-columns: 1fr; }
+      .story-section { grid-template-columns: 1fr; padding: 0 32px 64px; }
+      .values-section { padding: 64px 32px; }
+      .values-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      #nav { padding: 18px 32px; } #nav.scrolled { padding: 12px 32px; }
+      .nav-links { display: none; }
+      .products-scroll { padding: 0 32px; }
+      .products-header { padding: 0 32px; }
+    }
+    @media (max-width: 640px) {
+      .feature-grid { grid-template-columns: 1fr; }
+      .feat-card.large { grid-column: span 1; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .cta-section { padding: 64px 24px; }
+      #nav { padding: 16px 20px; }
+    }
+
+    /* ── TOAST ── */
+    @keyframes toast-in {
+      0%   { opacity:0; transform:translateY(20px) scale(0.95); }
+      60%  { transform:translateY(-4px) scale(1.02); }
+      100% { opacity:1; transform:translateY(0) scale(1); }
+    }
+    @keyframes toast-out {
+      from { opacity:1; transform:translateY(0) scale(1); }
+      to   { opacity:0; transform:translateY(16px) scale(0.95); }
+    }
+    @keyframes check-draw {
+      from { stroke-dashoffset: 40; }
+      to   { stroke-dashoffset: 0; }
+    }
+    .toast {
+      position: fixed; bottom: 32px; right: 32px; z-index: 9999;
+      display: flex; align-items: center; gap: 14px;
+      background: var(--forest); color: var(--cream);
+      padding: 16px 22px;
+      box-shadow: 0 12px 40px rgba(59,74,46,0.35), 0 4px 12px rgba(59,74,46,0.2);
+      border-left: 3px solid var(--golden);
+      min-width: 260px; pointer-events: none;
+    }
+    .toast.in  { animation: toast-in  0.45s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+    .toast.out { animation: toast-out 0.35s ease-in forwards; }
+    .toast-check { width: 28px; height: 28px; border-radius: 50%; background: var(--golden); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .toast-check svg polyline { stroke-dasharray: 40; stroke-dashoffset: 40; animation: check-draw 0.4s 0.15s ease forwards; }
+    .toast-title { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2px; color: var(--cream); }
+    .toast-sub   { font-size: 11px; font-weight: 300; color: rgba(237,229,208,0.7); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <a href="#" aria-label="Brandy home">
+        <img src="brandassets/logo1 (2).png" alt="Brandy" style="height:96px;width:auto;">
+      </a>
+      <ul class="nav-links">
+        <li><a href="#collections">Collections</a></li>
+        <li><a href="#story">Our Story</a></li>
+        <li><a href="#arrivals">New Arrivals</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-right">
+        <button class="icon-btn" aria-label="Search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </button>
+        <button class="icon-btn" aria-label="Wishlist">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <a href="cart.html" class="icon-btn" style="position:relative;" aria-label="Cart">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span style="position:absolute;top:8px;right:8px;width:6px;height:6px;border-radius:50%;background:var(--golden);animation:pulse-glow 2s ease-in-out infinite;"></span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-orb-a"></div>
+    <div class="hero-orb-b"></div>
+    <div class="hero-orb-c"></div>
+    <div class="hero-grid"></div>
+    <div class="garment-deco">
+      <svg width="80" height="160" viewBox="0 0 80 160" fill="none">
+        <line x1="40" y1="0" x2="40" y2="20" stroke="#3B4A2E" stroke-width="1.5"/>
+        <path d="M28 20 Q40 14 52 20" stroke="#3B4A2E" stroke-width="1.5" fill="none"/>
+        <path d="M10 35 L28 20 L52 20 L70 35 L62 40 L52 30 L52 150 L28 150 L28 30 L18 40 Z" stroke="#3B4A2E" stroke-width="1" fill="rgba(59,74,46,0.06)"/>
+        <line x1="40" y1="30" x2="40" y2="150" stroke="#3B4A2E" stroke-width="0.5" stroke-dasharray="4 4" class="stitch-line"/>
+      </svg>
+    </div>
+    <div class="hero-inner">
+      <div>
+        <p class="label reveal" style="margin-bottom:20px;">New Collection — 2026</p>
+        <h1 class="hero-heading reveal d1" style="margin-bottom:28px;">
+          Wear What<br>Moves You<br>Forward.
+        </h1>
+        <p class="reveal d2" style="font-size:15px;font-weight:400;color:var(--ink);line-height:1.85;max-width:380px;margin-bottom:44px;opacity:0.75;">
+          Brandy crafts timeless clothing that moves with your ambition — designed for people who wear their confidence as naturally as their fabric.
+        </p>
+        <div class="reveal d3" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:52px;">
+          <button class="btn-primary">
+            Shop Collection
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+          <button class="btn-ghost">View Lookbook</button>
+        </div>
+      </div>
+
+      <!-- Floating product card -->
+      <div class="reveal d2" style="position:relative;">
+        <a href="product1.html" style="text-decoration:none;display:block;cursor:pointer;" aria-label="View Floral Bicycle Tee">
+        <div class="hero-card">
+          <div style="position:relative;aspect-ratio:3/4;overflow:hidden;">
+            <img src="IMG 1999 (1).png" alt="Featured piece" style="width:100%;height:100%;object-fit:cover;display:block;">
+            <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(28,35,24,0.75) 0%,transparent 55%);"></div>
+            <div style="position:absolute;top:16px;left:16px;background:rgba(247,243,236,0.9);border:1px solid var(--border);backdrop-filter:blur(8px);padding:6px 12px;">
+              <span style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--golden);">New Arrival</span>
+            </div>
+          </div>
+          <div style="padding:20px 22px 22px;border-top:1px solid var(--border);">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
+              <div>
+                <p style="font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--ink);margin-bottom:3px;">Off-White T-Shirt</p>
+                <p style="font-size:10px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;">Summer 2026</p>
+              </div>
+              <span style="font-size:17px;font-weight:600;color:var(--golden);">700 EGP</span>
+            </div>
+            <div id="hero-swatch-row" class="swatch-row" style="margin-bottom:16px;">
+              <div class="swatch-dot hero-selected" style="background:#F5F5F0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);outline:2px solid var(--forest);outline-offset:2px;" title="White" onclick="event.preventDefault();event.stopPropagation();selectHeroSwatch(this)"></div>
+              <div class="swatch-dot" style="background:#1C2318;" title="Black" onclick="event.preventDefault();event.stopPropagation();selectHeroSwatch(this)"></div>
+            </div>
+            <div id="hero-size-grid" class="size-grid" style="margin-bottom:16px;">
+              <div class="size-chip" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">S</div>
+              <div class="size-chip active" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">M</div>
+              <div class="size-chip" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">L</div>
+              <div class="size-chip" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">XL</div>
+            </div>
+            <button class="btn-primary" style="width:100%;justify-content:center;padding:12px 20px;" onclick="event.preventDefault();event.stopPropagation();heroQuickAdd(event)">Add to Cart</button>
+          </div>
+        </div>
+        <div style="position:absolute;top:-16px;right:-16px;width:68px;height:68px;border-radius:50%;background:var(--golden);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(139,100,25,0.35);animation:pulse-glow 2.5s ease-in-out infinite;">
+          <em style="font-family:'Playfair Display',serif;font-size:11px;color:var(--cream);">New</em>
+          <span style="font-size:10px;font-weight:700;color:var(--cream);letter-spacing:0.05em;">2026</span>
+        </div>
+      </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-item"><span>Natural</span><div class="marquee-dot"></div><span>Focused</span><div class="marquee-dot"></div><span>Forward</span><div class="marquee-dot"></div><span>Timeless</span><div class="marquee-dot"></div><span>Intentional</span><div class="marquee-dot"></div><span>Elevated</span><div class="marquee-dot"></div><span>Minimal</span><div class="marquee-dot"></div><span>Confident</span><div class="marquee-dot"></div><span>Curated</span><div class="marquee-dot"></div><span>Sustainable</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>Natural</span><div class="marquee-dot"></div><span>Focused</span><div class="marquee-dot"></div><span>Forward</span><div class="marquee-dot"></div><span>Timeless</span><div class="marquee-dot"></div><span>Intentional</span><div class="marquee-dot"></div><span>Elevated</span><div class="marquee-dot"></div><span>Minimal</span><div class="marquee-dot"></div><span>Confident</span><div class="marquee-dot"></div><span>Curated</span><div class="marquee-dot"></div><span>Sustainable</span><div class="marquee-dot"></div></div>
+    </div>
+  </div>
+
+  <!-- FEATURE GRID -->
+  <section style="background:var(--bg);">
+    <div style="max-width:1200px;margin:0 auto;padding:80px 48px 16px;text-align:center;" class="reveal">
+      <p class="label" style="margin-bottom:16px;">Why Brandy</p>
+      <h2 style="font-size:clamp(30px,4vw,48px);font-weight:500;color:var(--ink);letter-spacing:-0.03em;line-height:1.1;">
+        Clothing engineered<br>for your ambition
+      </h2>
+    </div>
+    <div class="feature-grid">
+
+      <div class="feat-card reveal d1">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+        <p class="feat-heading">Precisely Fitted</p>
+        <p class="feat-body">Expert sizing across every silhouette. Find your perfect fit with our intelligent size guide.</p>
+        <div class="feat-illustration" style="padding:16px;">
+          <p style="font-size:9px;color:var(--muted);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:10px;">Select Your Size</p>
+          <div class="size-grid">
+            <div class="size-chip">XXS</div><div class="size-chip">XS</div><div class="size-chip active">S</div><div class="size-chip">M</div><div class="size-chip">L</div><div class="size-chip">XL</div>
+          </div>
+          <div style="margin-top:12px;padding:10px;background:rgba(59,74,46,0.05);border:1px solid rgba(59,74,46,0.12);">
+            <p style="font-size:10px;color:var(--forest);letter-spacing:0.06em;">✓ Size S is your perfect match</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="feat-card reveal d1">
+        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <p class="feat-heading">Timeless Design</p>
+        <p class="feat-body">Every piece transcends seasons. Designs that outlast trends and become personal signatures.</p>
+        <div class="feat-illustration" style="display:flex;align-items:center;justify-content:center;padding:24px;">
+          <svg class="garment-svg" width="80" height="100" viewBox="0 0 80 100" fill="none">
+            <line x1="40" y1="0" x2="40" y2="12" stroke="#3B4A2E" stroke-width="1.2"/>
+            <path d="M26 12 Q40 6 54 12" stroke="#3B4A2E" stroke-width="1.2" fill="none"/>
+            <path d="M10 22 L26 12 L54 12 L70 22 L64 28 L54 20 L54 95 L26 95 L26 20 L16 28 Z" fill="rgba(59,74,46,0.06)" stroke="#3B4A2E" stroke-width="0.8"/>
+            <line x1="30" y1="48" x2="50" y2="48" stroke="#8B6419" stroke-width="0.8" stroke-dasharray="3 3"/>
+            <line x1="40" y1="20" x2="40" y2="95" stroke="rgba(59,74,46,0.2)" stroke-width="0.6" stroke-dasharray="4 4" class="stitch-line"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="feat-card large reveal d2">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
+          <div>
+            <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+            <p class="feat-heading">Curated Collections</p>
+            <p class="feat-body">Each collection tells a story — a mood, a season, a chapter of your ambition. Never random, always intentional.</p>
+            <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:5px 10px;border:1px solid var(--border);color:var(--muted);">Summer Linen</span>
+              <span style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:5px 10px;background:rgba(59,74,46,0.06);border:1px solid var(--border-hover);color:var(--forest);">Core Essentials</span>
+              <span style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:5px 10px;border:1px solid var(--border);color:var(--muted);">Evening Edit</span>
+            </div>
+          </div>
+          <div class="feat-illustration" style="padding:12px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+              <div style="aspect-ratio:3/4;overflow:hidden;"><img src="https://placehold.co/120x160/3B4A2E/EDE5D0?text=." style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+              <div style="aspect-ratio:3/4;overflow:hidden;"><img src="https://placehold.co/120x160/C4B896/1C2318?text=." style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+              <div style="aspect-ratio:3/4;overflow:hidden;"><img src="https://placehold.co/120x160/EDE5D0/3B4A2E?text=." style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+              <div style="aspect-ratio:3/4;overflow:hidden;position:relative;"><img src="https://placehold.co/120x160/8B6419/EDE5D0?text=." style="width:100%;height:100%;object-fit:cover;display:block;"><div style="position:absolute;inset:0;background:rgba(28,35,24,0.5);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--cream);letter-spacing:0.1em;">+24</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLLECTIONS -->
+  <section id="collections" style="background:var(--bg);padding-bottom:0;">
+    <div class="collections">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;" class="reveal">
+        <div>
+          <p class="label" style="margin-bottom:12px;">Shop the World</p>
+          <h2 style="font-size:clamp(28px,4vw,48px);font-weight:500;color:var(--ink);letter-spacing:-0.03em;">Our Collections</h2>
+        </div>
+        <button class="btn-ghost" style="padding:10px 20px;font-size:10px;">View All →</button>
+      </div>
+      <div class="coll-grid">
+        <div class="coll-card reveal d1" tabindex="0" role="link" aria-label="Summer Linen Collection">
+          <img src="https://placehold.co/580x380/3B4A2E/EDE5D0?text=." alt="Summer Linen">
+          <div class="coll-overlay"></div><div class="coll-color"></div>
+          <div class="coll-label">
+            <p style="font-size:9px;color:rgba(237,229,208,0.6);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:7px;">SS 2026</p>
+            <h3 style="font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:var(--cream);letter-spacing:-0.02em;margin-bottom:10px;">Summer Linen</h3>
+            <span style="font-size:10px;font-weight:600;color:var(--natural);letter-spacing:0.14em;text-transform:uppercase;border-bottom:1px solid currentColor;padding-bottom:2px;">Explore →</span>
+          </div>
+        </div>
+        <div class="coll-card reveal d2" tabindex="0" role="link" aria-label="Evening Edit Collection">
+          <img src="https://placehold.co/580x380/1C2318/C4B896?text=." alt="Evening Edit">
+          <div class="coll-overlay"></div><div class="coll-color"></div>
+          <div class="coll-label">
+            <p style="font-size:9px;color:rgba(237,229,208,0.6);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:7px;">After Dark</p>
+            <h3 style="font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:var(--cream);letter-spacing:-0.02em;margin-bottom:10px;">Evening Edit</h3>
+            <span style="font-size:10px;font-weight:600;color:var(--natural);letter-spacing:0.14em;text-transform:uppercase;border-bottom:1px solid currentColor;padding-bottom:2px;">Explore →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section id="arrivals" style="padding-top:80px;background:var(--bg);">
+    <div class="products-header reveal">
+      <div>
+        <p class="label" style="margin-bottom:10px;">Bestsellers</p>
+        <h2 style="font-size:clamp(26px,3.5vw,40px);font-weight:500;color:var(--ink);letter-spacing:-0.03em;">New Arrivals</h2>
+      </div>
+    </div>
+    <div class="products-scroll">
+      <div class="product-card reveal" tabindex="0">
+        <div class="product-img">
+          <img src="IMG 1999 (1).png" alt="Off-White T-Shirt">
+          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Off-White T-Shirt','700 EGP','IMG 1999 (1).png',event)">Add to Cart</button>
+          <div style="position:absolute;top:10px;left:10px;background:var(--golden);color:var(--cream);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 8px;">New</div>
+        </div>
+        <div class="product-info">
+          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Dresses</p>
+          <p style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:8px;">Off-White T-Shirt</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:14px;font-weight:600;color:var(--golden);">700 EGP</span>
+            <div style="display:flex;gap:4px;"><div class="swatch-dot" style="width:12px;height:12px;background:#F5F5F0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);"></div><div class="swatch-dot" style="width:12px;height:12px;background:#1C2318;"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="product-card reveal d1" tabindex="0">
+        <div class="product-img">
+          <img src="https://placehold.co/260x347/C4B896/1C2318?text=." alt="Oversized Blazer">
+          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Oversized Blazer','214 EGP','https://placehold.co/260x347/C4B896/1C2318?text=.',event)">Add to Cart</button>
+        </div>
+        <div class="product-info">
+          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Outerwear</p>
+          <p style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:8px;">Oversized Blazer</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:14px;font-weight:600;color:var(--golden);">$214</span>
+            <div style="display:flex;gap:4px;"><div class="swatch-dot" style="width:12px;height:12px;background:#8A8070;"></div><div class="swatch-dot" style="width:12px;height:12px;background:#EDE5D0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="product-card reveal d2" tabindex="0">
+        <div class="product-img">
+          <img src="https://placehold.co/260x347/EDE5D0/3B4A2E?text=." alt="Silk Slip Skirt">
+          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Silk Slip Skirt','98 EGP','https://placehold.co/260x347/EDE5D0/3B4A2E?text=.',event)">Add to Cart</button>
+          <div style="position:absolute;top:10px;left:10px;background:rgba(247,243,236,0.9);border:1px solid var(--border);color:var(--forest);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 8px;">—15%</div>
+        </div>
+        <div class="product-info">
+          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Bottoms</p>
+          <p style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:8px;">Silk Slip Skirt</p>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:14px;font-weight:600;color:var(--golden);">$98</span>
+            <span style="font-size:12px;color:var(--muted);text-decoration:line-through;">$115</span>
+          </div>
+        </div>
+      </div>
+      <div class="product-card reveal d3" tabindex="0">
+        <div class="product-img">
+          <img src="https://placehold.co/260x347/8B6419/EDE5D0?text=." alt="Cotton Wrap Top">
+          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Cotton Wrap Top','76 EGP','https://placehold.co/260x347/8B6419/EDE5D0?text=.',event)">Add to Cart</button>
+        </div>
+        <div class="product-info">
+          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Tops</p>
+          <p style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:8px;">Cotton Wrap Top</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:14px;font-weight:600;color:var(--golden);">$76</span>
+            <div style="display:flex;gap:4px;"><div class="swatch-dot" style="width:12px;height:12px;background:#C4B896;"></div><div class="swatch-dot" style="width:12px;height:12px;background:#3B4A2E;"></div><div class="swatch-dot" style="width:12px;height:12px;background:#EDE5D0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="product-card reveal d4" tabindex="0">
+        <div class="product-img">
+          <img src="https://placehold.co/260x347/2A3620/C4B896?text=." alt="Wide Leg Trouser">
+          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Wide Leg Trouser','132 EGP','https://placehold.co/260x347/2A3620/C4B896?text=.',event)">Add to Cart</button>
+        </div>
+        <div class="product-info">
+          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Trousers</p>
+          <p style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:8px;">Wide Leg Trouser</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:14px;font-weight:600;color:var(--golden);">$132</span>
+            <div style="display:flex;gap:4px;"><div class="swatch-dot" style="width:12px;height:12px;background:#2A3620;"></div><div class="swatch-dot" style="width:12px;height:12px;background:#C4B896;"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-divider reveal"></div>
+
+  <!-- STORY -->
+  <section id="story">
+    <div class="story-section">
+      <div class="reveal">
+        <p class="label" style="margin-bottom:20px;">Our Philosophy</p>
+        <h2 style="font-size:clamp(28px,3.5vw,44px);font-weight:500;color:var(--ink);letter-spacing:-0.03em;line-height:1.1;margin-bottom:32px;">
+          Fashion built<br>on intention
+        </h2>
+        <p style="font-size:14px;font-weight:400;color:var(--ink);opacity:0.75;line-height:1.85;margin-bottom:32px;">
+          Brandy exists for those who believe clothing is more than what you wear — it's how you show up. We design with purpose, source with care, and craft with the conviction that your wardrobe should accelerate your life.
+        </p>
+      </div>
+      <div class="story-image-wrap reveal d2">
+        <img src="https://placehold.co/560x480/3B4A2E/EDE5D0?text=." alt="Our story">
+        <div class="story-image-overlay"></div>
+        <div class="story-quote">
+          <p style="font-family:'Playfair Display',serif;font-size:20px;font-style:italic;color:var(--cream);line-height:1.45;">"Wear what moves you forward."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES (dark forest bg) -->
+
+  <!-- CTA -->
+  <section id="contact" class="cta-section">
+    <div class="cta-orb-a"></div><div class="cta-orb-b"></div><div class="cta-grid-bg"></div>
+    <div class="cta-inner reveal">
+      <p class="label-light" style="margin-bottom:16px;">Stay Ahead</p>
+      <h2 style="font-size:clamp(30px,5vw,56px);font-weight:500;letter-spacing:-0.03em;line-height:1.0;margin-bottom:16px;
+        background:linear-gradient(135deg,var(--cream) 0%,var(--natural) 50%,var(--golden) 100%);
+        -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+        Accelerate<br>Your Ambition.
+      </h2>
+      <p style="font-size:15px;font-weight:300;color:rgba(237,229,208,0.6);line-height:1.8;margin-bottom:40px;">
+        Early access to new arrivals, exclusive drops, and styling notes — straight to your inbox.
+      </p>
+      <form class="newsletter-row" onsubmit="return false;">
+        <input type="email" placeholder="your@email.com" class="newsletter-input" aria-label="Email address">
+        <button type="submit" class="btn-primary-light" style="flex-shrink:0;padding:14px 24px;">Subscribe</button>
+      </form>
+      <p style="margin-top:14px;font-size:11px;color:rgba(237,229,208,0.25);">No spam, ever. Unsubscribe any time.</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <img src="brandassets/logo1 (2).png" alt="Brandy" class="footer-logo" style="mix-blend-mode:screen;">
+          <p class="footer-tagline">Accelerate Your Ambition.<br>Timeless clothing for mindful dressing.</p>
+          <div class="footer-social">
+            <button class="icon-btn" style="color:rgba(196,184,150,0.4);" aria-label="Instagram"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></button>
+            <button class="icon-btn" style="color:rgba(196,184,150,0.4);" aria-label="Pinterest"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg></button>
+            <button class="icon-btn" style="color:rgba(196,184,150,0.4);" aria-label="TikTok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg></button>
+          </div>
+        </div>
+        <div>
+          <p class="footer-col-title">Shop</p>
+          <ul class="footer-links"><li><a href="#">New Arrivals</a></li><li><a href="#">Collections</a></li><li><a href="#">Bestsellers</a></li><li><a href="#">Lookbook</a></li><li><a href="#">Sale</a></li></ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Company</p>
+          <ul class="footer-links"><li><a href="#">Our Story</a></li><li><a href="#">Sustainability</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li></ul>
+        </div>
+        <div>
+          <p class="footer-col-title">Help</p>
+          <ul class="footer-links"><li><a href="#">Shipping & Returns</a></li><li><a href="#">Size Guide</a></li><li><a href="#">FAQ</a></li><li><a href="#">Contact Us</a></li></ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 Brandy. All rights reserved.</p>
+        <div class="footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a><a href="#">Cookies</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 60), { passive: true });
+
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    const fabricCard = document.getElementById('fabric-card');
+    if (fabricCard) {
+      new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { fabricCard.classList.add('visible-card'); } });
+      }, { threshold: 0.3 }).observe(fabricCard);
+    }
+
+    document.querySelectorAll('.size-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        chip.closest('.size-grid').querySelectorAll('.size-chip').forEach(s => s.classList.remove('active'));
+        chip.classList.add('active');
+      });
+    });
+
+    document.querySelectorAll('.feat-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+        card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+      });
+    });
+
+    function removeWhiteBg(img, t = 238) {
+      try {
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const d = ctx.getImageData(0, 0, c.width, c.height);
+        for (let i = 0; i < d.data.length; i += 4) {
+          if (d.data[i] >= t && d.data[i+1] >= t && d.data[i+2] >= t) d.data[i+3] = 0;
+        }
+        ctx.putImageData(d, 0, 0);
+        img.src = c.toDataURL('image/png');
+      } catch(e) {}
+    }
+    document.querySelectorAll('img[src*="logo"]').forEach(img => {
+      if (img.complete && img.naturalWidth) removeWhiteBg(img);
+      else img.addEventListener('load', () => removeWhiteBg(img));
+    });
+
+    sessionStorage.removeItem('brandy_buynow');
+
+    function selectHeroSize(el) {
+      el.closest('.size-grid').querySelectorAll('.size-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+    }
+    function selectHeroSwatch(el) {
+      el.closest('.swatch-row').querySelectorAll('.swatch-dot').forEach(s => { s.style.outline = 'none'; s.classList.remove('hero-selected'); });
+      el.style.outline = '2px solid var(--forest)';
+      el.style.outlineOffset = '2px';
+      el.classList.add('hero-selected');
+    }
+
+    function getCart() { try { return JSON.parse(localStorage.getItem('brandy_cart')) || []; } catch { return []; } }
+    function saveCart(c) { localStorage.setItem('brandy_cart', JSON.stringify(c)); }
+
+    function heroQuickAdd(e) {
+      e && e.stopPropagation();
+      const activeSwatch = document.querySelector('#hero-swatch-row .swatch-dot.hero-selected');
+      const activeSize = document.querySelector('#hero-size-grid .size-chip.active');
+      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
+      const size = activeSize ? activeSize.textContent.trim() : 'S';
+      const cart = getCart();
+      const existing = cart.find(i => i.id === 'product1' && i.size === size && i.color === color);
+      if (existing) { existing.qty += 1; }
+      else { cart.push({ id: 'product1', name: 'Off-White T-Shirt', price: 700, image: 'IMG 1999 (1).png', color, size, qty: 1 }); }
+      saveCart(cart);
+      showToast('Off-White T-Shirt · ' + color + ' · ' + size, '700 EGP');
+    }
+
+    function quickAdd(name, priceStr, image, e) {
+      e && e.stopPropagation();
+      const price = parseInt(priceStr.replace(/[^0-9]/g, '')) || 0;
+      const cart = getCart();
+      const existing = cart.find(i => i.name === name);
+      if (existing) { existing.qty += 1; }
+      else { cart.push({ id: name.toLowerCase().replace(/\s+/g,'-'), name, price, image, color: 'Default', size: 'M', qty: 1 }); }
+      saveCart(cart);
+      showToast(name, priceStr);
+    }
+
+    function showToast(name, price) {
+      let toast = document.getElementById('brandy-toast');
+      if (toast) { clearTimeout(window._toastTimer); toast.remove(); }
+      toast = document.createElement('div');
+      toast.id = 'brandy-toast';
+      toast.className = 'toast in';
+      toast.innerHTML = `
+        <div class="toast-check">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div>
+          <p class="toast-title">Added to Cart</p>
+          <p class="toast-sub">${name} · ${price}</p>
+        </div>
+      `;
+      document.body.appendChild(toast);
+      window._toastTimer = setTimeout(() => {
+        toast.className = 'toast out';
+        setTimeout(() => toast.remove(), 400);
+      }, 2800);
+    }
+  </script>
+</body>
+</html>

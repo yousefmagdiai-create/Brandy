@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Off-White — Brandy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #EDE5D0;
+      --surface:     #E5DCC6;
+      --card:        #F5F0E8;
+      --border:      rgba(59,74,46,0.1);
+      --border-hover:rgba(59,74,46,0.22);
+      --forest:      #3B4A2E;
+      --forest-deep: #2A3620;
+      --golden:      #8B6419;
+      --natural:     #C4B896;
+      --cream:       #EDE5D0;
+      --mystic:      #8A8070;
+      --muted:       rgba(59,74,46,0.5);
+      --ink:         #1C2318;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position:  200% center; }
+    }
+    @keyframes toast-in {
+      0%   { opacity: 0; transform: translateY(20px) scale(0.95); }
+      60%  { transform: translateY(-4px) scale(1.02); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes toast-out {
+      0%   { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(20px) scale(0.95); }
+    }
+    @keyframes check-draw {
+      0%   { stroke-dashoffset: 40; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .toast {
+      position: fixed; bottom: 32px; right: 32px; z-index: 9999;
+      display: flex; align-items: center; gap: 14px;
+      background: var(--forest); color: var(--cream);
+      padding: 16px 22px;
+      box-shadow: 0 12px 40px rgba(59,74,46,0.35), 0 4px 12px rgba(59,74,46,0.2);
+      border-left: 3px solid var(--golden);
+      min-width: 260px; pointer-events: none;
+    }
+    .toast.in  { animation: toast-in  0.45s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+    .toast.out { animation: toast-out 0.35s ease-in forwards; }
+    .toast-check {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--golden); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .toast-check svg polyline {
+      stroke-dasharray: 40;
+      stroke-dashoffset: 40;
+      animation: check-draw 0.4s 0.15s ease forwards;
+    }
+    .toast-title { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 2px; }
+    .toast-sub   { font-size: 11px; font-weight: 300; opacity: 0.7; }
+    @keyframes pulse-glow {
+      0%,100% { box-shadow: 0 0 0 0 rgba(139,100,25,0); }
+      50%      { box-shadow: 0 0 0 6px rgba(139,100,25,0.15); }
+    }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(237,229,208,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 48px;
+    }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo img { height: 80px; width: auto; }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .nav-back:hover { color: var(--forest); }
+    .icon-btn {
+      width: 36px; height: 36px; border-radius: 50%; border: none;
+      background: transparent; color: var(--muted); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .icon-btn:hover { background: rgba(59,74,46,0.07); color: var(--forest); transform: scale(1.1); }
+
+    /* ── MAIN LAYOUT ── */
+    .product-page {
+      max-width: 1200px; margin: 0 auto; padding: 56px 48px 96px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: start;
+    }
+
+    /* ── GALLERY ── */
+    .gallery { position: sticky; top: 80px; animation: fadeUp 0.6s ease both; }
+    .gallery-main {
+      position: relative; overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--card);
+      margin-bottom: 12px;
+      cursor: zoom-in;
+    }
+    .gallery-main img {
+      width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block;
+      transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .gallery-main:hover img { transform: scale(1.04); }
+    .gallery-badge {
+      position: absolute; top: 16px; left: 16px;
+      background: var(--golden); color: var(--cream);
+      font-size: 9px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+      padding: 5px 12px;
+    }
+    .gallery-thumbs { display: flex; gap: 8px; }
+    .thumb {
+      flex: 1; aspect-ratio: 1; overflow: hidden;
+      border: 1.5px solid transparent; cursor: pointer;
+      transition: border-color 0.2s ease;
+      background: var(--card);
+    }
+    .thumb.active { border-color: var(--forest); }
+    .thumb:hover { border-color: var(--border-hover); }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* ── PRODUCT INFO ── */
+    .product-info { animation: fadeUp 0.6s 0.15s ease both; }
+    .breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 10px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 20px;
+    }
+    .breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--forest); }
+    .breadcrumb-sep { color: var(--natural); }
+
+    .product-name {
+      font-size: clamp(28px, 3.5vw, 44px); font-weight: 500;
+      letter-spacing: -0.03em; line-height: 1.05;
+      color: var(--ink); margin-bottom: 8px;
+    }
+    .product-sub {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--golden); margin-bottom: 24px;
+    }
+
+    .price-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 28px; }
+    .price {
+      font-size: 30px; font-weight: 600; letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--forest) 0%, var(--golden) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+    .section-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px;
+    }
+
+    /* Color swatches */
+    .swatch-row { display: flex; gap: 10px; margin-bottom: 28px; }
+    .swatch {
+      width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+      position: relative;
+    }
+    .swatch:hover { transform: scale(1.2); }
+    .swatch.active { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--forest); transform: scale(1.1); }
+    .swatch-label {
+      font-size: 11px; color: var(--muted); margin-left: 4px;
+      display: flex; align-items: center;
+    }
+
+    /* Size selector */
+    .size-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+    .size-chip {
+      min-width: 48px; height: 48px; padding: 0 12px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 600; color: var(--muted);
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+                  transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+      cursor: pointer;
+    }
+    .size-chip:hover { background: rgba(59,74,46,0.06); border-color: var(--border-hover); color: var(--forest); transform: scale(1.06); }
+    .size-chip.active { background: var(--forest); color: var(--cream); border-color: var(--forest); }
+    .size-chip.sold-out { opacity: 0.35; cursor: not-allowed; text-decoration: line-through; }
+    .size-guide-link {
+      font-size: 11px; color: var(--golden); text-decoration: none;
+      border-bottom: 1px solid rgba(139,100,25,0.3);
+      transition: border-color 0.2s ease;
+      display: inline-block; margin-top: 10px;
+    }
+    .size-guide-link:hover { border-color: var(--golden); }
+
+    /* Description */
+    .description {
+      font-size: 14px; font-weight: 400; color: var(--ink); opacity: 0.75;
+      line-height: 1.85; margin-bottom: 28px;
+    }
+
+    /* Details list */
+    .details-list { list-style: none; margin-bottom: 28px; }
+    .details-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 13px; font-weight: 400; color: var(--ink); opacity: 0.7;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      line-height: 1.5;
+    }
+    .details-list li:first-child { border-top: 1px solid var(--border); }
+    .details-list li svg { flex-shrink: 0; margin-top: 2px; color: var(--golden); }
+
+    /* CTA buttons */
+    .cta-stack { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .btn-primary {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--forest); color: var(--cream);
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 16px 30px; border: none; cursor: pointer;
+      box-shadow: 0 4px 18px rgba(59,74,46,0.22), 0 1px 4px rgba(59,74,46,0.12);
+      transition: background 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+    .btn-primary:hover { background: var(--forest-deep); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(59,74,46,0.3); animation: none; }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-secondary {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: transparent; color: var(--forest);
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 15px 30px; border: 1.5px solid var(--forest); cursor: pointer;
+      transition: background 0.25s ease, color 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .btn-secondary:hover { background: var(--forest); color: var(--cream); transform: translateY(-2px); }
+    .btn-secondary:active { transform: translateY(0); }
+
+    /* Trust row */
+    .trust-row { display: flex; gap: 20px; flex-wrap: wrap; }
+    .trust-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: 0.04em;
+    }
+    .trust-item svg { color: var(--forest); flex-shrink: 0; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .product-page { grid-template-columns: 1fr; gap: 40px; padding: 32px 24px 64px; }
+      .gallery { position: static; }
+      nav { padding: 12px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="index3.html" class="nav-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back to Shop
+      </a>
+      <a href="index3.html"><img src="brandassets/logo1 (2).png" alt="Brandy" id="nav-logo"></a>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <button class="icon-btn" aria-label="Wishlist">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <a href="cart.html" class="icon-btn" style="position:relative;" aria-label="Cart">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span style="position:absolute;top:8px;right:8px;width:6px;height:6px;border-radius:50%;background:var(--golden);"></span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PRODUCT PAGE -->
+  <div class="product-page">
+
+    <!-- GALLERY -->
+    <div class="gallery">
+      <div class="gallery-main" id="main-img-wrap">
+        <img src="IMG 1999 (1).png" alt="Off-White" id="main-img">
+        <div class="gallery-badge">New Arrival</div>
+      </div>
+      <div class="gallery-thumbs">
+        <div class="thumb active" onclick="setThumb(this, 'IMG 1999 (1).png')">
+          <img src="IMG 1999 (1).png" alt="View 1">
+        </div>
+        <div class="thumb" onclick="setThumb(this, 'IMG 1999 (1).png')">
+          <img src="IMG 1999 (1).png" alt="View 2" style="object-position:center top;">
+        </div>
+        <div class="thumb" onclick="setThumb(this, 'IMG 1999 (1).png')">
+          <img src="IMG 1999 (1).png" alt="View 3" style="object-position:center bottom;">
+        </div>
+      </div>
+    </div>
+
+    <!-- INFO -->
+    <div class="product-info">
+      <div class="breadcrumb">
+        <a href="index3.html">Home</a>
+        <span class="breadcrumb-sep">›</span>
+        <a href="index3.html#arrivals">New Arrivals</a>
+        <span class="breadcrumb-sep">›</span>
+        <span style="color:var(--ink);">Off-White</span>
+      </div>
+
+      <p class="product-sub">Summer Collection — 2026</p>
+      <h1 class="product-name">Off-White T-Shirt</h1>
+
+      <div class="price-row">
+        <span class="price">700 EGP</span>
+      </div>
+
+      <p class="description">
+        A statement piece that blends artistry with everyday wear. The embroidered floral bicycle motif is hand-stitched in rich blue tones onto a premium heavyweight cotton tee — crafted to be seen and remembered.
+      </p>
+
+      <div class="divider"></div>
+
+      <!-- Color -->
+      <p class="section-label">Color — <span style="color:var(--ink);font-weight:500;letter-spacing:0;">White</span></p>
+      <div class="swatch-row">
+        <div class="swatch active" style="background:#F5F5F0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);" title="White" onclick="selectSwatch(this,'White')"></div>
+        <div class="swatch" style="background:#1C2318;" title="Black" onclick="selectSwatch(this,'Black')"></div>
+      </div>
+
+      <!-- Size -->
+      <p class="section-label">Size</p>
+      <div class="size-grid">
+        <div class="size-chip">S</div>
+        <div class="size-chip active">M</div>
+        <div class="size-chip">L</div>
+        <div class="size-chip">XL</div>
+        <div class="size-chip">XXL</div>
+      </div>
+      <a href="#" class="size-guide-link">Size Guide →</a>
+
+      <div class="divider"></div>
+
+      <!-- CTA -->
+      <div class="cta-stack">
+        <button class="btn-primary" onclick="addToCart()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Add to Cart
+        </button>
+        <button class="btn-secondary" onclick="buyNow()">
+          Buy Now — 700 EGP
+        </button>
+      </div>
+
+      <!-- Trust signals -->
+      <div class="trust-row">
+        <div class="trust-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Free delivery over 1,500 EGP
+        </div>
+        <div class="trust-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Easy 14-day returns
+        </div>
+        <div class="trust-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Secure checkout
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Product details -->
+      <p class="section-label">Product Details</p>
+      <ul class="details-list">
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          100% premium heavyweight cotton
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Hand-embroidered floral bicycle motif
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Relaxed oversized fit
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Machine wash cold, tumble dry low
+        </li>
+        <li>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Ethically produced — Brandy 2026 Collection
+        </li>
+      </ul>
+
+    </div>
+  </div>
+
+  <script>
+    function setThumb(el, src) {
+      document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('main-img').src = src;
+    }
+
+    function selectSwatch(el, color) {
+      document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelector('.section-label span').textContent = color;
+    }
+
+    document.querySelectorAll('.size-chip:not(.sold-out)').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.size-chip').forEach(s => s.classList.remove('active'));
+        chip.classList.add('active');
+      });
+    });
+
+    function getCart() { try { return JSON.parse(localStorage.getItem('brandy_cart')) || []; } catch { return []; } }
+    function saveCart(c) { localStorage.setItem('brandy_cart', JSON.stringify(c)); }
+
+    function showToast(color, size) {
+      let toast = document.getElementById('cart-toast');
+      if (toast) { toast.remove(); }
+      toast = document.createElement('div');
+      toast.id = 'cart-toast';
+      toast.className = 'toast in';
+      toast.innerHTML = `
+        <div class="toast-check">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div>
+          <p class="toast-title">Added to Cart</p>
+          <p class="toast-sub">Off-White T-Shirt · ${color} · ${size}</p>
+        </div>
+      `;
+      document.body.appendChild(toast);
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.className = 'toast out';
+        setTimeout(() => toast.remove(), 400);
+      }, 2800);
+    }
+
+    function addToCart() {
+      const activeSize = document.querySelector('.size-chip.active');
+      const activeSwatch = document.querySelector('.swatch.active');
+      const size = activeSize ? activeSize.textContent.trim() : 'M';
+      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
+
+      const cart = getCart();
+      const existing = cart.find(i => i.id === 'product1' && i.size === size && i.color === color);
+      if (existing) { existing.qty += 1; }
+      else { cart.push({ id: 'product1', name: 'Off-White T-Shirt', price: 700, image: 'IMG 1999 (1).png', color, size, qty: 1 }); }
+      saveCart(cart);
+      showToast(color, size);
+    }
+
+    function buyNow() {
+      const activeSize = document.querySelector('.size-chip.active');
+      const activeSwatch = document.querySelector('.swatch.active');
+      const size = activeSize ? activeSize.textContent.trim() : 'M';
+      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
+      sessionStorage.setItem('brandy_buynow', JSON.stringify(
+        { id: 'product1', name: 'Off-White T-Shirt', price: 700, image: 'IMG 1999 (1).png', color, size, qty: 1 }
+      ));
+      window.location.href = 'checkout.html';
+    }
+
+    function removeWhiteBg(img, t = 238) {
+      try {
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth; c.height = img.naturalHeight;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const d = ctx.getImageData(0, 0, c.width, c.height);
+        for (let i = 0; i < d.data.length; i += 4) {
+          if (d.data[i] >= t && d.data[i+1] >= t && d.data[i+2] >= t) d.data[i+3] = 0;
+        }
+        ctx.putImageData(d, 0, 0);
+        img.src = c.toDataURL('image/png');
+      } catch(e) {}
+    }
+    const logo = document.getElementById('nav-logo');
+    if (logo) {
+      logo.style.height = '80px';
+      if (logo.complete && logo.naturalWidth) removeWhiteBg(logo);
+      else logo.addEventListener('load', () => removeWhiteBg(logo));
+    }
+  </script>
+</body>
+</html>
