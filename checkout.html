@@ -615,6 +615,9 @@
         }
         document.getElementById('subtotal-display').textContent = 'EGP ' + cartSubtotal.toFixed(2);
         document.getElementById('total-display').textContent = cartSubtotal.toFixed(2);
+        if (cart.length > 0) {
+          gtag('event', 'begin_checkout', { currency: 'EGP', value: cartSubtotal, items: cart.map(i => ({ item_id: i.id, item_name: i.name, item_variant: (i.color||'') + ' / ' + (i.size||''), price: i.price, quantity: i.qty })) });
+        }
       } catch(e) {}
     })();
 
@@ -1024,6 +1027,7 @@
       document.getElementById('success-screen').classList.add('show');
       const cart = (JSON.parse(localStorage.getItem('brandy_cart')) || []).map(i => ({ ...i, price: parsePrice(i.price) }));
       BrandyAnalytics.trackPurchase(total, cart, selectedPayment, selectedArea);
+      gtag('event', 'purchase', { transaction_id: 'ORD-' + Date.now(), currency: 'EGP', value: total, shipping: fee, items: cart.map(i => ({ item_id: i.id, item_name: i.name, item_variant: (i.color||'') + ' / ' + (i.size||''), price: i.price, quantity: i.qty })) });
 
       const email = document.getElementById('email') ? document.getElementById('email').value.trim() : '';
       const itemLines = cart.length

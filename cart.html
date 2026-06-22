@@ -290,6 +290,10 @@
     }
 
     renderCart();
+    const _cartItems = getCart().map(i => ({ ...i, price: parsePrice(i.price) }));
+    if (_cartItems.length > 0) {
+      gtag('event', 'view_cart', { currency: 'EGP', value: _cartItems.reduce((s,i) => s + i.price * i.qty, 0), items: _cartItems.map(i => ({ item_id: i.id, item_name: i.name, item_variant: (i.color||'') + ' / ' + (i.size||''), price: i.price, quantity: i.qty })) });
+    }
   </script>
 </body>
 </html>

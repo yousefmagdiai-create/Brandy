@@ -479,6 +479,7 @@
       else { cart.push({ id: 'product1', name: 'Off-White T-Shirt', price: 700, image: 'IMG 1999 (1).png', color, size, qty: 1 }); }
       saveCart(cart);
       BrandyAnalytics.trackAddToCart('Off-White T-Shirt', 700);
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
       showToast(color, size);
     }
 
@@ -487,6 +488,7 @@
       const activeSwatch = document.querySelector('.swatch.active');
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
       sessionStorage.setItem('brandy_buynow', JSON.stringify(
         { id: 'product1', name: 'Off-White T-Shirt', price: 700, image: 'IMG 1999 (1).png', color, size, qty: 1 }
       ));
@@ -513,6 +515,7 @@
       if (logo.complete && logo.naturalWidth) removeWhiteBg(logo);
       else logo.addEventListener('load', () => removeWhiteBg(logo));
     }
+    gtag('event', 'view_item', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', price: 700 }] });
   </script>
 </body>
 </html>
