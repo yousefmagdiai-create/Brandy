@@ -472,60 +472,101 @@
     /* ── WISHLIST SIDEBAR ── */
     #wish-overlay {
       position: fixed; inset: 0; z-index: 8000;
-      background: rgba(28,35,24,0.4); backdrop-filter: blur(4px);
-      opacity: 0; pointer-events: none; transition: opacity 0.25s;
+      background: rgba(28,35,24,0.5); backdrop-filter: blur(6px);
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
     }
     #wish-overlay.open { opacity: 1; pointer-events: all; }
     #wish-panel {
-      position: fixed; top: 0; right: 0; height: 100vh; width: 380px; max-width: 95vw;
-      background: var(--card); z-index: 8001;
+      position: fixed; top: 0; right: 0; height: 100vh; width: 400px; max-width: 95vw;
+      background: var(--bg); z-index: 8001;
       display: flex; flex-direction: column;
-      transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-      box-shadow: -8px 0 40px rgba(0,0,0,0.15);
+      transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: -12px 0 48px rgba(28,35,24,0.18);
+      border-left: 1px solid var(--border);
     }
     #wish-overlay.open #wish-panel { transform: translateX(0); }
+
     .wish-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 22px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 28px 28px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
     }
-    .wish-header h2 { font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
-    .wish-header-count { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .wish-header-left {}
+    .wish-header-eyebrow {
+      font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--golden); margin-bottom: 6px;
+    }
+    .wish-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; font-weight: 500; color: var(--ink);
+      letter-spacing: -0.02em; margin-bottom: 4px;
+    }
+    .wish-header-count { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
     .wish-close {
-      width: 32px; height: 32px; border-radius: 50%; border: none;
-      background: transparent; cursor: pointer; color: var(--muted);
+      width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border);
+      background: var(--card); cursor: pointer; color: var(--muted);
       display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s, color 0.2s;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      flex-shrink: 0; margin-top: 2px;
     }
-    .wish-close:hover { background: var(--surface); color: var(--ink); }
-    .wish-items { flex: 1; overflow-y: auto; padding: 16px 24px; }
-    .wish-items::-webkit-scrollbar { width: 4px; }
-    .wish-items::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .wish-close:hover { background: var(--forest); color: var(--cream); border-color: var(--forest); }
+
+    .wish-items { flex: 1; overflow-y: auto; padding: 20px 28px; }
+    .wish-items::-webkit-scrollbar { width: 3px; }
+    .wish-items::-webkit-scrollbar-thumb { background: var(--natural); border-radius: 4px; }
+
     .wish-item {
-      display: flex; gap: 14px; padding: 14px 0;
-      border-bottom: 1px solid var(--border); align-items: center;
+      display: flex; gap: 16px; padding: 18px 0;
+      border-bottom: 1px solid var(--border); align-items: flex-start;
     }
     .wish-item:last-child { border-bottom: none; }
-    .wish-item-img { width: 64px; height: 64px; border-radius: 8px; object-fit: cover; background: var(--surface); flex-shrink: 0; }
-    .wish-item-info { flex: 1; }
-    .wish-item-name { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
-    .wish-item-cat  { font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
-    .wish-item-price { font-size: 13px; font-weight: 600; color: var(--golden); }
-    .wish-item-actions { display: flex; gap: 6px; margin-top: 8px; }
+    .wish-item-img {
+      width: 72px; height: 90px; border-radius: 6px;
+      object-fit: cover; background: var(--surface); flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+    .wish-item-info { flex: 1; padding-top: 2px; }
+    .wish-item-cat  { font-size: 9px; font-weight: 700; color: var(--golden); letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 5px; }
+    .wish-item-name { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 6px; line-height: 1.3; }
+    .wish-item-price { font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600; color: var(--forest); margin-bottom: 12px; }
+    .wish-item-actions { display: flex; gap: 8px; }
     .wish-atc {
-      font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 6px 12px; background: var(--forest); color: var(--cream);
-      border: none; border-radius: 5px; cursor: pointer; transition: background 0.2s;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 8px 14px; background: var(--forest); color: var(--cream);
+      border: none; border-radius: 4px; cursor: pointer; transition: background 0.2s;
     }
     .wish-atc:hover { background: var(--forest-deep); }
     .wish-remove {
-      font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-      padding: 6px 10px; background: transparent; color: var(--muted);
-      border: 1px solid var(--border); border-radius: 5px; cursor: pointer; transition: all 0.2s;
+      font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 8px 12px; background: transparent; color: var(--muted);
+      border: 1px solid var(--border); border-radius: 4px; cursor: pointer; transition: all 0.2s;
     }
-    .wish-remove:hover { border-color: #C0392B; color: #C0392B; }
-    .wish-empty { text-align: center; padding: 60px 24px; color: var(--muted); }
-    .wish-empty svg { margin-bottom: 16px; opacity: 0.3; }
-    .wish-empty p { font-size: 14px; }
+    .wish-remove:hover { border-color: var(--ink); color: var(--ink); }
+
+    .wish-empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100%; padding: 40px 32px; text-align: center;
+    }
+    .wish-empty-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--surface); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px; color: var(--natural);
+    }
+    .wish-empty-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; font-weight: 500; color: var(--ink);
+      margin-bottom: 10px; letter-spacing: -0.01em;
+    }
+    .wish-empty-sub {
+      font-size: 12px; color: var(--muted); line-height: 1.7;
+      letter-spacing: 0.02em; max-width: 220px;
+    }
+    .wish-empty-line {
+      width: 32px; height: 1px; background: var(--golden);
+      margin: 16px auto;
+    }
 
     /* ── BADGE ON NAV HEART ── */
     .wish-nav-wrap { position: relative; }
@@ -1226,12 +1267,13 @@
   <div id="wish-overlay" onclick="handleWishOverlayClick(event)">
     <div id="wish-panel">
       <div class="wish-header">
-        <div>
+        <div class="wish-header-left">
+          <div class="wish-header-eyebrow">Saved Items</div>
           <h2>My Wishlist</h2>
           <div class="wish-header-count" id="wish-count-label"></div>
         </div>
         <button class="wish-close" onclick="closeWishlist()" aria-label="Close wishlist">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
       </div>
       <div class="wish-items" id="wish-items"></div>
@@ -1375,15 +1417,22 @@
       const label = document.getElementById('wish-count-label');
       label.textContent = w.length === 0 ? 'No saved items' : `${w.length} item${w.length > 1 ? 's' : ''} saved`;
       if (w.length === 0) {
-        el.innerHTML = `<div class="wish-empty"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><p>Nothing saved yet.<br>Tap the heart on any product.</p></div>`;
+        el.innerHTML = `<div class="wish-empty">
+        <div class="wish-empty-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="wish-empty-title">Nothing saved yet</div>
+        <div class="wish-empty-line"></div>
+        <div class="wish-empty-sub">Tap the heart on any product to save it here for later.</div>
+      </div>`;
         return;
       }
       el.innerHTML = w.map(item => `
         <div class="wish-item" id="wish-item-${item.id}">
           <img class="wish-item-img" src="${item.img}" alt="${item.name}">
           <div class="wish-item-info">
-            <div class="wish-item-name">${item.name}</div>
             <div class="wish-item-cat">${item.category}</div>
+            <div class="wish-item-name">${item.name}</div>
             ${item.price ? `<div class="wish-item-price">${item.price}</div>` : ''}
             <div class="wish-item-actions">
               ${item.href && item.href !== '#arrivals' && item.href !== '#collections'
