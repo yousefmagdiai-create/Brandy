@@ -286,9 +286,12 @@
       </a>
       <a href="index3.html"><img src="brandassets/logo1 (2).png" alt="Brandy" id="nav-logo"></a>
       <div style="display:flex;align-items:center;gap:4px;">
-        <button class="icon-btn" aria-label="Wishlist">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </button>
+        <div style="position:relative;">
+          <button class="icon-btn" aria-label="Wishlist" id="nav-wish-btn" onclick="toggleWishlistProduct(); openWishlist();">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </button>
+          <span id="wish-badge" style="position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:#C0392B;display:none;"></span>
+        </div>
         <a href="cart.html" class="icon-btn" style="position:relative;" aria-label="Cart">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           <span style="position:absolute;top:8px;right:8px;width:6px;height:6px;border-radius:50%;background:var(--golden);"></span>
@@ -516,6 +519,94 @@
       else logo.addEventListener('load', () => removeWhiteBg(logo));
     }
     gtag('event', 'view_item', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', price: 700 }] });
+  </script>
+
+  <!-- WISHLIST SIDEBAR -->
+  <div id="wish-overlay" onclick="if(event.target===this)closeWishlist()" style="position:fixed;inset:0;z-index:8000;background:rgba(28,35,24,0.4);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity 0.25s;">
+    <div id="wish-panel" style="position:fixed;top:0;right:0;height:100vh;width:380px;max-width:95vw;background:var(--card);z-index:8001;display:flex;flex-direction:column;transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1);box-shadow:-8px 0 40px rgba(0,0,0,0.15);">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:22px 24px;border-bottom:1px solid var(--border);">
+        <div><h2 style="font-size:16px;font-weight:600;color:var(--ink);">My Wishlist</h2><div id="wish-count-label" style="font-size:11px;color:var(--muted);margin-top:2px;"></div></div>
+        <button onclick="closeWishlist()" style="width:32px;height:32px;border-radius:50%;border:none;background:transparent;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="wish-items" style="flex:1;overflow-y:auto;padding:16px 24px;"></div>
+    </div>
+  </div>
+
+  <script>
+    const WISH_KEY = 'brandy_wishlist';
+    const PRODUCT = { id: 'product1', name: 'Off-White T-Shirt', category: 'Dresses', price: '700 EGP', img: 'IMG 1999 (1).png', href: 'product1.html' };
+
+    function getWishlist() { try { return JSON.parse(localStorage.getItem(WISH_KEY)) || []; } catch { return []; } }
+    function saveWishlist(w) { localStorage.setItem(WISH_KEY, JSON.stringify(w)); }
+
+    function toggleWishlistProduct() {
+      let w = getWishlist();
+      const idx = w.findIndex(i => i.id === PRODUCT.id);
+      if (idx > -1) { w.splice(idx, 1); } else { w.push(PRODUCT); }
+      saveWishlist(w);
+      updateWishUI();
+    }
+
+    function updateWishUI() {
+      const w = getWishlist();
+      const saved = w.some(i => i.id === PRODUCT.id);
+      const badge = document.getElementById('wish-badge');
+      const navBtn = document.getElementById('nav-wish-btn');
+      if (badge) badge.style.display = w.length > 0 ? 'block' : 'none';
+      if (navBtn) {
+        const svg = navBtn.querySelector('svg path');
+        if (svg) { svg.style.fill = saved ? '#C0392B' : 'none'; svg.style.stroke = saved ? '#C0392B' : 'currentColor'; }
+      }
+    }
+
+    function openWishlist() {
+      renderWishlistPanel();
+      const ov = document.getElementById('wish-overlay');
+      const pn = document.getElementById('wish-panel');
+      ov.style.opacity = '1'; ov.style.pointerEvents = 'all';
+      pn.style.transform = 'translateX(0)';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeWishlist() {
+      const ov = document.getElementById('wish-overlay');
+      const pn = document.getElementById('wish-panel');
+      ov.style.opacity = '0'; ov.style.pointerEvents = 'none';
+      pn.style.transform = 'translateX(100%)';
+      document.body.style.overflow = '';
+    }
+
+    function removeFromWishlist(id) {
+      let w = getWishlist().filter(i => i.id !== id);
+      saveWishlist(w);
+      updateWishUI();
+      renderWishlistPanel();
+    }
+
+    function renderWishlistPanel() {
+      const w = getWishlist();
+      document.getElementById('wish-count-label').textContent = w.length === 0 ? 'No saved items' : `${w.length} item${w.length > 1 ? 's' : ''} saved`;
+      const el = document.getElementById('wish-items');
+      if (w.length === 0) { el.innerHTML = '<div style="text-align:center;padding:60px 24px;color:var(--muted);font-size:14px;">Nothing saved yet.</div>'; return; }
+      el.innerHTML = w.map(item => `
+        <div style="display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);align-items:center;">
+          <img src="${item.img}" style="width:64px;height:64px;border-radius:8px;object-fit:cover;background:var(--surface);flex-shrink:0;" alt="${item.name}">
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px;">${item.name}</div>
+            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">${item.category}</div>
+            ${item.price ? `<div style="font-size:13px;font-weight:600;color:var(--golden);">${item.price}</div>` : ''}
+            <div style="display:flex;gap:6px;margin-top:8px;">
+              <button onclick="window.location.href='${item.href}'" style="font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:6px 12px;background:var(--forest);color:var(--cream);border:none;border-radius:5px;cursor:pointer;">View Product</button>
+              <button onclick="removeFromWishlist('${item.id}')" style="font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:6px 10px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:5px;cursor:pointer;">Remove</button>
+            </div>
+          </div>
+        </div>`).join('');
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeWishlist(); });
+    updateWishUI();
   </script>
 </body>
 </html>
