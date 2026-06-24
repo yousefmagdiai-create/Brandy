@@ -433,6 +433,25 @@
       document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
       el.classList.add('active');
       document.querySelector('.section-label span').textContent = color;
+      sessionStorage.setItem('brandy_color_product1', color);
+
+      const isBlack = color === 'Black';
+      const src = isBlack ? 'IMG 2040.png' : 'IMG 1999 (1).png';
+      const mainImg = document.getElementById('main-img');
+
+      mainImg.src = src;
+      mainImg.style.objectFit   = 'cover';
+      mainImg.style.aspectRatio = isBlack ? 'auto' : '3/4';
+
+      document.querySelectorAll('.thumb').forEach((t, i) => {
+        const tImg = t.querySelector('img');
+        tImg.src = src;
+        tImg.style.objectFit   = 'cover';
+        tImg.style.aspectRatio = isBlack ? 'auto' : '';
+        t.style.background = '';
+        t.onclick = () => setThumb(t, src);
+        if (i === 0) { document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active')); t.classList.add('active'); }
+      });
     }
 
     document.querySelectorAll('.size-chip:not(.sold-out)').forEach(chip => {
@@ -476,10 +495,11 @@
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
 
+      const colorImage = color === 'Black' ? 'IMG 2040.png' : 'IMG 1999 (1).png';
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product1' && i.size === size && i.color === color);
       if (existing) { existing.qty += 1; }
-      else { cart.push({ id: 'product1', name: 'Off-White T-Shirt', price: 700, image: 'IMG 1999 (1).png', color, size, qty: 1 }); }
+      else { cart.push({ id: 'product1', name: 'Off-White T-Shirt', price: 700, image: colorImage, color, size, qty: 1 }); }
       saveCart(cart);
       BrandyAnalytics.trackAddToCart('Off-White T-Shirt', 700);
       gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
@@ -492,8 +512,9 @@
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
       gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
+      const colorImage = color === 'Black' ? 'IMG 2040.png' : 'IMG 1999 (1).png';
       sessionStorage.setItem('brandy_buynow', JSON.stringify(
-        { id: 'product1', name: 'Off-White T-Shirt', price: 700, image: 'IMG 1999 (1).png', color, size, qty: 1 }
+        { id: 'product1', name: 'Off-White T-Shirt', price: 700, image: colorImage, color, size, qty: 1 }
       ));
       window.location.href = 'checkout.html';
     }
@@ -519,6 +540,12 @@
       else logo.addEventListener('load', () => removeWhiteBg(logo));
     }
     gtag('event', 'view_item', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', price: 700 }] });
+
+    const savedColor = sessionStorage.getItem('brandy_color_product1');
+    if (savedColor === 'Black') {
+      const blackSwatch = document.querySelector('.swatch[title="Black"]');
+      if (blackSwatch) selectSwatch(blackSwatch, 'Black');
+    }
   </script>
 
   <!-- WISHLIST SIDEBAR -->
@@ -544,7 +571,12 @@
     function toggleWishlistProduct() {
       let w = getWishlist();
       const idx = w.findIndex(i => i.id === PRODUCT.id);
-      if (idx > -1) { w.splice(idx, 1); } else { w.push(PRODUCT); }
+      if (idx > -1) { w.splice(idx, 1); } else {
+        const activeSwatch = document.querySelector('.swatch.active');
+        const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
+        const img = color === 'Black' ? 'IMG 2040.png' : 'IMG 1999 (1).png';
+        w.push({ ...PRODUCT, img });
+      }
       saveWishlist(w);
       updateWishUI();
     }

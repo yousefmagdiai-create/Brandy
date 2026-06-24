@@ -599,10 +599,13 @@
         if (cart.length === 0) {
           container.innerHTML = '<p style="font-size:13px;color:#6D7175;margin-bottom:16px;">Your cart is empty.</p>';
         } else {
-          container.innerHTML = cart.map(item => `
+          const CHECKOUT_COLOR_IMAGES = { 'product1': { 'Black': 'IMG 2040.png', 'White': 'IMG 1999 (1).png' } };
+        container.innerHTML = cart.map(item => {
+          const imgSrc = (CHECKOUT_COLOR_IMAGES[item.id] && CHECKOUT_COLOR_IMAGES[item.id][item.color]) ? CHECKOUT_COLOR_IMAGES[item.id][item.color] : item.image;
+          return `
             <div class="summary-item">
               <div class="summary-img-wrap">
-                <img src="${item.image}" alt="${item.name}" class="summary-img">
+                <img src="${imgSrc}" alt="${item.name}" class="summary-img">
                 <div class="summary-img-badge">${item.qty}</div>
               </div>
               <div style="flex:1;">
@@ -611,7 +614,7 @@
               </div>
               <span class="summary-item-price">EGP ${(item.price * item.qty).toFixed(2)}</span>
             </div>
-          `).join('');
+          `; }).join('');
         }
         document.getElementById('subtotal-display').textContent = 'EGP ' + cartSubtotal.toFixed(2);
         document.getElementById('total-display').textContent = cartSubtotal.toFixed(2);

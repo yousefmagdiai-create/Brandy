@@ -229,9 +229,12 @@
       }
       emptyEl.style.display = 'none';
 
-      itemsEl.innerHTML = cart.map((item, idx) => `
+      const ITEM_COLOR_IMAGES = { 'product1': { 'Black': 'IMG 2040.png', 'White': 'IMG 1999 (1).png' } };
+      itemsEl.innerHTML = cart.map((item, idx) => {
+        const imgSrc = (ITEM_COLOR_IMAGES[item.id] && ITEM_COLOR_IMAGES[item.id][item.color]) ? ITEM_COLOR_IMAGES[item.id][item.color] : item.image;
+        return `
         <div class="cart-item" id="item-${idx}">
-          <img src="${item.image}" alt="${item.name}" class="item-img">
+          <img src="${imgSrc}" alt="${item.name}" class="item-img">
           <div>
             <p class="item-name">${item.name}</p>
             <p class="item-meta">
@@ -250,7 +253,7 @@
             ${item.qty > 1 ? `<p style="font-size:11px;color:var(--muted);margin-top:4px;">${item.price} EGP each</p>` : ''}
           </div>
         </div>
-      `).join('');
+      `; }).join('');
     }
 
     function changeQty(idx, delta) {
