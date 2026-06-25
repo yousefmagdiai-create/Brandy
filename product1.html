@@ -125,7 +125,7 @@
       cursor: zoom-in;
     }
     .gallery-main img {
-      width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block;
+      width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block;
       transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94);
     }
     .gallery-main:hover img { transform: scale(1.04); }
@@ -306,18 +306,18 @@
     <!-- GALLERY -->
     <div class="gallery">
       <div class="gallery-main" id="main-img-wrap">
-        <img src="IMG 1999 (1).png" alt="Off-White" id="main-img">
+        <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="Off-White" id="main-img">
         <div class="gallery-badge">New Arrival</div>
       </div>
       <div class="gallery-thumbs">
-        <div class="thumb active" onclick="setThumb(this, 'IMG 1999 (1).png')">
-          <img src="IMG 1999 (1).png" alt="View 1">
+        <div class="thumb active" onclick="setThumb(this, '5058ff11-1b2c-44ef-80f0-2daa8184b894.png')">
+          <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="View 1">
         </div>
-        <div class="thumb" onclick="setThumb(this, 'IMG 1999 (1).png')">
-          <img src="IMG 1999 (1).png" alt="View 2" style="object-position:center top;">
+        <div class="thumb" onclick="setThumb(this, '5058ff11-1b2c-44ef-80f0-2daa8184b894.png')">
+          <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="View 2" style="object-position:center top;">
         </div>
-        <div class="thumb" onclick="setThumb(this, 'IMG 1999 (1).png')">
-          <img src="IMG 1999 (1).png" alt="View 3" style="object-position:center bottom;">
+        <div class="thumb" onclick="setThumb(this, '5058ff11-1b2c-44ef-80f0-2daa8184b894.png')">
+          <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="View 3" style="object-position:center bottom;">
         </div>
       </div>
     </div>
@@ -444,18 +444,18 @@
         s.classList.add('active');
       });
 
-      const src = isBlack ? 'IMG 2040.png' : 'IMG 1999 (1).png';
+      const src = isBlack ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
       const mainImg = document.getElementById('main-img');
 
       mainImg.src = src;
       mainImg.style.objectFit   = 'cover';
-      mainImg.style.aspectRatio = isBlack ? 'auto' : '3/4';
+      mainImg.style.aspectRatio = '';
 
       document.querySelectorAll('.thumb').forEach((t, i) => {
         const tImg = t.querySelector('img');
         tImg.src = src;
         tImg.style.objectFit   = 'cover';
-        tImg.style.aspectRatio = isBlack ? 'auto' : '';
+        tImg.style.aspectRatio = '';
         t.style.background = '';
         t.onclick = () => setThumb(t, src);
         if (i === 0) { document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active')); t.classList.add('active'); }
@@ -503,7 +503,7 @@
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
 
-      const colorImage = color === 'Black' ? 'IMG 2040.png' : 'IMG 1999 (1).png';
+      const colorImage = color === 'Black' ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product1' && i.size === size && i.color === color);
       if (existing) { existing.qty += 1; }
@@ -520,7 +520,7 @@
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
       gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
-      const colorImage = color === 'Black' ? 'IMG 2040.png' : 'IMG 1999 (1).png';
+      const colorImage = color === 'Black' ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
       sessionStorage.setItem('brandy_buynow', JSON.stringify(
         { id: 'product1', name: 'Off-White T-Shirt', price: 700, image: colorImage, color, size, qty: 1 }
       ));
@@ -571,7 +571,7 @@
 
   <script>
     const WISH_KEY = 'brandy_wishlist';
-    const PRODUCT = { id: 'product1', name: 'Off-White T-Shirt', category: 'Dresses', price: '700 EGP', img: 'IMG 1999 (1).png', href: 'product1.html' };
+    const PRODUCT = { id: 'product1', name: 'Off-White T-Shirt', category: 'Dresses', price: '700 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png', href: 'product1.html' };
 
     function getWishlist() { try { return JSON.parse(localStorage.getItem(WISH_KEY)) || []; } catch { return []; } }
     function saveWishlist(w) { localStorage.setItem(WISH_KEY, JSON.stringify(w)); }
@@ -582,7 +582,7 @@
       if (idx > -1) { w.splice(idx, 1); } else {
         const activeSwatch = document.querySelector('.swatch.active');
         const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
-        const img = color === 'Black' ? 'IMG 2040.png' : 'IMG 1999 (1).png';
+        const img = color === 'Black' ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
         w.push({ ...PRODUCT, img });
       }
       saveWishlist(w);

@@ -434,7 +434,7 @@
       box-shadow: 0 12px 36px rgba(59,74,46,0.1);
     }
     .product-card:focus-visible { outline: 2px solid var(--golden); outline-offset: 3px; }
-    .product-img { position: relative; aspect-ratio: 3/4; overflow: hidden; }
+    .product-img { position: relative; aspect-ratio: 2/3; overflow: hidden; }
     .product-img img {
       width: 100%; height: 100%; object-fit: cover; display: block;
       transition: transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94); filter: brightness(0.92);
@@ -809,9 +809,9 @@
       <div class="reveal d2" style="position:relative;">
         <a href="product1.html" style="text-decoration:none;display:block;cursor:pointer;" aria-label="View Floral Bicycle Tee">
         <div class="hero-card">
-          <div id="hero-img-wrap" style="position:relative;aspect-ratio:3/4;overflow:hidden;">
-            <img src="IMG 1999 (1).png" alt="Featured piece" id="hero-main-img" style="width:100%;height:100%;object-fit:cover;display:block;">
-            <div id="hero-img-overlay" style="position:absolute;inset:0;background:linear-gradient(to top,rgba(28,35,24,0.75) 0%,transparent 55%);"></div>
+          <div id="hero-img-wrap" style="position:relative;aspect-ratio:2/3;overflow:hidden;">
+            <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="Featured piece" id="hero-main-img" style="width:100%;height:100%;object-fit:cover;display:block;">
+            <div id="hero-img-overlay" style="position:absolute;inset:0;opacity:0;"></div>
             <div style="position:absolute;top:16px;left:16px;background:rgba(247,243,236,0.9);border:1px solid var(--border);backdrop-filter:blur(8px);padding:6px 12px;">
               <span style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--golden);">New Arrival</span>
             </div>
@@ -959,10 +959,10 @@
       </div>
     </div>
     <div class="products-scroll">
-      <div class="product-card reveal" tabindex="0">
+      <div class="product-card reveal" tabindex="0" style="cursor:pointer;" onclick="if(!event.target.closest('.swatch-dot,.quick-add-btn')){window.location='product1.html';}">
         <div class="product-img" id="card1-img-wrap">
-          <img src="IMG 1999 (1).png" alt="Off-White T-Shirt" id="card1-img">
-          <div class="product-img-overlay" id="card1-overlay"></div><button class="quick-add-btn" onclick="card1QuickAdd(event)">Add to Cart</button>
+          <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="Off-White T-Shirt" id="card1-img">
+          <div class="product-img-overlay" id="card1-overlay" style="opacity:0;"></div><button class="quick-add-btn" onclick="card1QuickAdd(event)">Add to Cart</button>
           <div style="position:absolute;top:10px;left:10px;background:var(--golden);color:var(--cream);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 8px;">New</div>
         </div>
         <div class="product-info">
@@ -971,8 +971,8 @@
           <div style="display:flex;align-items:center;justify-content:space-between;">
             <span style="font-size:14px;font-weight:600;color:var(--golden);">700 EGP</span>
             <div style="display:flex;gap:4px;">
-              <div class="swatch-dot" style="width:12px;height:12px;background:#F5F5F0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);outline:2px solid var(--forest);outline-offset:2px;" title="White" onclick="event.stopPropagation();selectCard1Swatch(this,'IMG 1999 (1).png')"></div>
-              <div class="swatch-dot" style="width:12px;height:12px;background:#1C2318;" title="Black" onclick="event.stopPropagation();selectCard1Swatch(this,'IMG 2040.png')"></div>
+              <div class="swatch-dot" style="width:12px;height:12px;background:#F5F5F0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);outline:2px solid var(--forest);outline-offset:2px;" title="White" onclick="event.stopPropagation();selectCard1Swatch(this,'5058ff11-1b2c-44ef-80f0-2daa8184b894.png')"></div>
+              <div class="swatch-dot" style="width:12px;height:12px;background:#1C2318;" title="Black" onclick="event.stopPropagation();selectCard1Swatch(this,'5E147019-5064-4F55-974F-1CA8AE14798E.png')"></div>
             </div>
           </div>
         </div>
@@ -1205,7 +1205,7 @@
     function card1QuickAdd(e) {
       e && e.stopPropagation();
       const img = document.getElementById('card1-img').src.split('/').pop().split('?')[0];
-      const color = img.includes('2040') ? 'Black' : 'White';
+      const color = img.includes('5E147019') ? 'Black' : 'White';
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product1' && i.color === color);
       if (existing) { existing.qty += 1; }
@@ -1222,15 +1222,14 @@
       el.closest('div').querySelectorAll('.swatch-dot').forEach(s => s.style.outline = 'none');
       el.style.outline = '2px solid var(--forest)';
       el.style.outlineOffset = '2px';
-      const isBlack = img.includes('2040');
+      const isBlack = img.includes('5E147019');
       const cardImg  = document.getElementById('card1-img');
       const cardWrap = document.getElementById('card1-img-wrap');
       const sy = window.scrollY;
       cardImg.src = img;
-      cardImg.style.height       = isBlack ? 'auto' : '100%';
+      cardImg.style.height       = '100%';
       cardImg.style.objectFit    = 'cover';
-      cardWrap.style.aspectRatio = isBlack ? 'auto' : '3/4';
-      document.getElementById('card1-overlay').style.opacity = isBlack ? '0' : '1';
+      cardWrap.style.aspectRatio = '';
       sessionStorage.setItem('brandy_color_product1', isBlack ? 'Black' : 'White');
       requestAnimationFrame(() => window.scrollTo({ top: sy, behavior: 'instant' }));
     }
@@ -1252,15 +1251,14 @@
         s.classList.add('active');
       });
 
-      const src = isBlack ? 'IMG 2040.png' : 'IMG 1999 (1).png';
+      const src = isBlack ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
       const wrap = document.getElementById('hero-img-wrap');
       const img  = document.getElementById('hero-main-img');
       const sy = window.scrollY;
       img.src = src;
-      img.style.height       = isBlack ? 'auto' : '100%';
+      img.style.height       = '100%';
       img.style.objectFit    = 'cover';
-      wrap.style.aspectRatio = isBlack ? 'auto' : '3/4';
-      document.getElementById('hero-img-overlay').style.opacity = isBlack ? '0' : '1';
+      wrap.style.aspectRatio = '';
       sessionStorage.setItem('brandy_color_product1', isBlack ? 'Black' : 'White');
       requestAnimationFrame(() => window.scrollTo({ top: sy, behavior: 'instant' }));
     }
@@ -1276,7 +1274,7 @@
       const size = activeSize ? activeSize.textContent.trim() : 'L';
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product1' && i.size === size && i.color === color);
-      const heroImg = color === 'Black' ? 'IMG 2040.png' : 'IMG 1999 (1).png';
+      const heroImg = color === 'Black' ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
       if (existing) { existing.qty += 1; }
       else { cart.push({ id: 'product1', name: 'Off-White T-Shirt', price: 700, image: heroImg, color, size, qty: 1 }); }
       saveCart(cart);
@@ -1352,7 +1350,7 @@
 
   <script>
     const CATALOG = [
-      { type: 'product', name: 'Off-White T-Shirt',  category: 'Dresses',    price: '700 EGP', img: 'IMG 1999 (1).png',                                   href: 'product1.html' },
+      { type: 'product', name: 'Off-White T-Shirt',  category: 'Dresses',    price: '700 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png',                                   href: 'product1.html' },
       { type: 'product', name: 'Oversized Blazer',   category: 'Outerwear',  price: '$214',    img: 'https://placehold.co/44x44/C4B896/1C2318?text=.',      href: '#arrivals' },
       { type: 'product', name: 'Silk Slip Skirt',    category: 'Bottoms',    price: '$98',     img: 'https://placehold.co/44x44/EDE5D0/3B4A2E?text=.',      href: '#arrivals' },
       { type: 'product', name: 'Cotton Wrap Top',    category: 'Tops',       price: '$76',     img: 'https://placehold.co/44x44/8B6419/EDE5D0?text=.',      href: '#arrivals' },
@@ -1512,7 +1510,7 @@
     // Inject heart buttons into all product cards on page load
     (function injectHearts() {
       const cards = [
-        { el: document.querySelectorAll('.product-card')[0], id: 'product1',  name: 'Off-White T-Shirt', category: 'Dresses',   price: '700 EGP', img: 'IMG 1999 (1).png',                                  href: 'product1.html' },
+        { el: document.querySelectorAll('.product-card')[0], id: 'product1',  name: 'Off-White T-Shirt', category: 'Dresses',   price: '700 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png',                                  href: 'product1.html' },
         { el: document.querySelectorAll('.product-card')[1], id: 'product2',  name: 'Oversized Blazer',  category: 'Outerwear', price: '$214',    img: 'https://placehold.co/64x64/C4B896/1C2318?text=.',     href: '#arrivals' },
         { el: document.querySelectorAll('.product-card')[2], id: 'product3',  name: 'Silk Slip Skirt',   category: 'Bottoms',   price: '$98',     img: 'https://placehold.co/64x64/EDE5D0/3B4A2E?text=.',     href: '#arrivals' },
         { el: document.querySelectorAll('.product-card')[3], id: 'product4',  name: 'Cotton Wrap Top',   category: 'Tops',      price: '$76',     img: 'https://placehold.co/64x64/8B6419/EDE5D0?text=.',     href: '#arrivals' },
