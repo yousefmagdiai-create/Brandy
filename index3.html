@@ -829,10 +829,8 @@
               <div class="swatch-dot" style="background:#1C2318;" title="Black" onclick="event.preventDefault();event.stopPropagation();selectHeroSwatch(this)"></div>
             </div>
             <div id="hero-size-grid" class="size-grid" style="margin-bottom:16px;">
-              <div class="size-chip" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">S</div>
-              <div class="size-chip active" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">M</div>
-              <div class="size-chip" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">L</div>
-              <div class="size-chip" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">XL</div>
+              <div class="size-chip white-only active" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">L</div>
+              <div class="size-chip black-only" style="display:none;" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">M</div>
             </div>
             <button class="btn-primary" style="width:100%;justify-content:center;padding:12px 20px;" onclick="event.preventDefault();event.stopPropagation();heroQuickAdd(event)">Add to Cart</button>
           </div>
@@ -1243,6 +1241,17 @@
       el.style.outlineOffset = '2px';
       el.classList.add('hero-selected');
       const isBlack = el.getAttribute('title') === 'Black';
+
+      document.querySelectorAll('#hero-size-grid .size-chip').forEach(s => {
+        s.classList.remove('active');
+        s.style.display = 'none';
+      });
+      const visibleClass = isBlack ? '.black-only' : '.white-only';
+      document.querySelectorAll('#hero-size-grid .size-chip' + visibleClass).forEach(s => {
+        s.style.display = '';
+        s.classList.add('active');
+      });
+
       const src = isBlack ? 'IMG 2040.png' : 'IMG 1999 (1).png';
       const wrap = document.getElementById('hero-img-wrap');
       const img  = document.getElementById('hero-main-img');
@@ -1264,7 +1273,7 @@
       const activeSwatch = document.querySelector('#hero-swatch-row .swatch-dot.hero-selected');
       const activeSize = document.querySelector('#hero-size-grid .size-chip.active');
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
-      const size = activeSize ? activeSize.textContent.trim() : 'S';
+      const size = activeSize ? activeSize.textContent.trim() : 'L';
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product1' && i.size === size && i.color === color);
       const heroImg = color === 'Black' ? 'IMG 2040.png' : 'IMG 1999 (1).png';
