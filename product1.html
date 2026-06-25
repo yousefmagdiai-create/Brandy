@@ -311,13 +311,10 @@
       </div>
       <div class="gallery-thumbs">
         <div class="thumb active" onclick="setThumb(this, '5058ff11-1b2c-44ef-80f0-2daa8184b894.png')">
-          <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="View 1">
+          <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="Front">
         </div>
-        <div class="thumb" onclick="setThumb(this, '5058ff11-1b2c-44ef-80f0-2daa8184b894.png')">
-          <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="View 2" style="object-position:center top;">
-        </div>
-        <div class="thumb" onclick="setThumb(this, '5058ff11-1b2c-44ef-80f0-2daa8184b894.png')">
-          <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="View 3" style="object-position:center bottom;">
+        <div class="thumb" id="thumb-back" onclick="setThumb(this, 'c135a054-a4e6-4f03-9fd4-57e6e86ca1c7.png')">
+          <img src="c135a054-a4e6-4f03-9fd4-57e6e86ca1c7.png" alt="Back">
         </div>
       </div>
     </div>
@@ -451,13 +448,16 @@
       mainImg.style.objectFit   = 'cover';
       mainImg.style.aspectRatio = '';
 
+      const backThumb = document.getElementById('thumb-back');
+      const backSrc = isBlack ? '8071449b-ead9-45a0-99a9-7b70109e4925.png' : 'c135a054-a4e6-4f03-9fd4-57e6e86ca1c7.png';
       document.querySelectorAll('.thumb').forEach((t, i) => {
         const tImg = t.querySelector('img');
-        tImg.src = src;
+        const thisSrc = (t === backThumb) ? backSrc : src;
+        tImg.src = thisSrc;
         tImg.style.objectFit   = 'cover';
         tImg.style.aspectRatio = '';
         t.style.background = '';
-        t.onclick = () => setThumb(t, src);
+        t.onclick = () => setThumb(t, thisSrc);
         if (i === 0) { document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active')); t.classList.add('active'); }
       });
     }
