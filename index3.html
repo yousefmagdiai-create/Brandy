@@ -977,17 +977,17 @@
           </div>
         </div>
       </div>
-      <div class="product-card reveal d1" tabindex="0">
-        <div class="product-img">
-          <img src="https://placehold.co/260x347/C4B896/1C2318?text=." alt="Oversized Blazer">
-          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Oversized Blazer','214 EGP','https://placehold.co/260x347/C4B896/1C2318?text=.',event)">Add to Cart</button>
+      <div class="product-card reveal d1" tabindex="0" style="cursor:pointer;" onclick="if(!event.target.closest('.swatch-dot,.quick-add-btn')){window.location='product2.html';}">
+        <div class="product-img" style="background:#F4F4F4;">
+          <img src="fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png" alt="Mastermind T-Shirt" style="object-fit:cover;">
+          <div class="product-img-overlay" style="opacity:0;"></div><button class="quick-add-btn" onclick="quickAdd('Mastermind T-Shirt','700 EGP','fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png',event)">Add to Cart</button>
         </div>
         <div class="product-info">
-          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Outerwear</p>
-          <p style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:8px;">Oversized Blazer</p>
+          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Streetwear</p>
+          <p style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:8px;">Mastermind T-Shirt</p>
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:14px;font-weight:600;color:var(--golden);">$214</span>
-            <div style="display:flex;gap:4px;"><div class="swatch-dot" style="width:12px;height:12px;background:#8A8070;"></div><div class="swatch-dot" style="width:12px;height:12px;background:#EDE5D0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);"></div></div>
+            <span style="font-size:14px;font-weight:600;color:var(--golden);">700 EGP</span>
+            <div style="display:flex;gap:4px;"><div class="swatch-dot" style="width:12px;height:12px;background:#1C2318;" title="Black"></div><div class="swatch-dot" style="width:12px;height:12px;background:#F5F5F0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);" title="White"></div></div>
           </div>
         </div>
       </div>
@@ -1351,7 +1351,7 @@
   <script>
     const CATALOG = [
       { type: 'product', name: 'Off-White T-Shirt',  category: 'Dresses',    price: '700 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png',                                   href: 'product1.html' },
-      { type: 'product', name: 'Oversized Blazer',   category: 'Outerwear',  price: '$214',    img: 'https://placehold.co/44x44/C4B896/1C2318?text=.',      href: '#arrivals' },
+      { type: 'product', name: 'Mastermind T-Shirt', category: 'Streetwear', price: '700 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png',             href: 'product2.html' },
       { type: 'product', name: 'Silk Slip Skirt',    category: 'Bottoms',    price: '$98',     img: 'https://placehold.co/44x44/EDE5D0/3B4A2E?text=.',      href: '#arrivals' },
       { type: 'product', name: 'Cotton Wrap Top',    category: 'Tops',       price: '$76',     img: 'https://placehold.co/44x44/8B6419/EDE5D0?text=.',      href: '#arrivals' },
       { type: 'product', name: 'Wide Leg Trouser',   category: 'Trousers',   price: '$132',    img: 'https://placehold.co/44x44/2A3620/C4B896?text=.',      href: '#arrivals' },
@@ -1511,7 +1511,7 @@
     (function injectHearts() {
       const cards = [
         { el: document.querySelectorAll('.product-card')[0], id: 'product1',  name: 'Off-White T-Shirt', category: 'Dresses',   price: '700 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png',                                  href: 'product1.html' },
-        { el: document.querySelectorAll('.product-card')[1], id: 'product2',  name: 'Oversized Blazer',  category: 'Outerwear', price: '$214',    img: 'https://placehold.co/64x64/C4B896/1C2318?text=.',     href: '#arrivals' },
+        { el: document.querySelectorAll('.product-card')[1], id: 'product2',  name: 'Mastermind T-Shirt', category: 'Streetwear', price: '700 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', href: 'product2.html' },
         { el: document.querySelectorAll('.product-card')[2], id: 'product3',  name: 'Silk Slip Skirt',   category: 'Bottoms',   price: '$98',     img: 'https://placehold.co/64x64/EDE5D0/3B4A2E?text=.',     href: '#arrivals' },
         { el: document.querySelectorAll('.product-card')[3], id: 'product4',  name: 'Cotton Wrap Top',   category: 'Tops',      price: '$76',     img: 'https://placehold.co/64x64/8B6419/EDE5D0?text=.',     href: '#arrivals' },
         { el: document.querySelectorAll('.product-card')[4], id: 'product5',  name: 'Wide Leg Trouser',  category: 'Trousers',  price: '$132',    img: 'https://placehold.co/64x64/2A3620/C4B896?text=.',     href: '#arrivals' },
