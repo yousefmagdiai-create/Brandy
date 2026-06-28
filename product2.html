@@ -257,6 +257,8 @@
       .product-page { grid-template-columns: 1fr; gap: 40px; padding: 32px 24px 64px; }
       .gallery { position: static; }
       nav { padding: 12px 24px; }
+      .swatch { width: 40px; height: 40px; }
+      .swatch-row { gap: 14px; }
     }
   </style>
 </head>
@@ -298,8 +300,8 @@
         <div class="thumb active" onclick="setThumb(this, 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png')">
           <img src="fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png" alt="Front">
         </div>
-        <div class="thumb" id="thumb-back" onclick="setThumb(this, '8071449b-ead9-45a0-99a9-7b70109e4925.png')">
-          <img src="8071449b-ead9-45a0-99a9-7b70109e4925.png" alt="Back">
+        <div class="thumb" id="thumb-back" onclick="setThumb(this, 'tshirt.png')">
+          <img src="tshirt.png" alt="Back">
         </div>
       </div>
     </div>
@@ -426,14 +428,14 @@
         s.classList.add('active');
       });
 
-      const src = isBlack ? 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png' : 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png';
+      const src = isBlack ? 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png' : 'mastermind-white.png';
       const mainImg = document.getElementById('main-img');
       mainImg.src = src;
       mainImg.style.objectFit = 'cover';
       mainImg.style.aspectRatio = '';
 
       const backThumb = document.getElementById('thumb-back');
-      const backSrc = '8071449b-ead9-45a0-99a9-7b70109e4925.png';
+      const backSrc = isBlack ? 'tshirt.png' : 'mastermind-skull-white.png';
       document.querySelectorAll('.thumb').forEach((t, i) => {
         const tImg = t.querySelector('img');
         const thisSrc = (t === backThumb) ? backSrc : src;
@@ -487,7 +489,7 @@
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
 
-      const colorImage = 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png';
+      const colorImage = color === 'White' ? 'mastermind-white.png' : 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png';
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product2' && i.size === size && i.color === color);
       if (existing) { existing.qty += 1; }
@@ -504,7 +506,7 @@
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
       gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product2', item_name: 'Mastermind T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
-      const colorImage = 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png';
+      const colorImage = color === 'White' ? 'mastermind-white.png' : 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png';
       sessionStorage.setItem('brandy_buynow', JSON.stringify(
         { id: 'product2', name: 'Mastermind T-Shirt', price: 700, image: colorImage, color, size, qty: 1 }
       ));
