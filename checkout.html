@@ -8,6 +8,8 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-13JN7BHRMC');</script>
   <script src="brandy-analytics.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -430,10 +432,20 @@
           <div class="field" style="margin-top:16px;margin-bottom:16px;">
             <label>Verify your location *</label>
             <div class="loc-wrap">
-              <button type="button" class="loc-gps-btn" onclick="useMyLocation()">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-                Use my current location
-              </button>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button type="button" class="loc-gps-btn" onclick="useMyLocation()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+                  Use my current location
+                </button>
+                <button type="button" class="loc-gps-btn" onclick="toggleMapPicker()" id="map-toggle-btn">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Pick on map
+                </button>
+              </div>
+              <div id="map-picker-wrap" style="display:none;margin-top:12px;">
+                <div id="map-picker" style="height:280px;border-radius:8px;overflow:hidden;border:1px solid #ddd;"></div>
+                <p style="font-size:11px;color:#6D7175;margin-top:6px;line-height:1.6;">Click anywhere on the map to drop a pin on your exact location.</p>
+              </div>
               <span class="loc-or">— or paste a Google Maps link or coordinates —</span>
               <div class="loc-paste-row">
                 <input type="text" id="maps-link" placeholder="maps.app.goo.gl/...  or  30.0453, 31.2243">
@@ -731,16 +743,82 @@
       }
     }
 
+    let leafletMap = null, leafletMarker = null;
+
+    function toggleMapPicker() {
+      const wrap = document.getElementById('map-picker-wrap');
+      const btn  = document.getElementById('map-toggle-btn');
+      if (wrap.style.display === 'none') {
+        wrap.style.display = 'block';
+        btn.style.background = 'var(--forest)';
+        btn.style.color = '#fff';
+        if (!leafletMap) {
+          leafletMap = L.map('map-picker').setView([30.0444, 31.2357], 12);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+          }).addTo(leafletMap);
+          leafletMap.on('click', function(e) {
+            if (leafletMarker) leafletMap.removeLayer(leafletMarker);
+            leafletMarker = L.marker(e.latlng).addTo(leafletMap);
+            const lat = e.latlng.lat, lng = e.latlng.lng;
+            const mapsUrl = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+            document.getElementById('maps-link').value = mapsUrl;
+            validateCoords(lat, lng);
+          });
+          setTimeout(() => leafletMap.invalidateSize(), 100);
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(pos => {
+              leafletMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
+            }, () => {});
+          }
+        } else {
+          setTimeout(() => leafletMap.invalidateSize(), 100);
+        }
+      } else {
+        wrap.style.display = 'none';
+        btn.style.background = '';
+        btn.style.color = '';
+      }
+    }
+
+    function doGetLocation() {
+      showLocStatus('loading', 'Getting your location — please allow access if prompted…');
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const lat = pos.coords.latitude, lng = pos.coords.longitude;
+          const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+          document.getElementById('maps-link').value = mapsUrl;
+          validateCoords(lat, lng);
+        },
+        err => {
+          if (err.code === 1) {
+            showLocStatus('invalid', '✗ Location is blocked for this site. To fix it: click the 🔒 lock icon in your browser\'s address bar → click "Site settings" → set Location to "Allow" → refresh the page and try again.');
+          } else if (err.code === 2) {
+            showLocStatus('invalid', '✗ Your location could not be determined. Please paste a Google Maps link instead.');
+          } else {
+            showLocStatus('invalid', '✗ Location request timed out. Please try again or paste a Google Maps link.');
+          }
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
+
     function useMyLocation() {
       if (!navigator.geolocation) {
-        showLocStatus('invalid', 'Geolocation is not supported by your browser. Please paste a Google Maps link instead.');
+        showLocStatus('invalid', '✗ Your browser does not support location access. Please paste a Google Maps link instead.');
         return;
       }
-      showLocStatus('loading', 'Getting your location…');
-      navigator.geolocation.getCurrentPosition(
-        pos => validateCoords(pos.coords.latitude, pos.coords.longitude),
-        () => showLocStatus('invalid', 'Could not access your location. Please allow location access or paste a Google Maps link.')
-      );
+      if (navigator.permissions) {
+        navigator.permissions.query({ name: 'geolocation' }).then(result => {
+          if (result.state === 'denied') {
+            showLocStatus('invalid', '✗ Location is blocked for this site. To fix it: click the 🔒 lock icon in your browser\'s address bar → click "Site settings" → set Location to "Allow" → refresh the page and try again.');
+          } else {
+            doGetLocation();
+          }
+        }).catch(() => doGetLocation());
+      } else {
+        doGetLocation();
+      }
     }
 
     // Parse raw coordinates: "30.0453, 31.2243"
@@ -1048,6 +1126,7 @@
       gtag('event', 'purchase', { transaction_id: 'ORD-' + Date.now(), currency: 'EGP', value: total, shipping: fee, items: cart.map(i => ({ item_id: i.id, item_name: i.name, item_variant: (i.color||'') + ' / ' + (i.size||''), price: i.price, quantity: i.qty })) });
 
       const email = document.getElementById('email') ? document.getElementById('email').value.trim() : '';
+      const mapsLink = document.getElementById('maps-link') ? document.getElementById('maps-link').value.trim() : '';
       const itemLines = cart.length
         ? cart.map(i => `• ${i.name} (${i.color || ''}, ${i.size || ''}) x${i.qty} — ${(i.price * i.qty).toLocaleString()} EGP`).join('\n')
         : '• (Buy Now item)';
@@ -1066,6 +1145,7 @@
             `Phone:    ${phone}`,
             `Email:    ${email || 'Not provided'}`,
             `Area:     ${areaName}`,
+            `Location: ${mapsLink || 'Not provided'}`,
             `Payment:  ${selectedPayment === 'instapay' ? 'InstaPay' : 'Cash on Delivery'}`,
             ``,
             `ITEMS`,
