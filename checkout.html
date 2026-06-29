@@ -432,19 +432,13 @@
           <div class="field" style="margin-top:16px;margin-bottom:16px;">
             <label>Verify your location *</label>
             <div class="loc-wrap">
-              <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <button type="button" class="loc-gps-btn" onclick="useMyLocation()">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-                  Use my current location
-                </button>
-                <button type="button" class="loc-gps-btn" onclick="toggleMapPicker()" id="map-toggle-btn">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  Pick on map
-                </button>
-              </div>
-              <div id="map-picker-wrap" style="display:none;margin-top:12px;">
-                <div id="map-picker" style="height:280px;border-radius:8px;overflow:hidden;border:1px solid #ddd;"></div>
-                <p style="font-size:11px;color:#6D7175;margin-top:6px;line-height:1.6;">Click anywhere on the map to drop a pin on your exact location.</p>
+              <button type="button" class="loc-gps-btn" onclick="useMyLocation()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+                Use my current location
+              </button>
+              <div style="margin-top:12px;">
+                <p style="font-size:11px;color:#6D7175;margin-bottom:6px;line-height:1.6;">Or click anywhere on the map to pin your exact location:</p>
+                <div id="map-picker" style="height:280px;border-radius:8px;overflow:hidden;border:1px solid #ddd;background:#e8e0d0;"></div>
               </div>
               <span class="loc-or">— or paste a Google Maps link or coordinates —</span>
               <div class="loc-paste-row">
@@ -745,40 +739,26 @@
 
     let leafletMap = null, leafletMarker = null;
 
-    function toggleMapPicker() {
-      const wrap = document.getElementById('map-picker-wrap');
-      const btn  = document.getElementById('map-toggle-btn');
-      if (wrap.style.display === 'none') {
-        wrap.style.display = 'block';
-        btn.style.background = 'var(--forest)';
-        btn.style.color = '#fff';
-        if (!leafletMap) {
-          leafletMap = L.map('map-picker').setView([30.0444, 31.2357], 12);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-          }).addTo(leafletMap);
-          leafletMap.on('click', function(e) {
-            if (leafletMarker) leafletMap.removeLayer(leafletMarker);
-            leafletMarker = L.marker(e.latlng).addTo(leafletMap);
-            const lat = e.latlng.lat, lng = e.latlng.lng;
-            const mapsUrl = 'https://www.google.com/maps?q=' + lat + ',' + lng;
-            document.getElementById('maps-link').value = mapsUrl;
-            validateCoords(lat, lng);
-          });
-          setTimeout(() => leafletMap.invalidateSize(), 100);
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(pos => {
-              leafletMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
-            }, () => {});
-          }
-        } else {
-          setTimeout(() => leafletMap.invalidateSize(), 100);
-        }
-      } else {
-        wrap.style.display = 'none';
-        btn.style.background = '';
-        btn.style.color = '';
-      }
+    function initMap() {
+      if (leafletMap || typeof L === 'undefined') return;
+      leafletMap = L.map('map-picker', { zoomControl: true }).setView([30.0444, 31.2357], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19
+      }).addTo(leafletMap);
+      leafletMap.on('click', function(e) {
+        if (leafletMarker) leafletMap.removeLayer(leafletMarker);
+        leafletMarker = L.marker(e.latlng).addTo(leafletMap);
+        const lat = e.latlng.lat, lng = e.latlng.lng;
+        document.getElementById('maps-link').value = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+        validateCoords(lat, lng);
+      });
+    }
+
+    if (typeof L !== 'undefined') {
+      initMap();
+    } else {
+      document.querySelector('script[src*="leaflet"]').addEventListener('load', initMap);
     }
 
     function doGetLocation() {
@@ -786,17 +766,22 @@
       navigator.geolocation.getCurrentPosition(
         pos => {
           const lat = pos.coords.latitude, lng = pos.coords.longitude;
-          const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+          const mapsUrl = 'https://www.google.com/maps?q=' + lat + ',' + lng;
           document.getElementById('maps-link').value = mapsUrl;
+          if (leafletMap) {
+            leafletMap.setView([lat, lng], 17);
+            if (leafletMarker) leafletMap.removeLayer(leafletMarker);
+            leafletMarker = L.marker([lat, lng]).addTo(leafletMap);
+          }
           validateCoords(lat, lng);
         },
         err => {
           if (err.code === 1) {
-            showLocStatus('invalid', '✗ Location is blocked for this site. To fix it: click the 🔒 lock icon in your browser\'s address bar → click "Site settings" → set Location to "Allow" → refresh the page and try again.');
+            showLocStatus('invalid', '✗ Location access blocked. Please use the map below to pin your location, or paste a Google Maps link.');
           } else if (err.code === 2) {
-            showLocStatus('invalid', '✗ Your location could not be determined. Please paste a Google Maps link instead.');
+            showLocStatus('invalid', '✗ Could not determine your location. Please use the map below to pin your location.');
           } else {
-            showLocStatus('invalid', '✗ Location request timed out. Please try again or paste a Google Maps link.');
+            showLocStatus('invalid', '✗ Location request timed out. Please use the map below or paste a Google Maps link.');
           }
         },
         { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
