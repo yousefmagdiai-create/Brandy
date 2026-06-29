@@ -428,23 +428,29 @@
 
           <!-- LOCATION VERIFICATION -->
           <div class="field" style="margin-top:16px;margin-bottom:16px;">
-            <label>Verify your location *</label>
+            <label>Your location *</label>
             <div class="loc-wrap">
-              <button type="button" class="loc-gps-btn" onclick="useMyLocation()">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
-                Use my current location
+              <button type="button" class="loc-gps-btn" id="loc-main-btn" onclick="useMyLocation()" style="width:100%;justify-content:center;padding:14px;font-size:13px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+                Share My Location
               </button>
-              <span class="loc-or">— or paste a Google Maps link or coordinates —</span>
-              <div class="loc-paste-row">
-                <input type="text" id="maps-link" placeholder="maps.app.goo.gl/...  or  30.0453, 31.2243">
-                <button type="button" class="loc-verify-btn" onclick="verifyMapsLink()">Verify</button>
+              <div id="loc-blocked-msg" style="display:none;margin-top:12px;padding:12px 14px;background:#fff8f0;border:1px solid #f0d9c0;border-radius:8px;">
+                <p style="font-size:13px;font-weight:600;color:#a0522d;margin-bottom:6px;">Location access was denied</p>
+                <p style="font-size:12px;color:#6D7175;margin-bottom:10px;line-height:1.6;">No problem — open Google Maps, hold your finger on your location until a pin drops, tap the address at the bottom, then tap Share and paste the link below.</p>
+                <a href="https://maps.google.com" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#4285F4;color:#fff;padding:9px 16px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Open Google Maps
+                </a>
               </div>
-              <p style="font-size:11px;color:#6D7175;line-height:1.6;margin-top:2px;">
-                Paste any Google Maps link, or: open Google Maps → long-press your location → tap the coordinates at the top (e.g. 30.0453, 31.2243) → paste here.
-              </p>
+              <div id="loc-paste-section" style="margin-top:12px;">
+                <div class="loc-paste-row">
+                  <input type="text" id="maps-link" placeholder="Paste Google Maps link here…">
+                  <button type="button" class="loc-verify-btn" onclick="verifyMapsLink()">Verify</button>
+                </div>
+              </div>
             </div>
             <div class="loc-status" id="loc-status"></div>
-            <span class="group-error" id="err-location" style="margin-top:8px;">Please verify your location before placing your order.</span>
+            <span class="group-error" id="err-location" style="margin-top:8px;">Please share your location before placing your order.</span>
           </div>
 
           <div class="field">
@@ -737,11 +743,16 @@
     }
 
     function useMyLocation() {
-      if (!navigator.geolocation) {
-        showLocStatus('invalid', '✗ Location is not supported in this browser. Please paste a Google Maps link below.');
+      document.getElementById('loc-blocked-msg').style.display = 'none';
+      if (location.protocol === 'file:') {
+        showLocStatus('invalid', '⚠️ Location only works on the live site. Open your site via the GitHub Pages link, not as a local file.');
         return;
       }
-      showLocStatus('loading', 'Getting your precise location — tap Allow if asked…');
+      if (!navigator.geolocation) {
+        document.getElementById('loc-blocked-msg').style.display = 'block';
+        return;
+      }
+      showLocStatus('loading', 'Getting your location — tap Allow if your browser asks…');
       let bestPos = null;
       let done = false;
 
@@ -762,7 +773,8 @@
           clearTimeout(giveUpTimer);
           navigator.geolocation.clearWatch(watcher);
           if (err.code === 1) {
-            showLocStatus('invalid', '✗ Location access is blocked. Tap the 🔒 icon in your address bar → Location → Allow → refresh and try again. Or paste a Google Maps link below.');
+            document.getElementById('loc-blocked-msg').style.display = 'block';
+            showLocStatus('invalid', '');
           } else {
             showLocStatus('invalid', '✗ Could not get your location. Please paste a Google Maps link below.');
           }
