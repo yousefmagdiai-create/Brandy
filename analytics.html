@@ -290,9 +290,9 @@
     });
 
     // Pages chart
-    const pageNames = ['index3.html', 'product1.html', 'product2.html', 'cart.html', 'checkout.html', 'privacy.html'];
+    const pageNames = ['index3.html', 'product1.html', 'product2.html', 'product3.html', 'cart.html', 'checkout.html', 'privacy.html'];
     const pageCounts = pageNames.map(p => pageViews.filter(v => v.page === p).length);
-    const pageLabels = ['Home', 'Off-White', 'Mastermind', 'Cart', 'Checkout', 'Privacy'];
+    const pageLabels = ['Home', 'Off-White', 'Mastermind', 'Zara Short', 'Cart', 'Checkout', 'Privacy'];
     const pagesCtx = document.getElementById('pages-chart').getContext('2d');
     new Chart(pagesCtx, {
       type: 'doughnut',
@@ -300,7 +300,7 @@
         labels: pageLabels,
         datasets: [{
           data: pageCounts,
-          backgroundColor: ['#3B4A2E','#8B6419','#C4B896','#8A8070','#E5DCC6','#B5A68A'],
+          backgroundColor: ['#3B4A2E','#8B6419','#C4B896','#5C6E4A','#8A8070','#E5DCC6','#B5A68A'],
           borderWidth: 0,
         }]
       },

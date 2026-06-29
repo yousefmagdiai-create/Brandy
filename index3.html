@@ -492,7 +492,7 @@
       border-bottom: 1px solid var(--border);
       background: var(--surface);
     }
-    .wish-header-left {}
+    .wish-header-left { display: flex; flex-direction: column; }
     .wish-header-eyebrow {
       font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
       color: var(--golden); margin-bottom: 6px;
@@ -748,7 +748,7 @@
   <nav id="nav">
     <div class="nav-inner">
       <a href="#" aria-label="Brandy home">
-        <img src="brandassets/logo1 (2).png" alt="Brandy" style="height:96px;width:auto;">
+        <img src="brandassets/logo1 (2).png" alt="Brandy" style="height:72px;width:auto;">
       </a>
       <ul class="nav-links">
         <li><a href="#collections">Collections</a></li>
@@ -968,7 +968,7 @@
           <div style="position:absolute;top:10px;left:10px;background:var(--golden);color:var(--cream);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 8px;">New</div>
         </div>
         <div class="product-info">
-          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Dresses</p>
+          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Streetwear</p>
           <p style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:8px;">Off-White T-Shirt</p>
           <div style="display:flex;align-items:center;justify-content:space-between;">
             <span style="font-size:14px;font-weight:600;color:var(--golden);">700 EGP</span>
@@ -993,18 +993,20 @@
           </div>
         </div>
       </div>
-      <div class="product-card reveal d2" tabindex="0">
-        <div class="product-img">
-          <img src="https://placehold.co/260x347/EDE5D0/3B4A2E?text=." alt="Silk Slip Skirt">
-          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Silk Slip Skirt','98 EGP','https://placehold.co/260x347/EDE5D0/3B4A2E?text=.',event)">Add to Cart</button>
-          <div style="position:absolute;top:10px;left:10px;background:rgba(247,243,236,0.9);border:1px solid var(--border);color:var(--forest);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 8px;">—15%</div>
+      <div class="product-card reveal d2" tabindex="0" style="cursor:pointer;" onclick="if(!event.target.closest('.swatch-dot,.quick-add-btn')){window.location='product3.html';}">
+        <div class="product-img" id="card3-img-wrap">
+          <img src="cargo-shorts-black.png" alt="Zara Short" id="card3-img">
+          <div class="product-img-overlay" style="opacity:0;"></div><button class="quick-add-btn" onclick="card3QuickAdd(event)">Add to Cart</button>
+          <div style="position:absolute;top:10px;left:10px;background:var(--golden);color:var(--cream);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 8px;">New</div>
         </div>
         <div class="product-info">
-          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Bottoms</p>
-          <p style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:8px;">Silk Slip Skirt</p>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:14px;font-weight:600;color:var(--golden);">$98</span>
-            <span style="font-size:12px;color:var(--muted);text-decoration:line-through;">$115</span>
+          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Streetwear</p>
+          <p style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:8px;">Zara Short</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:14px;font-weight:600;color:var(--golden);">800 EGP</span>
+            <div style="display:flex;gap:8px;">
+              <div class="swatch-dot" style="background:#1C2318;outline:2px solid var(--forest);outline-offset:2px;" title="Black"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1094,24 +1096,29 @@
           btn.textContent = 'Sending...';
           btn.disabled = true;
           try {
-            await fetch('https://api.web3forms.com/submit', {
+            const res = await fetch('https://api.web3forms.com/submit', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                access_key: '4cbe72ef-c430-4ccb-8b7d-543b25f347b4',
+                access_key: '376561bc-034f-4dc0-9bff-826f4c64d057',
                 subject: 'New Subscriber — Brandy',
                 from_name: 'Brandy Website',
-                to_email: 'dym2026outlet@gmail.com',
+                email: email,
                 message: `New newsletter subscriber:\n\nEmail: ${email}\nTime: ${new Date().toLocaleString()}`
               })
             });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.message || 'API rejected');
             btn.textContent = 'Subscribed!';
             msg.textContent = 'You\'re in! Welcome to Brandy.';
             msg.style.color = 'rgba(196,184,150,0.9)';
             document.getElementById('newsletter-email').value = '';
-          } catch {
+          } catch(err) {
+            console.error('Newsletter error:', err);
             btn.textContent = 'Subscribe';
             btn.disabled = false;
+            msg.textContent = 'Something went wrong — please try again.';
+            msg.style.color = 'rgba(220,80,80,0.9)';
           }
         }
       </script>
@@ -1203,6 +1210,7 @@
 
     sessionStorage.removeItem('brandy_buynow');
     sessionStorage.setItem('brandy_color_product1', 'White');
+    sessionStorage.setItem('brandy_color_product2', 'Black');
 
     function card1QuickAdd(e) {
       e && e.stopPropagation();
@@ -1226,6 +1234,16 @@
       else { cart.push({ id: 'product2', name: 'Mastermind T-Shirt', price: 700, image: img, color, size: color === 'White' ? 'L' : 'M', qty: 1 }); }
       saveCart(cart);
       showToast('Mastermind T-Shirt · ' + color, '700 EGP');
+    }
+
+    function card3QuickAdd(e) {
+      e && e.stopPropagation();
+      const cart = getCart();
+      const existing = cart.find(i => i.id === 'product3' && i.color === 'Black');
+      if (existing) { existing.qty += 1; }
+      else { cart.push({ id: 'product3', name: 'Zara Short', price: 800, image: 'cargo-shorts-black.png', color: 'Black', size: 'M', qty: 1 }); }
+      saveCart(cart);
+      showToast('Zara Short · Black', '800 EGP');
     }
 
     function selectHeroSize(el) {
@@ -1376,9 +1394,9 @@
 
   <script>
     const CATALOG = [
-      { type: 'product', name: 'Off-White T-Shirt',  category: 'Dresses',    price: '700 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png',                                   href: 'product1.html' },
+      { type: 'product', name: 'Off-White T-Shirt',  category: 'Streetwear',    price: '700 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png',                                   href: 'product1.html' },
       { type: 'product', name: 'Mastermind T-Shirt', category: 'Streetwear', price: '700 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png',             href: 'product2.html' },
-      { type: 'product', name: 'Silk Slip Skirt',    category: 'Bottoms',    price: '$98',     img: 'https://placehold.co/44x44/EDE5D0/3B4A2E?text=.',      href: '#arrivals' },
+      { type: 'product', name: 'Zara Short',          category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png',                                href: 'product3.html' },
       { type: 'product', name: 'Cotton Wrap Top',    category: 'Tops',       price: '$76',     img: 'https://placehold.co/44x44/8B6419/EDE5D0?text=.',      href: '#arrivals' },
       { type: 'product', name: 'Wide Leg Trouser',   category: 'Trousers',   price: '$132',    img: 'https://placehold.co/44x44/2A3620/C4B896?text=.',      href: '#arrivals' },
       { type: 'collection', name: 'Summer Linen',    category: 'SS 2026',    price: '',        img: 'https://placehold.co/44x44/3B4A2E/EDE5D0?text=.',      href: '#collections' },
@@ -1536,9 +1554,9 @@
     // Inject heart buttons into all product cards on page load
     (function injectHearts() {
       const cards = [
-        { el: document.querySelectorAll('.product-card')[0], id: 'product1',  name: 'Off-White T-Shirt', category: 'Dresses',   price: '700 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png',                                  href: 'product1.html' },
+        { el: document.querySelectorAll('.product-card')[0], id: 'product1',  name: 'Off-White T-Shirt', category: 'Streetwear',   price: '700 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png',                                  href: 'product1.html' },
         { el: document.querySelectorAll('.product-card')[1], id: 'product2',  name: 'Mastermind T-Shirt', category: 'Streetwear', price: '700 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', href: 'product2.html' },
-        { el: document.querySelectorAll('.product-card')[2], id: 'product3',  name: 'Silk Slip Skirt',   category: 'Bottoms',   price: '$98',     img: 'https://placehold.co/64x64/EDE5D0/3B4A2E?text=.',     href: '#arrivals' },
+        { el: document.querySelectorAll('.product-card')[2], id: 'product3',  name: 'Zara Short',        category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png',                              href: 'product3.html' },
         { el: document.querySelectorAll('.product-card')[3], id: 'product4',  name: 'Cotton Wrap Top',   category: 'Tops',      price: '$76',     img: 'https://placehold.co/64x64/8B6419/EDE5D0?text=.',     href: '#arrivals' },
         { el: document.querySelectorAll('.product-card')[4], id: 'product5',  name: 'Wide Leg Trouser',  category: 'Trousers',  price: '$132',    img: 'https://placehold.co/64x64/2A3620/C4B896?text=.',     href: '#arrivals' },
       ];

@@ -601,7 +601,8 @@
         } else {
           const CHECKOUT_COLOR_IMAGES = {
             'product1': { 'Black': '5E147019-5064-4F55-974F-1CA8AE14798E.png', 'White': '5058ff11-1b2c-44ef-80f0-2daa8184b894.png' },
-            'product2': { 'Black': 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', 'White': 'mastermind-white.png' }
+            'product2': { 'Black': 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', 'White': 'mastermind-white.png' },
+            'product3': { 'Black': 'cargo-shorts-black.png' }
           };
         container.innerHTML = cart.map(item => {
           const imgSrc = (CHECKOUT_COLOR_IMAGES[item.id] && CHECKOUT_COLOR_IMAGES[item.id][item.color]) ? CHECKOUT_COLOR_IMAGES[item.id][item.color] : item.image;
@@ -1043,10 +1044,10 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          access_key: '4cbe72ef-c430-4ccb-8b7d-543b25f347b4',
+          access_key: '376561bc-034f-4dc0-9bff-826f4c64d057',
           subject: `🛍️ New Order — ${fname} ${lname} — ${total} EGP`,
           from_name: 'Brandy Orders',
-          to_email: 'dym2026outlet@gmail.com',
+          email: email || phone + '@brandy.order',
           message: [
             `NEW ORDER RECEIVED`,
             `─────────────────────`,
@@ -1067,7 +1068,9 @@
             `Time: ${new Date().toLocaleString()}`
           ].join('\n')
         })
-      }).catch(() => {});
+      }).then(r => r.json()).then(d => {
+        if (!d.success) console.error('Order email failed:', d.message);
+      }).catch(err => console.error('Order email error:', err));
 
       let msg = '';
       if (selectedPayment === 'instapay') {

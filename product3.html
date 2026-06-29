@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Off-White — Brandy</title>
+  <title>Zara Short — Brandy</title>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-13JN7BHRMC"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-13JN7BHRMC');</script>
   <script src="brandy-analytics.js"></script>
@@ -35,10 +35,6 @@
     }
     h1, h2, h3 { font-family: 'Playfair Display', serif; }
 
-    @keyframes shimmer {
-      0%   { background-position: -200% center; }
-      100% { background-position:  200% center; }
-    }
     @keyframes toast-in {
       0%   { opacity: 0; transform: translateY(20px) scale(0.95); }
       60%  { transform: translateY(-4px) scale(1.02); }
@@ -93,7 +89,6 @@
       padding: 14px 48px;
     }
     .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
-    .nav-logo img { height: 80px; width: auto; }
     .nav-back {
       display: inline-flex; align-items: center; gap: 8px;
       font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
@@ -116,11 +111,11 @@
     }
 
     /* ── GALLERY ── */
-    .gallery { position: sticky; top: 80px; animation: fadeUp 0.6s ease both; }
+    .gallery { position: sticky; top: 80px; animation: fadeUp 0.6s ease both; background: #FFFEFF; }
     .gallery-main {
       position: relative; overflow: hidden;
       border: 1px solid var(--border);
-      background: var(--card);
+      background: #FFFEFF;
       margin-bottom: 12px;
       cursor: zoom-in;
     }
@@ -140,7 +135,7 @@
       flex: 1; aspect-ratio: 1; overflow: hidden;
       border: 1.5px solid transparent; cursor: pointer;
       transition: border-color 0.2s ease;
-      background: var(--card);
+      background: #FFFEFF;
     }
     .thumb.active { border-color: var(--forest); }
     .thumb:hover { border-color: var(--border-hover); }
@@ -181,7 +176,6 @@
       color: var(--muted); margin-bottom: 12px;
     }
 
-    /* Color swatches */
     .swatch-row { display: flex; gap: 10px; margin-bottom: 28px; }
     .swatch {
       width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
@@ -190,12 +184,7 @@
     }
     .swatch:hover { transform: scale(1.2); }
     .swatch.active { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--forest); transform: scale(1.1); }
-    .swatch-label {
-      font-size: 11px; color: var(--muted); margin-left: 4px;
-      display: flex; align-items: center;
-    }
 
-    /* Size selector */
     .size-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
     .size-chip {
       min-width: 48px; height: 48px; padding: 0 12px;
@@ -217,13 +206,11 @@
     }
     .size-guide-link:hover { border-color: var(--golden); }
 
-    /* Description */
     .description {
       font-size: 14px; font-weight: 400; color: var(--ink); opacity: 0.75;
       line-height: 1.85; margin-bottom: 28px;
     }
 
-    /* Details list */
     .details-list { list-style: none; margin-bottom: 28px; }
     .details-list li {
       display: flex; align-items: flex-start; gap: 10px;
@@ -234,7 +221,6 @@
     .details-list li:first-child { border-top: 1px solid var(--border); }
     .details-list li svg { flex-shrink: 0; margin-top: 2px; color: var(--golden); }
 
-    /* CTA buttons */
     .cta-stack { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
     .btn-primary {
       display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -259,7 +245,6 @@
     .btn-secondary:hover { background: var(--forest); color: var(--cream); transform: translateY(-2px); }
     .btn-secondary:active { transform: translateY(0); }
 
-    /* Trust row */
     .trust-row { display: flex; gap: 20px; flex-wrap: wrap; }
     .trust-item {
       display: flex; align-items: center; gap: 8px;
@@ -267,7 +252,6 @@
     }
     .trust-item svg { color: var(--forest); flex-shrink: 0; }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       .product-page { grid-template-columns: 1fr; gap: 40px; padding: 32px 24px 64px; }
       .gallery { position: static; }
@@ -308,15 +292,12 @@
     <!-- GALLERY -->
     <div class="gallery">
       <div class="gallery-main" id="main-img-wrap">
-        <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="Off-White" id="main-img">
+        <img src="cargo-shorts-black.png" alt="Zara Short" id="main-img">
         <div class="gallery-badge">New Arrival</div>
       </div>
       <div class="gallery-thumbs">
-        <div class="thumb active" onclick="setThumb(this, '5058ff11-1b2c-44ef-80f0-2daa8184b894.png')">
-          <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="Front">
-        </div>
-        <div class="thumb" id="thumb-back" onclick="setThumb(this, 'c135a054-a4e6-4f03-9fd4-57e6e86ca1c7.png')">
-          <img src="c135a054-a4e6-4f03-9fd4-57e6e86ca1c7.png" alt="Back">
+        <div class="thumb active" onclick="setThumb(this, 'cargo-shorts-black.png')">
+          <img src="cargo-shorts-black.png" alt="Front">
         </div>
       </div>
     </div>
@@ -328,34 +309,35 @@
         <span class="breadcrumb-sep">›</span>
         <a href="index3.html#arrivals">New Arrivals</a>
         <span class="breadcrumb-sep">›</span>
-        <span style="color:var(--ink);">Off-White</span>
+        <span style="color:var(--ink);">Zara Short</span>
       </div>
 
-      <p class="product-sub">Summer Collection — 2026</p>
-      <h1 class="product-name">Off-White T-Shirt</h1>
+      <p class="product-sub">Streetwear — 2026</p>
+      <h1 class="product-name">Zara Short</h1>
 
       <div class="price-row">
-        <span class="price">700 EGP</span>
+        <span class="price">800 EGP</span>
       </div>
 
       <p class="description">
-        A statement piece that blends artistry with everyday wear. The embroidered floral bicycle motif is hand-stitched in rich blue tones onto a premium heavyweight cotton tee — crafted to be seen and remembered.
+        Utility redefined. The Zara Short is built for movement and made to last — a tactical cargo silhouette with deep side pockets, adjustable hem tabs, and a relaxed straight cut that sits effortlessly at the waist. Streetwear meets function in the most essential piece of the season.
       </p>
 
       <div class="divider"></div>
 
       <!-- Color -->
-      <p class="section-label">Color — <span style="color:var(--ink);font-weight:500;letter-spacing:0;">White</span></p>
+      <p class="section-label">Color — <span style="color:var(--ink);font-weight:500;letter-spacing:0;">Black</span></p>
       <div class="swatch-row">
-        <div class="swatch active" style="background:#F5F5F0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);" title="White" onclick="selectSwatch(this,'White')"></div>
-        <div class="swatch" style="background:#1C2318;" title="Black" onclick="selectSwatch(this,'Black')"></div>
+        <div class="swatch active" style="background:#1C2318;" title="Black" onclick="selectSwatch(this,'Black')"></div>
       </div>
 
       <!-- Size -->
       <p class="section-label">Size</p>
       <div class="size-grid" id="size-grid">
-        <div class="size-chip white-only active">L</div>
-        <div class="size-chip black-only" style="display:none;">M</div>
+        <div class="size-chip active">S</div>
+        <div class="size-chip">M</div>
+        <div class="size-chip">L</div>
+        <div class="size-chip">XL</div>
       </div>
       <a href="#" class="size-guide-link">Size Guide →</a>
 
@@ -368,7 +350,7 @@
           Add to Cart
         </button>
         <button class="btn-secondary" onclick="buyNow()">
-          Buy Now — 700 EGP
+          Buy Now — 800 EGP
         </button>
       </div>
 
@@ -395,19 +377,19 @@
       <ul class="details-list">
         <li>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-          100% premium heavyweight cotton
+          98% cotton, 2% elastane blend
         </li>
         <li>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Hand-embroidered floral bicycle motif
+          Six deep utility pockets
         </li>
         <li>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Relaxed oversized fit
+          Adjustable hem tabs with metal buckle
         </li>
         <li>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Machine wash cold, tumble dry low
+          Relaxed straight fit — true to size
         </li>
         <li>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -429,39 +411,6 @@
       document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
       el.classList.add('active');
       document.querySelector('.section-label span').textContent = color;
-      sessionStorage.setItem('brandy_color_product1', color);
-
-      const isBlack = color === 'Black';
-
-      document.querySelectorAll('.size-chip').forEach(s => {
-        s.classList.remove('active');
-        s.style.display = 'none';
-      });
-      const visibleClass = isBlack ? '.black-only' : '.white-only';
-      document.querySelectorAll('.size-chip' + visibleClass).forEach(s => {
-        s.style.display = '';
-        s.classList.add('active');
-      });
-
-      const src = isBlack ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
-      const mainImg = document.getElementById('main-img');
-
-      mainImg.src = src;
-      mainImg.style.objectFit   = 'cover';
-      mainImg.style.aspectRatio = '';
-
-      const backThumb = document.getElementById('thumb-back');
-      const backSrc = isBlack ? '8071449b-ead9-45a0-99a9-7b70109e4925.png' : 'c135a054-a4e6-4f03-9fd4-57e6e86ca1c7.png';
-      document.querySelectorAll('.thumb').forEach((t, i) => {
-        const tImg = t.querySelector('img');
-        const thisSrc = (t === backThumb) ? backSrc : src;
-        tImg.src = thisSrc;
-        tImg.style.objectFit   = 'cover';
-        tImg.style.aspectRatio = '';
-        t.style.background = '';
-        t.onclick = () => setThumb(t, thisSrc);
-        if (i === 0) { document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active')); t.classList.add('active'); }
-      });
     }
 
     document.querySelectorAll('.size-chip:not(.sold-out)').forEach(chip => {
@@ -488,7 +437,7 @@
         </div>
         <div>
           <p class="toast-title">Added to Cart</p>
-          <p class="toast-sub">Off-White T-Shirt · ${color} · ${size}</p>
+          <p class="toast-sub">Zara Short · ${color} · ${size}</p>
         </div>
       `;
       document.body.appendChild(toast);
@@ -503,16 +452,14 @@
       const activeSize = document.querySelector('.size-chip.active');
       const activeSwatch = document.querySelector('.swatch.active');
       const size = activeSize ? activeSize.textContent.trim() : 'M';
-      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
-
-      const colorImage = color === 'Black' ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
+      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
       const cart = getCart();
-      const existing = cart.find(i => i.id === 'product1' && i.size === size && i.color === color);
+      const existing = cart.find(i => i.id === 'product3' && i.size === size && i.color === color);
       if (existing) { existing.qty += 1; }
-      else { cart.push({ id: 'product1', name: 'Off-White T-Shirt', price: 700, image: colorImage, color, size, qty: 1 }); }
+      else { cart.push({ id: 'product3', name: 'Zara Short', price: 800, image: 'cargo-shorts-black.png', color, size, qty: 1 }); }
       saveCart(cart);
-      BrandyAnalytics.trackAddToCart('Off-White T-Shirt', 700);
-      gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
+      BrandyAnalytics.trackAddToCart('Zara Short', 800);
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 800, items: [{ item_id: 'product3', item_name: 'Zara Short', item_variant: color + ' / ' + size, price: 800, quantity: 1 }] });
       showToast(color, size);
     }
 
@@ -520,11 +467,10 @@
       const activeSize = document.querySelector('.size-chip.active');
       const activeSwatch = document.querySelector('.swatch.active');
       const size = activeSize ? activeSize.textContent.trim() : 'M';
-      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
-      gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
-      const colorImage = color === 'Black' ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
+      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 800, items: [{ item_id: 'product3', item_name: 'Zara Short', item_variant: color + ' / ' + size, price: 800, quantity: 1 }] });
       sessionStorage.setItem('brandy_buynow', JSON.stringify(
-        { id: 'product1', name: 'Off-White T-Shirt', price: 700, image: colorImage, color, size, qty: 1 }
+        { id: 'product3', name: 'Zara Short', price: 800, image: 'cargo-shorts-black.png', color, size, qty: 1 }
       ));
       window.location.href = 'checkout.html';
     }
@@ -549,13 +495,7 @@
       if (logo.complete && logo.naturalWidth) removeWhiteBg(logo);
       else logo.addEventListener('load', () => removeWhiteBg(logo));
     }
-    gtag('event', 'view_item', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', price: 700 }] });
-
-    const savedColor = sessionStorage.getItem('brandy_color_product1');
-    if (savedColor === 'Black') {
-      const blackSwatch = document.querySelector('.swatch[title="Black"]');
-      if (blackSwatch) selectSwatch(blackSwatch, 'Black');
-    }
+    gtag('event', 'view_item', { currency: 'EGP', value: 800, items: [{ item_id: 'product3', item_name: 'Zara Short', price: 800 }] });
   </script>
 
   <!-- WISHLIST SIDEBAR -->
@@ -573,7 +513,7 @@
 
   <script>
     const WISH_KEY = 'brandy_wishlist';
-    const PRODUCT = { id: 'product1', name: 'Off-White T-Shirt', category: 'Streetwear', price: '700 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png', href: 'product1.html' };
+    const PRODUCT = { id: 'product3', name: 'Zara Short', category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png', href: 'product3.html' };
 
     function getWishlist() { try { return JSON.parse(localStorage.getItem(WISH_KEY)) || []; } catch { return []; } }
     function saveWishlist(w) { localStorage.setItem(WISH_KEY, JSON.stringify(w)); }
@@ -581,12 +521,7 @@
     function toggleWishlistProduct() {
       let w = getWishlist();
       const idx = w.findIndex(i => i.id === PRODUCT.id);
-      if (idx > -1) { w.splice(idx, 1); } else {
-        const activeSwatch = document.querySelector('.swatch.active');
-        const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
-        const img = color === 'Black' ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
-        w.push({ ...PRODUCT, img });
-      }
+      if (idx > -1) { w.splice(idx, 1); } else { w.push({ ...PRODUCT }); }
       saveWishlist(w);
       updateWishUI();
     }
