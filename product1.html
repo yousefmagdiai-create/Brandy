@@ -282,7 +282,7 @@
   <!-- NAV -->
   <nav>
     <div class="nav-inner">
-      <a href="index3.html" class="nav-back">
+      <a href="index3.html#arrivals" class="nav-back" id="back-link">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         Back to Shop
       </a>
@@ -550,11 +550,13 @@
       else logo.addEventListener('load', () => removeWhiteBg(logo));
     }
     gtag('event', 'view_item', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', price: 700 }] });
+    const _bu = sessionStorage.getItem('brandy_back_url');
+    if (_bu) document.getElementById('back-link').href = _bu;
 
     const savedColor = sessionStorage.getItem('brandy_color_product1');
-    if (savedColor === 'Black') {
-      const blackSwatch = document.querySelector('.swatch[title="Black"]');
-      if (blackSwatch) selectSwatch(blackSwatch, 'Black');
+    if (savedColor) {
+      const swatch = document.querySelector(`.swatch[title="${savedColor}"]`);
+      if (swatch) selectSwatch(swatch, savedColor);
     }
   </script>
 

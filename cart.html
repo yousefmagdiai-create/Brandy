@@ -135,9 +135,9 @@
       </a>
       <a href="index3.html"><img src="brandassets/logo1 (2).png" alt="Brandy" id="nav-logo" style="height:72px;width:auto;display:block;"></a>
       <div style="display:flex;align-items:center;gap:4px;">
-        <button class="icon-btn" aria-label="Wishlist">
+        <a href="index3.html" class="icon-btn" aria-label="Wishlist" style="display:flex;align-items:center;justify-content:center;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </button>
+        </a>
         <button class="icon-btn" style="position:relative;" aria-label="Cart">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           <span id="cart-badge" style="display:none;position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--golden);"></span>
@@ -232,7 +232,8 @@
       const ITEM_COLOR_IMAGES = {
         'product1': { 'Black': '5E147019-5064-4F55-974F-1CA8AE14798E.png', 'White': '5058ff11-1b2c-44ef-80f0-2daa8184b894.png' },
         'product2': { 'Black': 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', 'White': 'mastermind-white.png' },
-        'product3': { 'Black': 'cargo-shorts-black.png' }
+        'product3': { 'Black': 'cargo-shorts-black.png' },
+        'product4': { 'Blue': 'polo-blue.png', 'Navy': 'polo-navy.png', 'Black': 'polo-black.png' }
       };
       itemsEl.innerHTML = cart.map((item, idx) => {
         const imgSrc = (ITEM_COLOR_IMAGES[item.id] && ITEM_COLOR_IMAGES[item.id][item.color]) ? ITEM_COLOR_IMAGES[item.id][item.color] : item.image;

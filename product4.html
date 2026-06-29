@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mastermind T-Shirt — Brandy</title>
+  <title>Ralph Lauren Polo Shirt — Brandy</title>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-13JN7BHRMC"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-13JN7BHRMC');</script>
   <script src="brandy-analytics.js"></script>
@@ -89,7 +89,6 @@
       padding: 14px 48px;
     }
     .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
-    .nav-logo img { height: 80px; width: auto; }
     .nav-back {
       display: inline-flex; align-items: center; gap: 8px;
       font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
@@ -112,11 +111,11 @@
     }
 
     /* ── GALLERY ── */
-    .gallery { position: sticky; top: 80px; animation: fadeUp 0.6s ease both; background: #F7F7F7; }
+    .gallery { position: sticky; top: 80px; animation: fadeUp 0.6s ease both; background: #FEFEFE; }
     .gallery-main {
       position: relative; overflow: hidden;
       border: 1px solid var(--border);
-      background: #F7F7F7;
+      background: #FEFEFE;
       margin-bottom: 12px;
       cursor: zoom-in;
     }
@@ -136,7 +135,7 @@
       flex: 1; aspect-ratio: 1; overflow: hidden;
       border: 1.5px solid transparent; cursor: pointer;
       transition: border-color 0.2s ease;
-      background: #F7F7F7;
+      background: #FEFEFE;
     }
     .thumb.active { border-color: var(--forest); }
     .thumb:hover { border-color: var(--border-hover); }
@@ -198,7 +197,6 @@
     }
     .size-chip:hover { background: rgba(59,74,46,0.06); border-color: var(--border-hover); color: var(--forest); transform: scale(1.06); }
     .size-chip.active { background: var(--forest); color: var(--cream); border-color: var(--forest); }
-    .size-chip.sold-out { opacity: 0.35; cursor: not-allowed; text-decoration: line-through; }
     .size-guide-link {
       font-size: 11px; color: var(--golden); text-decoration: none;
       border-bottom: 1px solid rgba(139,100,25,0.3);
@@ -293,16 +291,8 @@
     <!-- GALLERY -->
     <div class="gallery">
       <div class="gallery-main" id="main-img-wrap">
-        <img src="fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png" alt="Mastermind T-Shirt" id="main-img">
+        <img src="polo-blue.png" alt="Ralph Lauren Polo Shirt" id="main-img">
         <div class="gallery-badge">New Arrival</div>
-      </div>
-      <div class="gallery-thumbs">
-        <div class="thumb active" onclick="setThumb(this, 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png')">
-          <img src="fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png" alt="Front">
-        </div>
-        <div class="thumb" id="thumb-back" onclick="setThumb(this, 'tshirt.png')">
-          <img src="tshirt.png" alt="Back">
-        </div>
       </div>
     </div>
 
@@ -313,34 +303,37 @@
         <span class="breadcrumb-sep">›</span>
         <a href="index3.html#arrivals">New Arrivals</a>
         <span class="breadcrumb-sep">›</span>
-        <span style="color:var(--ink);">Mastermind</span>
+        <span style="color:var(--ink);">Ralph Lauren Polo Shirt</span>
       </div>
 
-      <p class="product-sub">Luxury Streetwear — 2026</p>
-      <h1 class="product-name">Mastermind T-Shirt</h1>
+      <p class="product-sub">Classic — 2026</p>
+      <h1 class="product-name">Ralph Lauren<br>Polo Shirt</h1>
 
       <div class="price-row">
-        <span class="price">700 EGP</span>
+        <span class="price">750 EGP</span>
       </div>
 
       <p class="description">
-        Born from the streets of Tokyo, elevated to the ateliers of the world. The Mastermind World tee carries its iconic skull-and-crossbones insignia rendered in crystal rhinestones across a structured boxy silhouette — a quiet declaration of power dressed as simplicity. This is not a shirt. It is a statement worn close to the skin.
+        The original. Ralph Lauren's iconic piqué polo has defined casual elegance for decades — a soft cotton build, the signature embroidered polo player at the chest, and a clean silhouette that works from the street to the table. This is the piece that started it all.
       </p>
 
       <div class="divider"></div>
 
       <!-- Color -->
-      <p class="section-label">Color — <span style="color:var(--ink);font-weight:500;letter-spacing:0;">Black</span></p>
+      <p class="section-label">Color — <span style="color:var(--ink);font-weight:500;letter-spacing:0;">Blue</span></p>
       <div class="swatch-row">
-        <div class="swatch active" style="background:#1C2318;" title="Black" onclick="selectSwatch(this,'Black')"></div>
-        <div class="swatch" style="background:#F5F5F0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);" title="White" onclick="selectSwatch(this,'White')"></div>
+        <div class="swatch active" style="background:#3A6EA5;" title="Blue" onclick="selectSwatch(this,'Blue')"></div>
+        <div class="swatch" style="background:#1F3560;" title="Navy" onclick="selectSwatch(this,'Navy')"></div>
+        <div class="swatch" style="background:#1C2318;" title="Black" onclick="selectSwatch(this,'Black')"></div>
       </div>
 
       <!-- Size -->
       <p class="section-label">Size</p>
       <div class="size-grid" id="size-grid">
-        <div class="size-chip black-only active">M</div>
-        <div class="size-chip white-only" style="display:none;">L</div>
+        <div class="size-chip active">S</div>
+        <div class="size-chip">M</div>
+        <div class="size-chip">L</div>
+        <div class="size-chip">XL</div>
       </div>
       <a href="#" class="size-guide-link">Size Guide →</a>
 
@@ -353,7 +346,7 @@
           Add to Cart
         </button>
         <button class="btn-secondary" onclick="buyNow()">
-          Buy Now — 700 EGP
+          Buy Now — 750 EGP
         </button>
       </div>
 
@@ -380,23 +373,23 @@
       <ul class="details-list">
         <li>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-          100% premium heavyweight cotton
+          100% piqué cotton — breathable & durable
         </li>
         <li>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Crystal rhinestone skull-and-crossbones logo
+          Embroidered polo player logo at left chest
         </li>
         <li>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Structured boxy oversized fit
+          Ribbed collar, cuffs, and two-button placket
         </li>
         <li>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Machine wash cold, lay flat to dry
+          Classic fit — true to size
         </li>
         <li>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Ethically produced — Brandy 2026 Collection
+          Authentic Ralph Lauren — Brandy 2026
         </li>
       </ul>
 
@@ -410,42 +403,14 @@
       document.getElementById('main-img').src = src;
     }
 
+    const COLOR_IMAGES = { 'Blue': 'polo-blue.png', 'Navy': 'polo-navy.png', 'Black': 'polo-black.png' };
+
     function selectSwatch(el, color) {
       document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
       el.classList.add('active');
       document.querySelector('.section-label span').textContent = color;
-      sessionStorage.setItem('brandy_color_product2', color);
-
-      const isBlack = color === 'Black';
-
-      document.querySelectorAll('.size-chip').forEach(s => {
-        s.classList.remove('active');
-        s.style.display = 'none';
-      });
-      const visibleClass = isBlack ? '.black-only' : '.white-only';
-      document.querySelectorAll('.size-chip' + visibleClass).forEach(s => {
-        s.style.display = '';
-        s.classList.add('active');
-      });
-
-      const src = isBlack ? 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png' : 'mastermind-white.png';
-      const mainImg = document.getElementById('main-img');
-      mainImg.src = src;
-      mainImg.style.objectFit = 'cover';
-      mainImg.style.aspectRatio = '';
-
-      const backThumb = document.getElementById('thumb-back');
-      const backSrc = isBlack ? 'tshirt.png' : 'mastermind-skull-white.png';
-      document.querySelectorAll('.thumb').forEach((t, i) => {
-        const tImg = t.querySelector('img');
-        const thisSrc = (t === backThumb) ? backSrc : src;
-        tImg.src = thisSrc;
-        tImg.style.objectFit = 'cover';
-        tImg.style.aspectRatio = '';
-        t.style.background = '';
-        t.onclick = () => setThumb(t, thisSrc);
-        if (i === 0) { document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active')); t.classList.add('active'); }
-      });
+      document.getElementById('main-img').src = COLOR_IMAGES[color] || 'polo-blue.png';
+      sessionStorage.setItem('brandy_color_product4', color);
     }
 
     document.querySelectorAll('.size-chip:not(.sold-out)').forEach(chip => {
@@ -472,7 +437,7 @@
         </div>
         <div>
           <p class="toast-title">Added to Cart</p>
-          <p class="toast-sub">Mastermind T-Shirt · ${color} · ${size}</p>
+          <p class="toast-sub">Ralph Lauren Polo Shirt · ${color} · ${size}</p>
         </div>
       `;
       document.body.appendChild(toast);
@@ -487,16 +452,15 @@
       const activeSize = document.querySelector('.size-chip.active');
       const activeSwatch = document.querySelector('.swatch.active');
       const size = activeSize ? activeSize.textContent.trim() : 'M';
-      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
-
-      const colorImage = color === 'White' ? 'mastermind-white.png' : 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png';
+      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Blue';
+      const image = COLOR_IMAGES[color] || 'polo-blue.png';
       const cart = getCart();
-      const existing = cart.find(i => i.id === 'product2' && i.size === size && i.color === color);
+      const existing = cart.find(i => i.id === 'product4' && i.size === size && i.color === color);
       if (existing) { existing.qty += 1; }
-      else { cart.push({ id: 'product2', name: 'Mastermind T-Shirt', price: 700, image: colorImage, color, size, qty: 1 }); }
+      else { cart.push({ id: 'product4', name: 'Ralph Lauren Polo Shirt', price: 750, image, color, size, qty: 1 }); }
       saveCart(cart);
-      BrandyAnalytics.trackAddToCart('Mastermind T-Shirt', 700);
-      gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product2', item_name: 'Mastermind T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
+      BrandyAnalytics.trackAddToCart('Ralph Lauren Polo Shirt', 750);
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 750, items: [{ item_id: 'product4', item_name: 'Ralph Lauren Polo Shirt', item_variant: color + ' / ' + size, price: 750, quantity: 1 }] });
       showToast(color, size);
     }
 
@@ -504,11 +468,11 @@
       const activeSize = document.querySelector('.size-chip.active');
       const activeSwatch = document.querySelector('.swatch.active');
       const size = activeSize ? activeSize.textContent.trim() : 'M';
-      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
-      gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product2', item_name: 'Mastermind T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
-      const colorImage = color === 'White' ? 'mastermind-white.png' : 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png';
+      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Blue';
+      const image = COLOR_IMAGES[color] || 'polo-blue.png';
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 750, items: [{ item_id: 'product4', item_name: 'Ralph Lauren Polo Shirt', item_variant: color + ' / ' + size, price: 750, quantity: 1 }] });
       sessionStorage.setItem('brandy_buynow', JSON.stringify(
-        { id: 'product2', name: 'Mastermind T-Shirt', price: 700, image: colorImage, color, size, qty: 1 }
+        { id: 'product4', name: 'Ralph Lauren Polo Shirt', price: 750, image, color, size, qty: 1 }
       ));
       window.location.href = 'checkout.html';
     }
@@ -533,11 +497,11 @@
       if (logo.complete && logo.naturalWidth) removeWhiteBg(logo);
       else logo.addEventListener('load', () => removeWhiteBg(logo));
     }
-    gtag('event', 'view_item', { currency: 'EGP', value: 700, items: [{ item_id: 'product2', item_name: 'Mastermind T-Shirt', price: 700 }] });
+    gtag('event', 'view_item', { currency: 'EGP', value: 750, items: [{ item_id: 'product4', item_name: 'Ralph Lauren Polo Shirt', price: 750 }] });
     const _bu = sessionStorage.getItem('brandy_back_url');
     if (_bu) document.getElementById('back-link').href = _bu;
 
-    const savedColor = sessionStorage.getItem('brandy_color_product2');
+    const savedColor = sessionStorage.getItem('brandy_color_product4');
     if (savedColor) {
       const swatch = document.querySelector(`.swatch[title="${savedColor}"]`);
       if (swatch) selectSwatch(swatch, savedColor);
@@ -559,7 +523,7 @@
 
   <script>
     const WISH_KEY = 'brandy_wishlist';
-    const PRODUCT = { id: 'product2', name: 'Mastermind T-Shirt', category: 'Streetwear', price: '700 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', href: 'product2.html' };
+    const PRODUCT = { id: 'product4', name: 'Ralph Lauren Polo Shirt', category: 'Classic', price: '750 EGP', img: 'polo-blue.png', href: 'product4.html' };
 
     function getWishlist() { try { return JSON.parse(localStorage.getItem(WISH_KEY)) || []; } catch { return []; } }
     function saveWishlist(w) { localStorage.setItem(WISH_KEY, JSON.stringify(w)); }

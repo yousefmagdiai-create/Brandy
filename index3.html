@@ -440,7 +440,7 @@
       transition: transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94); filter: brightness(0.92);
     }
     .product-card:hover .product-img img { transform: scale(1.05); filter: brightness(1); }
-    .product-img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(28,35,24,0.55) 0%, transparent 55%); }
+    .product-img-overlay { display: none; }
     .quick-add-btn {
       position: absolute; bottom: 12px; left: 50%;
       transform: translateX(-50%) translateY(8px); opacity: 0;
@@ -753,7 +753,7 @@
       <ul class="nav-links">
         <li><a href="#collections">Collections</a></li>
         <li><a href="#story">Our Story</a></li>
-        <li><a href="#arrivals">New Arrivals</a></li>
+        <li><a href="#arrivals">Featured Products</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
       <div class="nav-right">
@@ -796,10 +796,10 @@
           Wear What<br>Moves You<br>Forward.
         </h1>
         <p class="reveal d2" style="font-size:15px;font-weight:400;color:var(--ink);line-height:1.85;max-width:380px;margin-bottom:44px;opacity:0.75;">
-          Brandy crafts timeless clothing that moves with your ambition — designed for people who wear their confidence as naturally as their fabric.
+          Brandy crafts timeless clothing that moves with your ambition — designed for people who wear their confidence as boldly as their style.
         </p>
         <div class="reveal d3" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:52px;">
-          <button class="btn-primary">
+          <button class="btn-primary" onclick="document.getElementById('arrivals').scrollIntoView({behavior:'smooth'})">
             Shop Collection
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
@@ -854,110 +854,50 @@
     </div>
   </div>
 
-  <!-- FEATURE GRID -->
-  <section style="background:var(--bg);">
-    <div style="max-width:1200px;margin:0 auto;padding:80px 48px 16px;text-align:center;" class="reveal">
-      <p class="label" style="margin-bottom:16px;">Why Brandy</p>
-      <h2 style="font-size:clamp(30px,4vw,48px);font-weight:500;color:var(--ink);letter-spacing:-0.03em;line-height:1.1;">
-        Clothing engineered<br>for your ambition
-      </h2>
-    </div>
-    <div class="feature-grid">
-
-      <div class="feat-card reveal d1">
-        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-        <p class="feat-heading">Precisely Fitted</p>
-        <p class="feat-body">Expert sizing across every silhouette. Find your perfect fit with our intelligent size guide.</p>
-        <div class="feat-illustration" style="padding:16px;">
-          <p style="font-size:9px;color:var(--muted);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:10px;">Select Your Size</p>
-          <div class="size-grid">
-            <div class="size-chip">XXS</div><div class="size-chip">XS</div><div class="size-chip active">S</div><div class="size-chip">M</div><div class="size-chip">L</div><div class="size-chip">XL</div>
-          </div>
-          <div style="margin-top:12px;padding:10px;background:rgba(59,74,46,0.05);border:1px solid rgba(59,74,46,0.12);">
-            <p style="font-size:10px;color:var(--forest);letter-spacing:0.06em;">✓ Size S is your perfect match</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="feat-card reveal d1">
-        <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <p class="feat-heading">Timeless Design</p>
-        <p class="feat-body">Every piece transcends seasons. Designs that outlast trends and become personal signatures.</p>
-        <div class="feat-illustration" style="display:flex;align-items:center;justify-content:center;padding:24px;">
-          <svg class="garment-svg" width="80" height="100" viewBox="0 0 80 100" fill="none">
-            <line x1="40" y1="0" x2="40" y2="12" stroke="#3B4A2E" stroke-width="1.2"/>
-            <path d="M26 12 Q40 6 54 12" stroke="#3B4A2E" stroke-width="1.2" fill="none"/>
-            <path d="M10 22 L26 12 L54 12 L70 22 L64 28 L54 20 L54 95 L26 95 L26 20 L16 28 Z" fill="rgba(59,74,46,0.06)" stroke="#3B4A2E" stroke-width="0.8"/>
-            <line x1="30" y1="48" x2="50" y2="48" stroke="#8B6419" stroke-width="0.8" stroke-dasharray="3 3"/>
-            <line x1="40" y1="20" x2="40" y2="95" stroke="rgba(59,74,46,0.2)" stroke-width="0.6" stroke-dasharray="4 4" class="stitch-line"/>
-          </svg>
-        </div>
-      </div>
-
-      <div class="feat-card large reveal d2">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
-          <div>
-            <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
-            <p class="feat-heading">Curated Collections</p>
-            <p class="feat-body">Each collection tells a story — a mood, a season, a chapter of your ambition. Never random, always intentional.</p>
-            <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap;">
-              <span style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:5px 10px;border:1px solid var(--border);color:var(--muted);">Summer Linen</span>
-              <span style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:5px 10px;background:rgba(59,74,46,0.06);border:1px solid var(--border-hover);color:var(--forest);">Core Essentials</span>
-              <span style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:5px 10px;border:1px solid var(--border);color:var(--muted);">Evening Edit</span>
-            </div>
-          </div>
-          <div class="feat-illustration" style="padding:12px;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-              <div style="aspect-ratio:3/4;overflow:hidden;"><img src="https://placehold.co/120x160/3B4A2E/EDE5D0?text=." style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-              <div style="aspect-ratio:3/4;overflow:hidden;"><img src="https://placehold.co/120x160/C4B896/1C2318?text=." style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-              <div style="aspect-ratio:3/4;overflow:hidden;"><img src="https://placehold.co/120x160/EDE5D0/3B4A2E?text=." style="width:100%;height:100%;object-fit:cover;display:block;"></div>
-              <div style="aspect-ratio:3/4;overflow:hidden;position:relative;"><img src="https://placehold.co/120x160/8B6419/EDE5D0?text=." style="width:100%;height:100%;object-fit:cover;display:block;"><div style="position:absolute;inset:0;background:rgba(28,35,24,0.5);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--cream);letter-spacing:0.1em;">+24</div></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- COLLECTIONS -->
-  <section id="collections" style="background:var(--bg);padding-bottom:0;">
+  <section id="collections" style="background:var(--bg);padding-top:80px;padding-bottom:0;">
     <div class="collections">
       <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;" class="reveal">
         <div>
-          <p class="label" style="margin-bottom:12px;">Shop the World</p>
           <h2 style="font-size:clamp(28px,4vw,48px);font-weight:500;color:var(--ink);letter-spacing:-0.03em;">Our Collections</h2>
         </div>
-        <button class="btn-ghost" style="padding:10px 20px;font-size:10px;">View All →</button>
       </div>
       <div class="coll-grid">
-        <div class="coll-card reveal d1" tabindex="0" role="link" aria-label="Summer Linen Collection">
-          <img src="https://placehold.co/580x380/3B4A2E/EDE5D0?text=." alt="Summer Linen">
+        <div class="coll-card reveal d1" tabindex="0" role="link" aria-label="Classic Collection" style="cursor:pointer;" onclick="window.location='collection.html?cat=Classic'">
+          <img src="https://placehold.co/580x380/3B4A2E/EDE5D0?text=." alt="Classic">
           <div class="coll-overlay"></div><div class="coll-color"></div>
           <div class="coll-label">
-            <p style="font-size:9px;color:rgba(237,229,208,0.6);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:7px;">SS 2026</p>
-            <h3 style="font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:var(--cream);letter-spacing:-0.02em;margin-bottom:10px;">Summer Linen</h3>
+            <h3 style="font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:var(--cream);letter-spacing:-0.02em;margin-bottom:10px;">Classic</h3>
             <span style="font-size:10px;font-weight:600;color:var(--natural);letter-spacing:0.14em;text-transform:uppercase;border-bottom:1px solid currentColor;padding-bottom:2px;">Explore →</span>
           </div>
         </div>
-        <div class="coll-card reveal d2" tabindex="0" role="link" aria-label="Evening Edit Collection">
-          <img src="https://placehold.co/580x380/1C2318/C4B896?text=." alt="Evening Edit">
+        <div class="coll-card reveal d2" tabindex="0" role="link" aria-label="Streetwear Collection" style="cursor:pointer;" onclick="window.location='collection.html?cat=Streetwear'">
+          <img src="https://placehold.co/580x380/1C2318/C4B896?text=." alt="Streetwear">
           <div class="coll-overlay"></div><div class="coll-color"></div>
           <div class="coll-label">
-            <p style="font-size:9px;color:rgba(237,229,208,0.6);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:7px;">After Dark</p>
-            <h3 style="font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:var(--cream);letter-spacing:-0.02em;margin-bottom:10px;">Evening Edit</h3>
+            <h3 style="font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:var(--cream);letter-spacing:-0.02em;margin-bottom:10px;">Streetwear</h3>
             <span style="font-size:10px;font-weight:600;color:var(--natural);letter-spacing:0.14em;text-transform:uppercase;border-bottom:1px solid currentColor;padding-bottom:2px;">Explore →</span>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- MARQUEE 2 -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-item"><span>Natural</span><div class="marquee-dot"></div><span>Focused</span><div class="marquee-dot"></div><span>Forward</span><div class="marquee-dot"></div><span>Timeless</span><div class="marquee-dot"></div><span>Intentional</span><div class="marquee-dot"></div><span>Elevated</span><div class="marquee-dot"></div><span>Minimal</span><div class="marquee-dot"></div><span>Confident</span><div class="marquee-dot"></div><span>Curated</span><div class="marquee-dot"></div><span>Sustainable</span><div class="marquee-dot"></div></div>
+      <div class="marquee-item"><span>Natural</span><div class="marquee-dot"></div><span>Focused</span><div class="marquee-dot"></div><span>Forward</span><div class="marquee-dot"></div><span>Timeless</span><div class="marquee-dot"></div><span>Intentional</span><div class="marquee-dot"></div><span>Elevated</span><div class="marquee-dot"></div><span>Minimal</span><div class="marquee-dot"></div><span>Confident</span><div class="marquee-dot"></div><span>Curated</span><div class="marquee-dot"></div><span>Sustainable</span><div class="marquee-dot"></div></div>
+    </div>
+  </div>
 
   <!-- PRODUCTS -->
   <section id="arrivals" style="padding-top:80px;background:var(--bg);">
     <div class="products-header reveal">
       <div>
         <p class="label" style="margin-bottom:10px;">Bestsellers</p>
-        <h2 style="font-size:clamp(26px,3.5vw,40px);font-weight:500;color:var(--ink);letter-spacing:-0.03em;">New Arrivals</h2>
+        <h2 style="font-size:clamp(26px,3.5vw,40px);font-weight:500;color:var(--ink);letter-spacing:-0.03em;">Featured Products</h2>
       </div>
     </div>
     <div class="products-scroll">
@@ -1010,30 +950,35 @@
           </div>
         </div>
       </div>
-      <div class="product-card reveal d3" tabindex="0">
-        <div class="product-img">
-          <img src="https://placehold.co/260x347/8B6419/EDE5D0?text=." alt="Cotton Wrap Top">
-          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Cotton Wrap Top','76 EGP','https://placehold.co/260x347/8B6419/EDE5D0?text=.',event)">Add to Cart</button>
+      <div class="product-card reveal d3" tabindex="0" style="cursor:pointer;" onclick="if(!event.target.closest('.swatch-dot,.quick-add-btn')){window.location='product4.html';}">
+        <div class="product-img" id="card4-img-wrap">
+          <img src="polo-blue.png" alt="Ralph Lauren Polo Shirt" id="card4-img">
+          <div class="product-img-overlay" style="opacity:0;"></div><button class="quick-add-btn" onclick="card4QuickAdd(event)">Add to Cart</button>
+          <div style="position:absolute;top:10px;left:10px;background:var(--golden);color:var(--cream);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 8px;">New</div>
         </div>
         <div class="product-info">
-          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Tops</p>
-          <p style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:8px;">Cotton Wrap Top</p>
+          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Classic</p>
+          <p style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:8px;">Ralph Lauren Polo Shirt</p>
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:14px;font-weight:600;color:var(--golden);">$76</span>
-            <div style="display:flex;gap:8px;"><div class="swatch-dot" style="background:#C4B896;"></div><div class="swatch-dot" style="background:#3B4A2E;"></div><div class="swatch-dot" style="background:#EDE5D0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);"></div></div>
+            <span style="font-size:14px;font-weight:600;color:var(--golden);">750 EGP</span>
+            <div style="display:flex;gap:8px;">
+              <div class="swatch-dot" style="background:#3A6EA5;outline:2px solid var(--forest);outline-offset:2px;" title="Blue" onclick="event.stopPropagation();selectCard4Swatch(this,'polo-blue.png')"></div>
+              <div class="swatch-dot" style="background:#1F3560;" title="Navy" onclick="event.stopPropagation();selectCard4Swatch(this,'polo-navy.png')"></div>
+              <div class="swatch-dot" style="background:#1C2318;" title="Black" onclick="event.stopPropagation();selectCard4Swatch(this,'polo-black.png')"></div>
+            </div>
           </div>
         </div>
       </div>
       <div class="product-card reveal d4" tabindex="0">
         <div class="product-img">
           <img src="https://placehold.co/260x347/2A3620/C4B896?text=." alt="Wide Leg Trouser">
-          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Wide Leg Trouser','132 EGP','https://placehold.co/260x347/2A3620/C4B896?text=.',event)">Add to Cart</button>
+          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Wide Leg Trouser','132 EGP','https://placehold.co/260x347/2A3620/C4B896?text=.', event)">Add to Cart</button>
         </div>
         <div class="product-info">
           <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Trousers</p>
           <p style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:8px;">Wide Leg Trouser</p>
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:14px;font-weight:600;color:var(--golden);">$132</span>
+            <span style="font-size:14px;font-weight:600;color:var(--golden);">132 EGP</span>
             <div style="display:flex;gap:8px;"><div class="swatch-dot" style="background:#2A3620;"></div><div class="swatch-dot" style="background:#C4B896;"></div></div>
           </div>
         </div>
@@ -1096,19 +1041,19 @@
           btn.textContent = 'Sending...';
           btn.disabled = true;
           try {
-            const res = await fetch('https://api.web3forms.com/submit', {
+            const res = await fetch('https://formsubmit.co/ajax/dym2026outlet@gmail.com', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
               body: JSON.stringify({
-                access_key: '376561bc-034f-4dc0-9bff-826f4c64d057',
-                subject: 'New Subscriber — Brandy',
-                from_name: 'Brandy Website',
+                _subject: 'New Subscriber — Brandy',
+                _captcha: 'false',
+                name: 'Newsletter Subscriber',
                 email: email,
                 message: `New newsletter subscriber:\n\nEmail: ${email}\nTime: ${new Date().toLocaleString()}`
               })
             });
             const data = await res.json();
-            if (!data.success) throw new Error(data.message || 'API rejected');
+            if (!data.success) throw new Error(data.message || 'Submission failed');
             btn.textContent = 'Subscribed!';
             msg.textContent = 'You\'re in! Welcome to Brandy.';
             msg.style.color = 'rgba(196,184,150,0.9)';
@@ -1167,15 +1112,9 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    const fabricCard = document.getElementById('fabric-card');
-    if (fabricCard) {
-      new IntersectionObserver(entries => {
-        entries.forEach(e => { if (e.isIntersecting) { fabricCard.classList.add('visible-card'); } });
-      }, { threshold: 0.3 }).observe(fabricCard);
-    }
-
     document.querySelectorAll('.size-chip').forEach(chip => {
       chip.addEventListener('click', () => {
+        if (chip.style.display === 'none') return;
         chip.closest('.size-grid').querySelectorAll('.size-chip').forEach(s => s.classList.remove('active'));
         chip.classList.add('active');
       });
@@ -1211,6 +1150,9 @@
     sessionStorage.removeItem('brandy_buynow');
     sessionStorage.setItem('brandy_color_product1', 'White');
     sessionStorage.setItem('brandy_color_product2', 'Black');
+    sessionStorage.setItem('brandy_color_product3', 'Black');
+    sessionStorage.setItem('brandy_color_product4', 'Blue');
+    sessionStorage.removeItem('brandy_back_url');
 
     function card1QuickAdd(e) {
       e && e.stopPropagation();
@@ -1219,7 +1161,7 @@
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product1' && i.color === color);
       if (existing) { existing.qty += 1; }
-      else { cart.push({ id: 'product1', name: 'Off-White T-Shirt', price: 700, image: img, color, size: 'M', qty: 1 }); }
+      else { cart.push({ id: 'product1', name: 'Off-White T-Shirt', price: 700, image: img, color, size: color === 'White' ? 'L' : 'M', qty: 1 }); }
       saveCart(cart);
       showToast('Off-White T-Shirt · ' + color, '700 EGP');
     }
@@ -1244,6 +1186,26 @@
       else { cart.push({ id: 'product3', name: 'Zara Short', price: 800, image: 'cargo-shorts-black.png', color: 'Black', size: 'M', qty: 1 }); }
       saveCart(cart);
       showToast('Zara Short · Black', '800 EGP');
+    }
+
+    function selectCard4Swatch(el, img) {
+      el.closest('div').querySelectorAll('.swatch-dot').forEach(s => s.style.outline = 'none');
+      el.style.outline = '2px solid var(--forest)';
+      el.style.outlineOffset = '2px';
+      document.getElementById('card4-img').src = img;
+      sessionStorage.setItem('brandy_color_product4', el.title);
+    }
+
+    function card4QuickAdd(e) {
+      e && e.stopPropagation();
+      const img = document.getElementById('card4-img').src.split('/').pop().split('?')[0];
+      const color = img.includes('navy') ? 'Navy' : img.includes('black') ? 'Black' : 'Blue';
+      const cart = getCart();
+      const existing = cart.find(i => i.id === 'product4' && i.color === color);
+      if (existing) { existing.qty += 1; }
+      else { cart.push({ id: 'product4', name: 'Ralph Lauren Polo Shirt', price: 750, image: img, color, size: 'M', qty: 1 }); }
+      saveCart(cart);
+      showToast('Ralph Lauren Polo Shirt · ' + color, '750 EGP');
     }
 
     function selectHeroSize(el) {
@@ -1397,10 +1359,10 @@
       { type: 'product', name: 'Off-White T-Shirt',  category: 'Streetwear',    price: '700 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png',                                   href: 'product1.html' },
       { type: 'product', name: 'Mastermind T-Shirt', category: 'Streetwear', price: '700 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png',             href: 'product2.html' },
       { type: 'product', name: 'Zara Short',          category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png',                                href: 'product3.html' },
-      { type: 'product', name: 'Cotton Wrap Top',    category: 'Tops',       price: '$76',     img: 'https://placehold.co/44x44/8B6419/EDE5D0?text=.',      href: '#arrivals' },
-      { type: 'product', name: 'Wide Leg Trouser',   category: 'Trousers',   price: '$132',    img: 'https://placehold.co/44x44/2A3620/C4B896?text=.',      href: '#arrivals' },
-      { type: 'collection', name: 'Summer Linen',    category: 'SS 2026',    price: '',        img: 'https://placehold.co/44x44/3B4A2E/EDE5D0?text=.',      href: '#collections' },
-      { type: 'collection', name: 'Evening Edit',    category: 'After Dark', price: '',        img: 'https://placehold.co/44x44/1C2318/C4B896?text=.',      href: '#collections' },
+      { type: 'product', name: 'Ralph Lauren Polo Shirt', category: 'Classic', price: '750 EGP', img: 'polo-blue.png',                                      href: 'product4.html' },
+      { type: 'product', name: 'Wide Leg Trouser',   category: 'Trousers',   price: '132 EGP', img: 'https://placehold.co/44x44/2A3620/C4B896?text=.',      href: '#arrivals' },
+      { type: 'collection', name: 'Classic',    category: 'Collection', price: '', img: 'https://placehold.co/44x44/3B4A2E/EDE5D0?text=.', href: 'collection.html?cat=Classic' },
+      { type: 'collection', name: 'Streetwear', category: 'Collection', price: '', img: 'https://placehold.co/44x44/1C2318/C4B896?text=.', href: 'collection.html?cat=Streetwear' },
     ];
 
     function openSearch() {
@@ -1557,8 +1519,8 @@
         { el: document.querySelectorAll('.product-card')[0], id: 'product1',  name: 'Off-White T-Shirt', category: 'Streetwear',   price: '700 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png',                                  href: 'product1.html' },
         { el: document.querySelectorAll('.product-card')[1], id: 'product2',  name: 'Mastermind T-Shirt', category: 'Streetwear', price: '700 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', href: 'product2.html' },
         { el: document.querySelectorAll('.product-card')[2], id: 'product3',  name: 'Zara Short',        category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png',                              href: 'product3.html' },
-        { el: document.querySelectorAll('.product-card')[3], id: 'product4',  name: 'Cotton Wrap Top',   category: 'Tops',      price: '$76',     img: 'https://placehold.co/64x64/8B6419/EDE5D0?text=.',     href: '#arrivals' },
-        { el: document.querySelectorAll('.product-card')[4], id: 'product5',  name: 'Wide Leg Trouser',  category: 'Trousers',  price: '$132',    img: 'https://placehold.co/64x64/2A3620/C4B896?text=.',     href: '#arrivals' },
+        { el: document.querySelectorAll('.product-card')[3], id: 'product4',  name: 'Ralph Lauren Polo Shirt', category: 'Classic', price: '750 EGP', img: 'polo-blue.png',              href: 'product4.html' },
+        { el: document.querySelectorAll('.product-card')[4], id: 'product5',  name: 'Wide Leg Trouser',  category: 'Trousers',  price: '132 EGP',    img: 'https://placehold.co/64x64/2A3620/C4B896?text=.',     href: '#arrivals' },
       ];
       cards.forEach(({ el, id, name, category, price, img, href }) => {
         if (!el) return;
