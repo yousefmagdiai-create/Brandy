@@ -731,57 +731,55 @@
       }
     }
 
-    function applyLocation(lat, lng) {
+    function applyGpsCoords(lat, lng) {
       document.getElementById('maps-link').value = 'https://www.google.com/maps?q=' + lat + ',' + lng;
       validateCoords(lat, lng);
     }
 
-    function jsonpFetch(url, timeout) {
-      return new Promise((resolve, reject) => {
-        const cb = '_geo' + Date.now() + Math.random().toString(36).slice(2);
-        const s = document.createElement('script');
-        const t = setTimeout(() => { delete window[cb]; s.remove(); reject('timeout'); }, timeout || 6000);
-        window[cb] = d => { clearTimeout(t); delete window[cb]; s.remove(); resolve(d); };
-        s.onerror = () => { clearTimeout(t); delete window[cb]; s.remove(); reject('error'); };
-        s.src = url.replace('CALLBACK', cb);
-        document.head.appendChild(s);
-      });
-    }
-
-    async function useIpLocation() {
-      showLocStatus('loading', 'Detecting your location…');
-      const services = [
-        () => fetch('https://ipapi.co/json/').then(r => r.json()).then(d => ({ lat: d.latitude, lng: d.longitude })),
-        () => jsonpFetch('https://get.geojs.io/v1/ip/geo.js?callback=CALLBACK', 6000).then(d => ({ lat: parseFloat(d.latitude), lng: parseFloat(d.longitude) })),
-        () => jsonpFetch('https://ipapi.co/jsonp/?callback=CALLBACK', 6000).then(d => ({ lat: d.latitude, lng: d.longitude })),
-      ];
-      for (const svc of services) {
-        try {
-          const { lat, lng } = await svc();
-          if (lat && lng && !isNaN(lat) && !isNaN(lng)) { applyLocation(lat, lng); return; }
-        } catch (e) {}
-      }
-      showLocStatus('invalid', '✗ Could not detect your location automatically. Please paste a Google Maps link below.');
-    }
-
-    function tryGpsLocation() {
-      navigator.geolocation.getCurrentPosition(
-        pos => applyLocation(pos.coords.latitude, pos.coords.longitude),
-        () => useIpLocation(),
-        { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
-      );
-    }
-
     function useMyLocation() {
-      showLocStatus('loading', 'Getting your location…');
-      if (!navigator.geolocation) { useIpLocation(); return; }
-      if (navigator.permissions) {
-        navigator.permissions.query({ name: 'geolocation' })
-          .then(r => r.state === 'denied' ? useIpLocation() : tryGpsLocation())
-          .catch(() => tryGpsLocation());
-      } else {
-        tryGpsLocation();
+      if (!navigator.geolocation) {
+        showLocStatus('invalid', '✗ Location is not supported in this browser. Please paste a Google Maps link below.');
+        return;
       }
+      showLocStatus('loading', 'Getting your precise location — tap Allow if asked…');
+      let bestPos = null;
+      let done = false;
+
+      const watcher = navigator.geolocation.watchPosition(
+        pos => {
+          if (done) return;
+          if (!bestPos || pos.coords.accuracy < bestPos.coords.accuracy) bestPos = pos;
+          if (pos.coords.accuracy <= 150) {
+            done = true;
+            navigator.geolocation.clearWatch(watcher);
+            clearTimeout(giveUpTimer);
+            applyGpsCoords(pos.coords.latitude, pos.coords.longitude);
+          }
+        },
+        err => {
+          if (done) return;
+          done = true;
+          clearTimeout(giveUpTimer);
+          navigator.geolocation.clearWatch(watcher);
+          if (err.code === 1) {
+            showLocStatus('invalid', '✗ Location access is blocked. Tap the 🔒 icon in your address bar → Location → Allow → refresh and try again. Or paste a Google Maps link below.');
+          } else {
+            showLocStatus('invalid', '✗ Could not get your location. Please paste a Google Maps link below.');
+          }
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+      );
+
+      const giveUpTimer = setTimeout(() => {
+        if (done) return;
+        done = true;
+        navigator.geolocation.clearWatch(watcher);
+        if (bestPos) {
+          applyGpsCoords(bestPos.coords.latitude, bestPos.coords.longitude);
+        } else {
+          showLocStatus('invalid', '✗ Could not get your location. Please paste a Google Maps link below.');
+        }
+      }, 14000);
     }
 
     // Parse raw coordinates: "30.0453, 31.2243"
