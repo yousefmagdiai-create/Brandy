@@ -8,8 +8,6 @@
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-13JN7BHRMC');</script>
   <script src="brandy-analytics.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -436,10 +434,6 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
                 Use my current location
               </button>
-              <div style="margin-top:12px;">
-                <p style="font-size:11px;color:#6D7175;margin-bottom:6px;line-height:1.6;">Or click anywhere on the map to pin your exact location:</p>
-                <div id="map-picker" style="height:280px;border-radius:8px;overflow:hidden;border:1px solid #ddd;background:#e8e0d0;"></div>
-              </div>
               <span class="loc-or">— or paste a Google Maps link or coordinates —</span>
               <div class="loc-paste-row">
                 <input type="text" id="maps-link" placeholder="maps.app.goo.gl/...  or  30.0453, 31.2243">
@@ -737,72 +731,64 @@
       }
     }
 
-    let leafletMap = null, leafletMarker = null;
-
-    function initMap() {
-      if (leafletMap || typeof L === 'undefined') return;
-      leafletMap = L.map('map-picker', { zoomControl: true }).setView([30.0444, 31.2357], 12);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 19
-      }).addTo(leafletMap);
-      leafletMap.on('click', function(e) {
-        if (leafletMarker) leafletMap.removeLayer(leafletMarker);
-        leafletMarker = L.marker(e.latlng).addTo(leafletMap);
-        const lat = e.latlng.lat, lng = e.latlng.lng;
-        document.getElementById('maps-link').value = 'https://www.google.com/maps?q=' + lat + ',' + lng;
-        validateCoords(lat, lng);
-      });
+    function useIpLocation() {
+      showLocStatus('loading', 'Detecting your location…');
+      const cb = '_ipgeo' + Date.now();
+      const script = document.createElement('script');
+      const timer = setTimeout(() => {
+        delete window[cb];
+        if (script.parentNode) script.parentNode.removeChild(script);
+        showLocStatus('invalid', '✗ Could not detect your location automatically. Please paste a Google Maps link instead.');
+      }, 8000);
+      window[cb] = function(data) {
+        clearTimeout(timer);
+        delete window[cb];
+        if (script.parentNode) script.parentNode.removeChild(script);
+        if (data && data.latitude && data.longitude) {
+          const lat = parseFloat(data.latitude), lng = parseFloat(data.longitude);
+          document.getElementById('maps-link').value = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+          validateCoords(lat, lng);
+        } else {
+          showLocStatus('invalid', '✗ Could not detect your location automatically. Please paste a Google Maps link instead.');
+        }
+      };
+      script.onerror = function() {
+        clearTimeout(timer);
+        delete window[cb];
+        showLocStatus('invalid', '✗ Could not detect your location automatically. Please paste a Google Maps link instead.');
+      };
+      script.src = 'https://ipapi.co/jsonp/?callback=' + cb;
+      document.head.appendChild(script);
     }
 
-    if (typeof L !== 'undefined') {
-      initMap();
-    } else {
-      document.querySelector('script[src*="leaflet"]').addEventListener('load', initMap);
-    }
-
-    function doGetLocation() {
-      showLocStatus('loading', 'Getting your location — please allow access if prompted…');
+    function tryGpsLocation() {
       navigator.geolocation.getCurrentPosition(
         pos => {
           const lat = pos.coords.latitude, lng = pos.coords.longitude;
-          const mapsUrl = 'https://www.google.com/maps?q=' + lat + ',' + lng;
-          document.getElementById('maps-link').value = mapsUrl;
-          if (leafletMap) {
-            leafletMap.setView([lat, lng], 17);
-            if (leafletMarker) leafletMap.removeLayer(leafletMarker);
-            leafletMarker = L.marker([lat, lng]).addTo(leafletMap);
-          }
+          document.getElementById('maps-link').value = 'https://www.google.com/maps?q=' + lat + ',' + lng;
           validateCoords(lat, lng);
         },
-        err => {
-          if (err.code === 1) {
-            showLocStatus('invalid', '✗ Location access blocked. Please use the map below to pin your location, or paste a Google Maps link.');
-          } else if (err.code === 2) {
-            showLocStatus('invalid', '✗ Could not determine your location. Please use the map below to pin your location.');
-          } else {
-            showLocStatus('invalid', '✗ Location request timed out. Please use the map below or paste a Google Maps link.');
-          }
-        },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        () => useIpLocation(),
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
       );
     }
 
     function useMyLocation() {
+      showLocStatus('loading', 'Getting your location…');
       if (!navigator.geolocation) {
-        showLocStatus('invalid', '✗ Your browser does not support location access. Please paste a Google Maps link instead.');
+        useIpLocation();
         return;
       }
       if (navigator.permissions) {
         navigator.permissions.query({ name: 'geolocation' }).then(result => {
           if (result.state === 'denied') {
-            showLocStatus('invalid', '✗ Location is blocked for this site. To fix it: click the 🔒 lock icon in your browser\'s address bar → click "Site settings" → set Location to "Allow" → refresh the page and try again.');
+            useIpLocation();
           } else {
-            doGetLocation();
+            tryGpsLocation();
           }
-        }).catch(() => doGetLocation());
+        }).catch(() => tryGpsLocation());
       } else {
-        doGetLocation();
+        tryGpsLocation();
       }
     }
 
