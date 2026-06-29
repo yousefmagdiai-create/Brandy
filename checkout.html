@@ -434,11 +434,15 @@
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
                 Share My Location
               </button>
-              <div id="loc-blocked-msg" style="display:none;margin-top:12px;padding:12px 14px;background:#fff8f0;border:1px solid #f0d9c0;border-radius:8px;">
-                <p style="font-size:13px;font-weight:600;color:#a0522d;margin-bottom:6px;">Location access was denied</p>
-                <p style="font-size:12px;color:#6D7175;margin-bottom:10px;line-height:1.6;">No problem — open Google Maps, hold your finger on your location until a pin drops, tap the address at the bottom, then tap Share and paste the link below.</p>
-                <a href="https://maps.google.com" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#4285F4;color:#fff;padding:9px 16px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none;">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <div id="loc-blocked-msg" style="display:none;margin-top:12px;padding:14px 16px;background:#f0f7ff;border:1px solid #c5ddf7;border-radius:8px;">
+                <p style="font-size:13px;font-weight:700;color:#1a56a0;margin-bottom:8px;">📍 Can't get location automatically</p>
+                <p style="font-size:12px;color:#444;margin-bottom:12px;line-height:1.7;">Use Google Maps instead — it takes 10 seconds:<br>
+                1. Tap the button below to open Google Maps<br>
+                2. Hold your finger on your location on the map<br>
+                3. Tap <strong>Share</strong> → copy the link<br>
+                4. Paste the link in the box below and tap Verify</p>
+                <a href="https://maps.google.com" target="_blank" style="display:inline-flex;align-items:center;gap:7px;background:#4285F4;color:#fff;padding:11px 20px;border-radius:7px;font-size:13px;font-weight:700;text-decoration:none;margin-bottom:2px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                   Open Google Maps
                 </a>
               </div>
@@ -742,20 +746,14 @@
       validateCoords(lat, lng);
     }
 
-    function useMyLocation() {
-      document.getElementById('loc-blocked-msg').style.display = 'none';
-      if (location.protocol === 'file:') {
-        showLocStatus('invalid', '⚠️ Location only works on the live site. Open your site via the GitHub Pages link, not as a local file.');
-        return;
-      }
-      if (!navigator.geolocation) {
-        document.getElementById('loc-blocked-msg').style.display = 'block';
-        return;
-      }
-      showLocStatus('loading', 'Getting your location — tap Allow if your browser asks…');
-      let bestPos = null;
-      let done = false;
+    function showLocBlocked() {
+      document.getElementById('loc-blocked-msg').style.display = 'block';
+      document.getElementById('loc-status').className = 'loc-status';
+    }
 
+    function doGps() {
+      showLocStatus('loading', 'Getting your location — tap Allow when asked…');
+      let bestPos = null, done = false;
       const watcher = navigator.geolocation.watchPosition(
         pos => {
           if (done) return;
@@ -772,26 +770,34 @@
           done = true;
           clearTimeout(giveUpTimer);
           navigator.geolocation.clearWatch(watcher);
-          if (err.code === 1) {
-            document.getElementById('loc-blocked-msg').style.display = 'block';
-            showLocStatus('invalid', '');
-          } else {
-            showLocStatus('invalid', '✗ Could not get your location. Please paste a Google Maps link below.');
-          }
+          showLocBlocked();
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
-
       const giveUpTimer = setTimeout(() => {
         if (done) return;
         done = true;
         navigator.geolocation.clearWatch(watcher);
-        if (bestPos) {
-          applyGpsCoords(bestPos.coords.latitude, bestPos.coords.longitude);
-        } else {
-          showLocStatus('invalid', '✗ Could not get your location. Please paste a Google Maps link below.');
-        }
+        if (bestPos) { applyGpsCoords(bestPos.coords.latitude, bestPos.coords.longitude); }
+        else { showLocBlocked(); }
       }, 14000);
+    }
+
+    function useMyLocation() {
+      document.getElementById('loc-blocked-msg').style.display = 'none';
+      document.getElementById('loc-status').className = 'loc-status';
+      if (location.protocol === 'file:') {
+        showLocStatus('invalid', '⚠️ Location only works on the live site — open the GitHub Pages link on your phone.');
+        return;
+      }
+      if (!navigator.geolocation) { showLocBlocked(); return; }
+      if (navigator.permissions) {
+        navigator.permissions.query({ name: 'geolocation' })
+          .then(r => { if (r.state === 'denied') { showLocBlocked(); } else { doGps(); } })
+          .catch(() => doGps());
+      } else {
+        doGps();
+      }
     }
 
     // Parse raw coordinates: "30.0453, 31.2243"
