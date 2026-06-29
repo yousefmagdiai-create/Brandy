@@ -731,43 +731,42 @@
       }
     }
 
-    function useIpLocation() {
+    function applyLocation(lat, lng) {
+      document.getElementById('maps-link').value = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+      validateCoords(lat, lng);
+    }
+
+    function jsonpFetch(url, timeout) {
+      return new Promise((resolve, reject) => {
+        const cb = '_geo' + Date.now() + Math.random().toString(36).slice(2);
+        const s = document.createElement('script');
+        const t = setTimeout(() => { delete window[cb]; s.remove(); reject('timeout'); }, timeout || 6000);
+        window[cb] = d => { clearTimeout(t); delete window[cb]; s.remove(); resolve(d); };
+        s.onerror = () => { clearTimeout(t); delete window[cb]; s.remove(); reject('error'); };
+        s.src = url.replace('CALLBACK', cb);
+        document.head.appendChild(s);
+      });
+    }
+
+    async function useIpLocation() {
       showLocStatus('loading', 'Detecting your location…');
-      const cb = '_ipgeo' + Date.now();
-      const script = document.createElement('script');
-      const timer = setTimeout(() => {
-        delete window[cb];
-        if (script.parentNode) script.parentNode.removeChild(script);
-        showLocStatus('invalid', '✗ Could not detect your location automatically. Please paste a Google Maps link instead.');
-      }, 8000);
-      window[cb] = function(data) {
-        clearTimeout(timer);
-        delete window[cb];
-        if (script.parentNode) script.parentNode.removeChild(script);
-        if (data && data.latitude && data.longitude) {
-          const lat = parseFloat(data.latitude), lng = parseFloat(data.longitude);
-          document.getElementById('maps-link').value = 'https://www.google.com/maps?q=' + lat + ',' + lng;
-          validateCoords(lat, lng);
-        } else {
-          showLocStatus('invalid', '✗ Could not detect your location automatically. Please paste a Google Maps link instead.');
-        }
-      };
-      script.onerror = function() {
-        clearTimeout(timer);
-        delete window[cb];
-        showLocStatus('invalid', '✗ Could not detect your location automatically. Please paste a Google Maps link instead.');
-      };
-      script.src = 'https://ipapi.co/jsonp/?callback=' + cb;
-      document.head.appendChild(script);
+      const services = [
+        () => fetch('https://ipapi.co/json/').then(r => r.json()).then(d => ({ lat: d.latitude, lng: d.longitude })),
+        () => jsonpFetch('https://get.geojs.io/v1/ip/geo.js?callback=CALLBACK', 6000).then(d => ({ lat: parseFloat(d.latitude), lng: parseFloat(d.longitude) })),
+        () => jsonpFetch('https://ipapi.co/jsonp/?callback=CALLBACK', 6000).then(d => ({ lat: d.latitude, lng: d.longitude })),
+      ];
+      for (const svc of services) {
+        try {
+          const { lat, lng } = await svc();
+          if (lat && lng && !isNaN(lat) && !isNaN(lng)) { applyLocation(lat, lng); return; }
+        } catch (e) {}
+      }
+      showLocStatus('invalid', '✗ Could not detect your location automatically. Please paste a Google Maps link below.');
     }
 
     function tryGpsLocation() {
       navigator.geolocation.getCurrentPosition(
-        pos => {
-          const lat = pos.coords.latitude, lng = pos.coords.longitude;
-          document.getElementById('maps-link').value = 'https://www.google.com/maps?q=' + lat + ',' + lng;
-          validateCoords(lat, lng);
-        },
+        pos => applyLocation(pos.coords.latitude, pos.coords.longitude),
         () => useIpLocation(),
         { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
       );
@@ -775,18 +774,11 @@
 
     function useMyLocation() {
       showLocStatus('loading', 'Getting your location…');
-      if (!navigator.geolocation) {
-        useIpLocation();
-        return;
-      }
+      if (!navigator.geolocation) { useIpLocation(); return; }
       if (navigator.permissions) {
-        navigator.permissions.query({ name: 'geolocation' }).then(result => {
-          if (result.state === 'denied') {
-            useIpLocation();
-          } else {
-            tryGpsLocation();
-          }
-        }).catch(() => tryGpsLocation());
+        navigator.permissions.query({ name: 'geolocation' })
+          .then(r => r.state === 'denied' ? useIpLocation() : tryGpsLocation())
+          .catch(() => tryGpsLocation());
       } else {
         tryGpsLocation();
       }
