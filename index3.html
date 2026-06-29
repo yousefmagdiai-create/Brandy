@@ -799,11 +799,11 @@
           Brandy crafts timeless clothing that moves with your ambition — designed for people who wear their confidence as boldly as their style.
         </p>
         <div class="reveal d3" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:52px;">
-          <button class="btn-primary" onclick="document.getElementById('arrivals').scrollIntoView({behavior:'smooth'})">
+          <button class="btn-primary" onclick="document.getElementById('collections').scrollIntoView({behavior:'smooth'})">
             Shop Collection
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
-          <button class="btn-ghost">View Lookbook</button>
+          <button class="btn-ghost" onclick="document.getElementById('arrivals').scrollIntoView({behavior:'smooth'})">View All</button>
         </div>
       </div>
 
@@ -1029,7 +1029,7 @@
         <input type="email" id="newsletter-email" placeholder="your@email.com" class="newsletter-input" aria-label="Email address" required>
         <button type="submit" id="newsletter-btn" class="btn-primary-light" style="flex-shrink:0;padding:14px 24px;">Subscribe</button>
       </form>
-      <p id="newsletter-msg" style="margin-top:14px;font-size:11px;color:rgba(237,229,208,0.25);">No spam, ever. Unsubscribe any time.</p>
+      <p id="newsletter-msg" style="margin-top:14px;font-size:11px;color:rgba(237,229,208,0.25);"></p>
 
       <script>
         async function handleSubscribe(e) {
