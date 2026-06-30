@@ -743,8 +743,23 @@
 
     function applyGpsCoords(lat, lng) {
       const flat = lat.toFixed(6), flng = lng.toFixed(6);
-      document.getElementById('maps-link').value = 'https://maps.google.com/maps?q=' + flat + ',' + flng;
+      const url = 'https://www.google.com/maps/search/?api=1&query=' + flat + '%2C' + flng;
+      document.getElementById('maps-link').value = url;
       validateCoords(parseFloat(flat), parseFloat(flng));
+      showLocStatus('valid',
+        '✓ Location detected. ' +
+        'Please tap the link below to confirm it shows your correct location on the map — ' +
+        'if it\'s wrong, paste a correct Google Maps link instead.'
+      );
+      const verifyEl = document.getElementById('loc-verify-link');
+      if (verifyEl) verifyEl.remove();
+      const a = document.createElement('a');
+      a.id = 'loc-verify-link';
+      a.href = url;
+      a.target = '_blank';
+      a.textContent = '📍 Tap to view your detected location';
+      a.style.cssText = 'display:block;margin-top:8px;font-size:12px;font-weight:600;color:#1a56a0;text-decoration:underline;';
+      document.getElementById('loc-status').after(a);
     }
 
     function showLocBlocked() {
@@ -787,6 +802,8 @@
     function useMyLocation() {
       document.getElementById('loc-blocked-msg').style.display = 'none';
       document.getElementById('loc-status').className = 'loc-status';
+      const old = document.getElementById('loc-verify-link');
+      if (old) old.remove();
       if (location.protocol === 'file:') {
         showLocStatus('invalid', '⚠️ Location only works on the live site — open the GitHub Pages link on your phone.');
         return;
