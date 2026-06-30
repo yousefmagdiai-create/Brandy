@@ -1124,6 +1124,8 @@
 
       const email = document.getElementById('email') ? document.getElementById('email').value.trim() : '';
       const mapsLink = document.getElementById('maps-link') ? document.getElementById('maps-link').value.trim() : '';
+      const apt = document.getElementById('apt') ? document.getElementById('apt').value.trim() : '';
+      const notes = document.getElementById('notes') ? document.getElementById('notes').value.trim() : '';
       const itemLines = cart.length
         ? cart.map(i => `• ${i.name} (${i.color || ''}, ${i.size || ''}) x${i.qty} — ${(i.price * i.qty).toLocaleString()} EGP`).join('\n')
         : '• (Buy Now item)';
@@ -1145,6 +1147,8 @@
             `Location:`,
             `${mapsLink || 'Not provided'}`,
             `Payment:  ${selectedPayment === 'instapay' ? 'InstaPay' : 'Cash on Delivery'}`,
+            ...(apt   ? [`Apt/Floor: ${apt}`]   : []),
+            ...(notes ? [`Notes:    ${notes}`] : []),
             ``,
             `ITEMS`,
             `─────────────────────`,
