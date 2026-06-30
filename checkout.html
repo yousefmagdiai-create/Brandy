@@ -742,8 +742,9 @@
     }
 
     function applyGpsCoords(lat, lng) {
-      document.getElementById('maps-link').value = 'https://www.google.com/maps?q=' + lat + ',' + lng;
-      validateCoords(lat, lng);
+      const flat = lat.toFixed(6), flng = lng.toFixed(6);
+      document.getElementById('maps-link').value = 'https://maps.google.com/maps?q=' + flat + ',' + flng;
+      validateCoords(parseFloat(flat), parseFloat(flng));
     }
 
     function showLocBlocked() {
@@ -1124,7 +1125,8 @@
             `Phone:    ${phone}`,
             `Email:    ${email || 'Not provided'}`,
             `Area:     ${areaName}`,
-            `Location: ${mapsLink || 'Not provided'}`,
+            `Location:`,
+            `${mapsLink || 'Not provided'}`,
             `Payment:  ${selectedPayment === 'instapay' ? 'InstaPay' : 'Cash on Delivery'}`,
             ``,
             `ITEMS`,
