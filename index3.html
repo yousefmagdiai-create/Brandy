@@ -125,7 +125,7 @@
     .nav-right { display: flex; align-items: center; gap: 4px; }
     .icon-btn {
       width: 36px; height: 36px; border-radius: 50%; border: none;
-      background: transparent; color: var(--muted); cursor: pointer;
+      background: transparent; color: var(--forest); cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: background 0.2s ease, color 0.2s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
     }
@@ -666,13 +666,13 @@
     footer { background: var(--ink); border-top: 1px solid rgba(196,184,150,0.08); padding: 56px 48px 36px; }
     .footer-inner { max-width: 1200px; margin: 0 auto; }
     .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
-    .footer-logo { height: 180px; width: 300px; margin-bottom: -30px; background: #EDE5D0; -webkit-mask: url('brandassets/logo1\20 (2).png') left center / auto 180px no-repeat; mask: url('brandassets/logo1\20 (2).png') left center / auto 180px no-repeat; }
-    .footer-tagline { font-size: 12px; font-weight: 300; color: rgba(237,229,208,0.6); line-height: 1.7; margin-bottom: 20px; }
+    .footer-logo { height: 180px; width: auto; }
+    .footer-tagline { font-size: 12px; font-weight: 300; color: #EDE5D0; line-height: 1.7; margin-bottom: 20px; }
     .footer-social { display: flex; gap: 4px; }
-    .footer-col-title { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(237,229,208,0.6); margin-bottom: 18px; }
+    .footer-col-title { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #EDE5D0; margin-bottom: 18px; }
     .footer-links { list-style: none; }
     .footer-links li + li { margin-top: 10px; }
-    .footer-links a { font-size: 13px; font-weight: 300; color: rgba(237,229,208,0.6); text-decoration: none; transition: color 0.2s ease; }
+    .footer-links a { font-size: 13px; font-weight: 300; color: #EDE5D0; text-decoration: none; transition: color 0.2s ease; }
     .footer-links a:hover { color: var(--cream); }
     .footer-links a:focus-visible { outline: 2px solid var(--golden); outline-offset: 2px; }
     .footer-bottom {
@@ -748,7 +748,7 @@
   <nav id="nav">
     <div class="nav-inner">
       <a href="#" aria-label="Brandy home">
-        <img src="brandassets/logo1 (2).png" alt="Brandy" style="height:90px;width:auto;mix-blend-mode:multiply;">
+        <img src="brandassets/logo-transparent.png" alt="Brandy" style="height:44px;width:auto;display:block;">
       </a>
       <ul class="nav-links">
         <li><a href="#collections">Collections</a></li>
@@ -1073,11 +1073,13 @@
     <div class="footer-inner">
       <div class="footer-grid">
         <div>
-          <div class="footer-logo" role="img" aria-label="Brandy"></div>
+          <div style="margin-bottom:8px;">
+            <p style="font-family:'Playfair Display',serif;font-size:30px;font-weight:600;color:#EDE5D0;line-height:1;letter-spacing:-0.01em;">Brandy</p>
+          </div>
           <p class="footer-tagline">Timeless clothing for mindful dressing!</p>
           <div class="footer-social">
-            <button class="icon-btn" style="color:rgba(196,184,150,0.4);" aria-label="Instagram"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></button>
-            <button class="icon-btn" style="color:rgba(196,184,150,0.4);" aria-label="Pinterest"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg></button>
+            <button class="icon-btn" style="color:#EDE5D0;" aria-label="Instagram"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></button>
+            <button class="icon-btn" style="color:#EDE5D0;" aria-label="Pinterest"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg></button>
           </div>
         </div>
         <div>
