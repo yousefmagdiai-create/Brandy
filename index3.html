@@ -666,13 +666,13 @@
     footer { background: var(--ink); border-top: 1px solid rgba(196,184,150,0.08); padding: 56px 48px 36px; }
     .footer-inner { max-width: 1200px; margin: 0 auto; }
     .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
-    .footer-logo { height: 36px; width: auto; margin-bottom: 16px; }
-    .footer-tagline { font-size: 12px; font-weight: 300; color: rgba(196,184,150,0.45); line-height: 1.7; margin-bottom: 20px; }
+    .footer-logo { height: 180px; width: auto; margin-bottom: -30px; opacity: 0.6; }
+    .footer-tagline { font-size: 12px; font-weight: 300; color: rgba(237,229,208,0.6); line-height: 1.7; margin-bottom: 20px; }
     .footer-social { display: flex; gap: 4px; }
-    .footer-col-title { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(196,184,150,0.5); margin-bottom: 18px; }
+    .footer-col-title { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(237,229,208,0.6); margin-bottom: 18px; }
     .footer-links { list-style: none; }
     .footer-links li + li { margin-top: 10px; }
-    .footer-links a { font-size: 13px; font-weight: 300; color: rgba(196,184,150,0.4); text-decoration: none; transition: color 0.2s ease; }
+    .footer-links a { font-size: 13px; font-weight: 300; color: rgba(237,229,208,0.6); text-decoration: none; transition: color 0.2s ease; }
     .footer-links a:hover { color: var(--cream); }
     .footer-links a:focus-visible { outline: 2px solid var(--golden); outline-offset: 2px; }
     .footer-bottom {
@@ -748,7 +748,7 @@
   <nav id="nav">
     <div class="nav-inner">
       <a href="#" aria-label="Brandy home">
-        <img src="brandassets/logo1 (2).png" alt="Brandy" style="height:72px;width:auto;">
+        <img src="brandassets/logo1 (2).png" alt="Brandy" style="height:90px;width:auto;mix-blend-mode:multiply;">
       </a>
       <ul class="nav-links">
         <li><a href="#collections">Collections</a></li>
@@ -1016,11 +1016,10 @@
   <section id="contact" class="cta-section">
     <div class="cta-orb-a"></div><div class="cta-orb-b"></div><div class="cta-grid-bg"></div>
     <div class="cta-inner reveal">
-      <p class="label-light" style="margin-bottom:16px;">Stay Ahead</p>
       <h2 style="font-size:clamp(30px,5vw,56px);font-weight:500;letter-spacing:-0.03em;line-height:1.0;margin-bottom:16px;
         background:linear-gradient(135deg,var(--cream) 0%,var(--natural) 50%,var(--golden) 100%);
         -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
-        Accelerate<br>Your Ambition.
+        STAY AHEAD
       </h2>
       <p style="font-size:15px;font-weight:300;color:rgba(237,229,208,0.6);line-height:1.8;margin-bottom:40px;">
         Early access to new arrivals, exclusive drops, and styling notes — straight to your inbox.
@@ -1074,30 +1073,31 @@
     <div class="footer-inner">
       <div class="footer-grid">
         <div>
-          <img src="brandassets/logo1 (2).png" alt="Brandy" class="footer-logo" style="mix-blend-mode:screen;">
-          <p class="footer-tagline">Accelerate Your Ambition.<br>Timeless clothing for mindful dressing.</p>
+          <img src="brandassets/logo1 (2).png" alt="Brandy" class="footer-logo" style="filter: brightness(0) invert(1) sepia(22%) saturate(50%) brightness(0.78);">
+          <p class="footer-tagline">Timeless clothing for mindful dressing!</p>
           <div class="footer-social">
             <button class="icon-btn" style="color:rgba(196,184,150,0.4);" aria-label="Instagram"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></button>
             <button class="icon-btn" style="color:rgba(196,184,150,0.4);" aria-label="Pinterest"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg></button>
-            <button class="icon-btn" style="color:rgba(196,184,150,0.4);" aria-label="TikTok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg></button>
           </div>
         </div>
         <div>
           <p class="footer-col-title">Shop</p>
-          <ul class="footer-links"><li><a href="#">New Arrivals</a></li><li><a href="#">Collections</a></li><li><a href="#">Bestsellers</a></li><li><a href="#">Lookbook</a></li><li><a href="#">Sale</a></li></ul>
+          <ul class="footer-links"><li><a href="index3.html#arrivals">New Arrivals</a></li><li><a href="index3.html#collections">Collections</a></li><li><a href="#">Bestsellers</a></li><li><a href="#">Sale</a></li></ul>
         </div>
+        <!-- COMPANY SECTION — hidden temporarily, restore when needed
         <div>
           <p class="footer-col-title">Company</p>
           <ul class="footer-links"><li><a href="#">Our Story</a></li><li><a href="#">Sustainability</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li></ul>
         </div>
+        -->
         <div>
           <p class="footer-col-title">Help</p>
-          <ul class="footer-links"><li><a href="#">Shipping & Returns</a></li><li><a href="#">Size Guide</a></li><li><a href="#">FAQ</a></li><li><a href="#">Contact Us</a></li></ul>
+          <ul class="footer-links"><li><a href="#">Shipping & Returns</a></li><li><a href="#">Size Guide</a></li><li><a href="#">FAQ</a></li><li><a href="contact.html">Contact Us</a></li></ul>
         </div>
       </div>
       <div class="footer-bottom">
         <p class="footer-copy">© 2026 Brandy. All rights reserved.</p>
-        <div class="footer-legal"><a href="privacy.html">Privacy Policy</a><a href="#">Terms of Use</a><a href="#">Cookies</a></div>
+        <div class="footer-legal"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a><a href="cookies.html">Cookies</a></div>
       </div>
     </div>
   </footer>
