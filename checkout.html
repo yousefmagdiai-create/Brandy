@@ -710,19 +710,14 @@
     }
 
     function validateCoords(lat, lng) {
-      if (!selectedArea) {
-        showLocStatus('invalid', 'Please select a delivery area first.');
-        return;
-      }
-      const b = AREA_BOUNDS[selectedArea];
-      const areaName = selectedArea === 'cairo' ? 'Cairo' : '6th of October';
-      if (lat >= b.minLat && lat <= b.maxLat && lng >= b.minLng && lng <= b.maxLng) {
+      // Egypt broad bounds
+      if (lat >= 22.0 && lat <= 31.7 && lng >= 25.0 && lng <= 37.0) {
         locationVerified = true;
-        showLocStatus('valid', '✓ Location verified — within ' + areaName + '.');
+        showLocStatus('valid', '✓ Location verified — our Uber courier will deliver to you.');
         document.getElementById('err-location').classList.remove('show');
       } else {
         locationVerified = false;
-        showLocStatus('invalid', '✗ This location is not within ' + areaName + '. Please select the correct delivery area or share a location inside ' + areaName + '.');
+        showLocStatus('invalid', '✗ Location appears to be outside Egypt. Please share a valid Google Maps link for your delivery address.');
       }
     }
 
@@ -944,7 +939,7 @@
     }
 
     async function geocodeQuery(query) {
-      if (!query || !selectedArea) return null;
+      if (!query) return null;
       const r = await fetchTimeout(
         'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(query) + '&format=json&limit=3&countrycodes=eg',
         8000
