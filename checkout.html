@@ -709,21 +709,22 @@
       el.textContent = msg;
     }
 
+    function unlockPaymentSection() {
+      const paySection = document.getElementById('payment-section');
+      if (paySection) {
+        paySection.classList.remove('section-locked');
+        const lockedNote = document.getElementById('payment-locked-note');
+        const secureNote = document.getElementById('payment-secure-note');
+        if (lockedNote) lockedNote.style.display = 'none';
+        if (secureNote) secureNote.style.display = '';
+      }
+    }
+
     function validateCoords(lat, lng) {
-      // Egypt broad bounds
       if (lat >= 22.0 && lat <= 31.7 && lng >= 25.0 && lng <= 37.0) {
         locationVerified = true;
         showLocStatus('valid', '✓ Location verified — our Uber courier will deliver to you.');
         document.getElementById('err-location').classList.remove('show');
-        // Unlock payment section
-        const paySection = document.getElementById('payment-section');
-        if (paySection) {
-          paySection.classList.remove('section-locked');
-          const lockedNote = document.getElementById('payment-locked-note');
-          const secureNote = document.getElementById('payment-secure-note');
-          if (lockedNote) lockedNote.style.display = 'none';
-          if (secureNote) secureNote.style.display = '';
-        }
       } else {
         locationVerified = false;
         showLocStatus('invalid', '✗ Location appears to be outside Egypt. Please share a valid Google Maps link for your delivery address.');
@@ -735,6 +736,7 @@
       const url = 'https://www.google.com/maps/search/?api=1&query=' + flat + '%2C' + flng;
       document.getElementById('maps-link').value = url;
       validateCoords(parseFloat(flat), parseFloat(flng));
+      if (locationVerified) unlockPaymentSection();
       showLocStatus('valid',
         '✓ Location detected. ' +
         'Please tap the link below to confirm it shows your correct location on the map — ' +
@@ -967,6 +969,7 @@
     }
 
     async function verifyMapsLink() {
+      try {
       const raw = document.getElementById('maps-link').value.trim();
       if (!raw) { showLocStatus('invalid', 'Please paste your coordinates or a Google Maps link.'); return; }
 
@@ -980,16 +983,25 @@
 
       showLocStatus('loading', 'Resolving link…');
 
-      // 3. Jina AI reader — fetches and renders the Maps page, returning map tile URLs
-      //    whose x/y/zoom encode the exact location. Works for both short and full links.
+      // 3. Fast: follow redirect via allorigins — the final URL after redirect contains @lat,lng
+      //    This resolves short links (maps.app.goo.gl) in ~3s without needing a heavy renderer.
+      try {
+        const r = await fetchTimeout('https://api.allorigins.win/get?url=' + encodeURIComponent(raw), 8000);
+        if (r.ok) {
+          const d = await r.json();
+          const finalUrl = (d.status && d.status.url) || '';
+          const coords = deepExtract(d.contents || '', finalUrl);
+          if (coords) { validateCoords(coords.lat, coords.lng); return; }
+        }
+      } catch(e) {}
+
+      // 4. Jina AI reader — renders the Maps page fully, extracting map tile URLs whose
+      //    x/y/zoom encode the location. Slower but works when step 3 doesn't find coords.
       const tryJinaContent = async (content, title) => {
-        // a. tile coordinates from rendered content (most reliable)
         const tileCoords = extractCoordsFromTileUrl(content);
         if (tileCoords) { validateCoords(tileCoords.lat, tileCoords.lng); return true; }
-        // b. embedded coords in any URL within content
         const urlCoords = extractCoordsFromText(content);
         if (urlCoords) { validateCoords(urlCoords.lat, urlCoords.lng); return true; }
-        // c. geocode place name from page title as last resort
         const name = placeNameFromTitle(title);
         if (name) {
           const geo = await geocodeQuery(name + ', Egypt');
@@ -998,7 +1010,7 @@
         return false;
       };
 
-      // 3a. Direct fetch to Jina AI (works if they support CORS)
+      // 4a. Direct fetch to Jina AI
       try {
         const r = await fetchTimeout('https://r.jina.ai/' + raw, 15000, { 'Accept': 'application/json' });
         if (r.ok) {
@@ -1008,7 +1020,7 @@
         }
       } catch(e) {}
 
-      // 3b. Jina AI via allorigins proxy (handles CORS if direct fails)
+      // 4b. Jina AI via allorigins proxy (handles CORS if direct fails)
       try {
         const jinaUrl = 'https://r.jina.ai/' + raw;
         const r = await fetchTimeout('https://api.allorigins.win/get?url=' + encodeURIComponent(jinaUrl), 15000);
@@ -1020,22 +1032,14 @@
         }
       } catch(e) {}
 
-      // 4. Fallback: try extracting coords directly from the URL's HTML via allorigins
-      try {
-        const r = await fetchTimeout('https://api.allorigins.win/get?url=' + encodeURIComponent(raw), 10000);
-        if (r.ok) {
-          const d = await r.json();
-          const finalUrl = (d.status && d.status.url) || '';
-          const coords = deepExtract(d.contents || '', finalUrl);
-          if (coords) { validateCoords(coords.lat, coords.lng); return; }
-        }
-      } catch(e) {}
-
       showLocStatus('invalid',
         'Could not read this link. Please use the "Use my current location" button above, ' +
         'or open Google Maps → long-press your location → tap the coordinates shown ' +
         '(e.g. 30.0453, 31.2243) → paste them here.'
       );
+      } finally {
+        if (locationVerified) unlockPaymentSection();
+      }
     }
 
     // Clear field error on input
