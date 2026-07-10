@@ -192,7 +192,7 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         Back to Shop
       </a>
-      <a href="index3.html"><img src="brandassets/logo1 (2).png" alt="Brandy" id="nav-logo"></a>
+      <a href="index3.html"><img src="brandassets/logo-transparent.png" alt="Brandy" style="height:44px;width:auto;display:block;"></a>
       <div style="display:flex;align-items:center;gap:4px;">
         <div style="position:relative;">
           <button class="icon-btn" aria-label="Wishlist" onclick="openWishlist()">
@@ -241,6 +241,13 @@
             { name: 'Blue',  img: 'polo-blue.png',  hex: '#3A6EA5' },
             { name: 'Navy',  img: 'polo-navy.png',  hex: '#1F3560' },
             { name: 'Black', img: 'polo-black.png', hex: '#1C2318' }
+          ]
+        },
+        { id: 'product5', name: 'Pull & Bear T-Shirt', price: 750, category: 'Classic', href: 'product5.html',
+          defaultImg: 'tshirt2 1.png', defaultColor: 'Navy',
+          sizes: ['XS', 'S', 'M', 'L', 'XL'],
+          colors: [
+            { name: 'Navy', img: 'tshirt2 1.png', hex: '#1F3560' }
           ]
         }
       ],
@@ -380,28 +387,6 @@
           </div>
         </div>`;
     }).join('');
-
-    // ── LOGO ──
-    function removeWhiteBg(img, t = 238) {
-      try {
-        const c = document.createElement('canvas');
-        c.width = img.naturalWidth; c.height = img.naturalHeight;
-        const ctx = c.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        const d = ctx.getImageData(0, 0, c.width, c.height);
-        for (let i = 0; i < d.data.length; i += 4) {
-          if (d.data[i] >= t && d.data[i+1] >= t && d.data[i+2] >= t) d.data[i+3] = 0;
-        }
-        ctx.putImageData(d, 0, 0);
-        img.src = c.toDataURL('image/png');
-      } catch(e) {}
-    }
-    const logo = document.getElementById('nav-logo');
-    if (logo) {
-      logo.style.height = '72px';
-      if (logo.complete && logo.naturalWidth) removeWhiteBg(logo);
-      else logo.addEventListener('load', () => removeWhiteBg(logo));
-    }
 
     // ── WISHLIST ──
     const WISH_KEY = 'brandy_wishlist';

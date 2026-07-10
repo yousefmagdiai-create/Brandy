@@ -969,17 +969,17 @@
           </div>
         </div>
       </div>
-      <div class="product-card reveal d4" tabindex="0">
+      <div class="product-card reveal d4" tabindex="0" onclick="window.location.href='product5.html'" style="cursor:pointer;">
         <div class="product-img">
-          <img src="https://placehold.co/260x347/2A3620/C4B896?text=." alt="Wide Leg Trouser">
-          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Wide Leg Trouser','132 EGP','https://placehold.co/260x347/2A3620/C4B896?text=.', event)">Add to Cart</button>
+          <img src="tshirt2 1.png" alt="Pull &amp; Bear T-Shirt">
+          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Pull &amp; Bear T-Shirt','750 EGP','tshirt2 1.png', event)">Add to Cart</button>
         </div>
         <div class="product-info">
-          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Trousers</p>
-          <p style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:8px;">Wide Leg Trouser</p>
+          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Classic</p>
+          <p style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:8px;">Pull &amp; Bear T-Shirt</p>
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:14px;font-weight:600;color:var(--golden);">132 EGP</span>
-            <div style="display:flex;gap:8px;"><div class="swatch-dot" style="background:#2A3620;"></div><div class="swatch-dot" style="background:#C4B896;"></div></div>
+            <span style="font-size:14px;font-weight:600;color:var(--golden);">750 EGP</span>
+            <div style="display:flex;gap:8px;"><div class="swatch-dot" style="background:#1F3560;"></div></div>
           </div>
         </div>
       </div>
@@ -1361,7 +1361,7 @@
       { type: 'product', name: 'Mastermind T-Shirt', category: 'Streetwear', price: '700 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png',             href: 'product2.html' },
       { type: 'product', name: 'Zara Short',          category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png',                                href: 'product3.html' },
       { type: 'product', name: 'Ralph Lauren Polo Shirt', category: 'Classic', price: '750 EGP', img: 'polo-blue.png',                                      href: 'product4.html' },
-      { type: 'product', name: 'Wide Leg Trouser',   category: 'Trousers',   price: '132 EGP', img: 'https://placehold.co/44x44/2A3620/C4B896?text=.',      href: '#arrivals' },
+      { type: 'product', name: 'Pull & Bear T-Shirt', category: 'Classic', price: '750 EGP', img: 'tshirt2 1.png', href: 'product5.html' },
       { type: 'collection', name: 'Classic',    category: 'Collection', price: '', img: 'https://placehold.co/44x44/3B4A2E/EDE5D0?text=.', href: 'collection.html?cat=Classic' },
       { type: 'collection', name: 'Streetwear', category: 'Collection', price: '', img: 'https://placehold.co/44x44/1C2318/C4B896?text=.', href: 'collection.html?cat=Streetwear' },
     ];
@@ -1521,7 +1521,7 @@
         { el: document.querySelectorAll('.product-card')[1], id: 'product2',  name: 'Mastermind T-Shirt', category: 'Streetwear', price: '700 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', href: 'product2.html' },
         { el: document.querySelectorAll('.product-card')[2], id: 'product3',  name: 'Zara Short',        category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png',                              href: 'product3.html' },
         { el: document.querySelectorAll('.product-card')[3], id: 'product4',  name: 'Ralph Lauren Polo Shirt', category: 'Classic', price: '750 EGP', img: 'polo-blue.png',              href: 'product4.html' },
-        { el: document.querySelectorAll('.product-card')[4], id: 'product5',  name: 'Wide Leg Trouser',  category: 'Trousers',  price: '132 EGP',    img: 'https://placehold.co/64x64/2A3620/C4B896?text=.',     href: '#arrivals' },
+        { el: document.querySelectorAll('.product-card')[4], id: 'product5',  name: 'Pull & Bear T-Shirt', category: 'Classic', price: '750 EGP', img: 'tshirt2 1.png', href: 'product5.html' },
       ];
       cards.forEach(({ el, id, name, category, price, img, href }) => {
         if (!el) return;

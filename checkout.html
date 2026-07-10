@@ -407,24 +407,13 @@
           <div class="section-header">
             <h2 class="section-title">Billing address</h2>
           </div>
-          <div class="field" style="margin-bottom:16px;">
-            <label>Delivery area *</label>
-            <div class="area-grid">
-              <div class="area-card" id="area-cairo" onclick="selectArea('cairo')">
-                <input type="radio" name="area" value="cairo">
-                <div class="area-check"></div>
-                <p class="area-name">Cairo</p>
-                <p class="area-fee">50 EGP delivery</p>
-              </div>
-              <div class="area-card" id="area-october" onclick="selectArea('october')">
-                <input type="radio" name="area" value="october">
-                <div class="area-check"></div>
-                <p class="area-name">6th of October</p>
-                <p class="area-fee">80 EGP delivery</p>
-              </div>
+          <div style="background:#F5F9FF;border:1px solid #C8DCFA;border-radius:6px;padding:14px 16px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#005BD3" stroke-width="1.75" stroke-linecap="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div>
+              <p style="font-size:13px;font-weight:600;color:#1A1A1A;margin-bottom:4px;">Delivery via Uber Courier</p>
+              <p style="font-size:12px;color:#6D7175;line-height:1.6;">The delivery fee will be confirmed and sent to you via <strong>WhatsApp or email</strong> before your order is dispatched. You pay the delivery fee directly to the Uber courier upon receiving your order — it is not included in the total below.</p>
             </div>
           </div>
-          <span class="group-error" id="err-area">Please select a delivery area.</span>
 
           <!-- LOCATION VERIFICATION -->
           <div class="field" style="margin-top:16px;margin-bottom:16px;">
@@ -567,8 +556,8 @@
           <span class="summary-line-value" id="subtotal-display">—</span>
         </div>
         <div class="summary-line">
-          <span class="summary-line-label">Shipping</span>
-          <span class="summary-line-value" id="delivery-fee-display">—</span>
+          <span class="summary-line-label">Delivery</span>
+          <span class="summary-line-value" style="color:#6D7175;font-size:11px;">Confirmed via WhatsApp/Email</span>
         </div>
 
         <div class="summary-total">
@@ -586,8 +575,7 @@
   </div>
 
   <script>
-    const DELIVERY = { cairo: 50, october: 80 };
-    let selectedArea = null;
+    let selectedArea = 'uber';
     let selectedPayment = null;
     let cartSubtotal = 0;
 
@@ -670,25 +658,22 @@
     }
 
     function updateTotals() {
-      const fee = selectedArea ? DELIVERY[selectedArea] : 0;
-      const total = cartSubtotal + fee;
-      document.getElementById('delivery-fee-display').textContent = selectedArea ? 'EGP ' + fee.toFixed(2) : '—';
+      const total = cartSubtotal;
       document.getElementById('total-display').textContent = total.toFixed(2);
       document.getElementById('instapay-amount').textContent = total + ' EGP';
       document.getElementById('cod-amount').textContent = total + ' EGP';
 
       const name = (document.getElementById('fname').value || 'Customer').trim();
       const phone = (document.getElementById('phone').value || '').trim();
-      const area = selectedArea === 'cairo' ? 'Cairo' : selectedArea === 'october' ? '6th of October' : '';
       try {
         const cart = (JSON.parse(localStorage.getItem('brandy_cart')) || []).map(i => ({ ...i, price: parsePrice(i.price) }));
         const itemLines = cart.map(i => `• ${i.name} (${i.color || ''}, ${i.size || ''}) x${i.qty} — ${i.price * i.qty} EGP`).join('\n');
         const msg = encodeURIComponent(
           `Hello Brandy! 👋\n\nI just placed an order:\n\n${itemLines}\n\n` +
-          `• Total Paid: ${total} EGP\n` +
+          `• Products Total: ${total} EGP\n` +
+          `• Delivery: To be confirmed via WhatsApp/Email (paid to Uber courier on arrival)\n` +
           `• Name: ${name}\n` +
-          `• Phone: ${phone}\n` +
-          `• Area: ${area}\n\n` +
+          `• Phone: ${phone}\n\n` +
           `Please find my payment screenshot attached.`
         );
         document.getElementById('whatsapp-btn').href = `https://wa.me/201122266138?text=${msg}`;
@@ -1091,19 +1076,16 @@
       setErr('lname', 'err-lname', !lname);
       setErr('phone', 'err-phone', !phoneValid);
 
-      setGroupErr('err-area', !selectedArea);
       setGroupErr('err-location', !locationVerified);
       setGroupErr('err-payment', !selectedPayment);
 
-      if (!fname || !lname || !phoneValid || !selectedArea || !locationVerified || !selectedPayment) {
+      if (!fname || !lname || !phoneValid || !locationVerified || !selectedPayment) {
         const first = document.querySelector('.field-error.show, .group-error.show');
         if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
 
-      const fee = DELIVERY[selectedArea];
-      const total = cartSubtotal + fee;
-      const areaName = selectedArea === 'cairo' ? 'Cairo' : '6th of October';
+      const total = cartSubtotal;
 
       // Build merged cart (localStorage + buy-now) before clearing session
       const buyNowRaw = sessionStorage.getItem('brandy_buynow');
@@ -1119,8 +1101,8 @@
       localStorage.removeItem('brandy_cart');
       document.getElementById('checkout-content').classList.add('hide');
       document.getElementById('success-screen').classList.add('show');
-      BrandyAnalytics.trackPurchase(total, cart, selectedPayment, selectedArea);
-      gtag('event', 'purchase', { transaction_id: 'ORD-' + Date.now(), currency: 'EGP', value: total, shipping: fee, items: cart.map(i => ({ item_id: i.id, item_name: i.name, item_variant: (i.color||'') + ' / ' + (i.size||''), price: i.price, quantity: i.qty })) });
+      BrandyAnalytics.trackPurchase(total, cart, selectedPayment, 'uber');
+      gtag('event', 'purchase', { transaction_id: 'ORD-' + Date.now(), currency: 'EGP', value: total, shipping: 0, items: cart.map(i => ({ item_id: i.id, item_name: i.name, item_variant: (i.color||'') + ' / ' + (i.size||''), price: i.price, quantity: i.qty })) });
 
       const email = document.getElementById('email') ? document.getElementById('email').value.trim() : '';
       const mapsLink = document.getElementById('maps-link') ? document.getElementById('maps-link').value.trim() : '';
@@ -1143,7 +1125,6 @@
             `Name:     ${fname} ${lname}`,
             `Phone:    ${phone}`,
             `Email:    ${email || 'Not provided'}`,
-            `Area:     ${areaName}`,
             `Location:`,
             `${mapsLink || 'Not provided'}`,
             `Payment:  ${selectedPayment === 'instapay' ? 'InstaPay' : 'Cash on Delivery'}`,
@@ -1154,9 +1135,9 @@
             `─────────────────────`,
             itemLines,
             ``,
-            `Subtotal: ${cartSubtotal.toLocaleString()} EGP`,
-            `Delivery: ${fee} EGP`,
-            `TOTAL:    ${total.toLocaleString()} EGP`,
+            `Products Total: ${cartSubtotal.toLocaleString()} EGP`,
+            `Delivery: Via Uber Courier — price to be confirmed via WhatsApp/Email (paid on arrival)`,
+            `ORDER TOTAL: ${total.toLocaleString()} EGP`,
             ``,
             `Time: ${new Date().toLocaleString()}`
           ].join('\n')
