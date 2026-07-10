@@ -715,6 +715,15 @@
         locationVerified = true;
         showLocStatus('valid', '✓ Location verified — our Uber courier will deliver to you.');
         document.getElementById('err-location').classList.remove('show');
+        // Unlock payment section
+        const paySection = document.getElementById('payment-section');
+        if (paySection) {
+          paySection.classList.remove('section-locked');
+          const lockedNote = document.getElementById('payment-locked-note');
+          const secureNote = document.getElementById('payment-secure-note');
+          if (lockedNote) lockedNote.style.display = 'none';
+          if (secureNote) secureNote.style.display = '';
+        }
       } else {
         locationVerified = false;
         showLocStatus('invalid', '✗ Location appears to be outside Egypt. Please share a valid Google Maps link for your delivery address.');
