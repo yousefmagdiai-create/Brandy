@@ -760,34 +760,16 @@
 
     function doGps() {
       showLocStatus('loading', 'Getting your location — tap Allow when asked…');
-      let bestPos = null, done = false;
-      const watcher = navigator.geolocation.watchPosition(
-        pos => {
-          if (done) return;
-          if (!bestPos || pos.coords.accuracy < bestPos.coords.accuracy) bestPos = pos;
-          if (pos.coords.accuracy <= 150) {
-            done = true;
-            navigator.geolocation.clearWatch(watcher);
-            clearTimeout(giveUpTimer);
-            applyGpsCoords(pos.coords.latitude, pos.coords.longitude);
-          }
-        },
-        err => {
-          if (done) return;
-          done = true;
-          clearTimeout(giveUpTimer);
-          navigator.geolocation.clearWatch(watcher);
-          showLocBlocked();
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-      );
-      const giveUpTimer = setTimeout(() => {
-        if (done) return;
-        done = true;
-        navigator.geolocation.clearWatch(watcher);
-        if (bestPos) { applyGpsCoords(bestPos.coords.latitude, bestPos.coords.longitude); }
-        else { showLocBlocked(); }
-      }, 14000);
+      function gotPos(pos) {
+        applyGpsCoords(pos.coords.latitude, pos.coords.longitude);
+      }
+      // First try: network-based location (Wi-Fi/cell, works indoors, returns in 1-3s)
+      navigator.geolocation.getCurrentPosition(gotPos, () => {
+        // Fallback: GPS-based location (slower, may take up to 15s outdoors)
+        navigator.geolocation.getCurrentPosition(gotPos, () => showLocBlocked(), {
+          enableHighAccuracy: true, timeout: 15000, maximumAge: 0
+        });
+      }, { enableHighAccuracy: false, timeout: 8000, maximumAge: 30000 });
     }
 
     function useMyLocation() {
