@@ -759,26 +759,25 @@
     }
 
     function doGps() {
-      showLocStatus('loading', 'Getting your location…');
+      showLocStatus('loading', 'Getting your location — tap Allow when asked…');
       let bestPos = null, done = false;
       const watcher = navigator.geolocation.watchPosition(
         pos => {
           if (done) return;
           if (!bestPos || pos.coords.accuracy < bestPos.coords.accuracy) bestPos = pos;
-          if (pos.coords.accuracy <= 500) {
+          if (pos.coords.accuracy <= 150) {
             done = true;
             navigator.geolocation.clearWatch(watcher);
             clearTimeout(giveUpTimer);
             applyGpsCoords(pos.coords.latitude, pos.coords.longitude);
           }
         },
-        () => {
+        err => {
           if (done) return;
           done = true;
           clearTimeout(giveUpTimer);
           navigator.geolocation.clearWatch(watcher);
-          if (bestPos) { applyGpsCoords(bestPos.coords.latitude, bestPos.coords.longitude); }
-          else { showLocBlocked(); }
+          showLocBlocked();
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
@@ -788,7 +787,7 @@
         navigator.geolocation.clearWatch(watcher);
         if (bestPos) { applyGpsCoords(bestPos.coords.latitude, bestPos.coords.longitude); }
         else { showLocBlocked(); }
-      }, 12000);
+      }, 14000);
     }
 
     function useMyLocation() {
