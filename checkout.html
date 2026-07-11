@@ -964,7 +964,6 @@
       showLocStatus('loading', 'Resolving link…');
 
       // 3. Fast: follow redirect via allorigins — the final URL after redirect contains @lat,lng
-      //    This resolves short links (maps.app.goo.gl) in ~3s without needing a heavy renderer.
       try {
         const r = await fetchTimeout('https://api.allorigins.win/get?url=' + encodeURIComponent(raw), 8000);
         if (r.ok) {
@@ -972,12 +971,45 @@
           const finalUrl = (d.status && d.status.url) || '';
           const coords = deepExtract(d.contents || '', finalUrl);
           if (coords) { validateCoords(coords.lat, coords.lng); return; }
+          // Final URL has a place name but no coords — geocode it
+          const placeName = extractPlaceName(finalUrl) || extractMapsQuery(finalUrl);
+          if (placeName) {
+            const geo = await geocodeQuery(placeName + ', Egypt');
+            if (geo) { validateCoords(geo.lat, geo.lng); return; }
+          }
         }
       } catch(e) {}
 
-      // 4. Jina AI reader — renders the Maps page fully, extracting map tile URLs whose
-      //    x/y/zoom encode the location. Slower but works when step 3 doesn't find coords.
-      const tryJinaContent = async (content, title) => {
+      // 3b. corsproxy.io — different proxy server, different redirect handling
+      try {
+        const r = await fetchTimeout('https://corsproxy.io/?' + encodeURIComponent(raw), 8000);
+        if (r.ok) {
+          const html = await r.text();
+          const coords = deepExtract(html, '');
+          if (coords) { validateCoords(coords.lat, coords.lng); return; }
+          const canonUrl = extractCanonicalUrl(html);
+          if (canonUrl) {
+            const placeName = extractPlaceName(canonUrl) || extractMapsQuery(canonUrl);
+            if (placeName) {
+              const geo = await geocodeQuery(placeName + ', Egypt');
+              if (geo) { validateCoords(geo.lat, geo.lng); return; }
+            }
+          }
+        }
+      } catch(e) {}
+
+      // 4. Jina AI reader — renders the Maps page fully including tile URLs and data.url (final URL)
+      const tryJinaContent = async (content, title, jinaUrl) => {
+        // Check Jina's reported final URL for coords first
+        if (jinaUrl) {
+          const urlCoords = extractCoordsFromText(jinaUrl);
+          if (urlCoords) { validateCoords(urlCoords.lat, urlCoords.lng); return true; }
+          const placeName = extractPlaceName(jinaUrl) || extractMapsQuery(jinaUrl);
+          if (placeName) {
+            const geo = await geocodeQuery(placeName + ', Egypt');
+            if (geo) { validateCoords(geo.lat, geo.lng); return true; }
+          }
+        }
         const tileCoords = extractCoordsFromTileUrl(content);
         if (tileCoords) { validateCoords(tileCoords.lat, tileCoords.lng); return true; }
         const urlCoords = extractCoordsFromText(content);
@@ -996,7 +1028,7 @@
         if (r.ok) {
           const d = await r.json();
           const data = d.data || {};
-          if (await tryJinaContent(data.content || '', data.title || '')) return;
+          if (await tryJinaContent(data.content || '', data.title || '', data.url || '')) return;
         }
       } catch(e) {}
 
@@ -1008,12 +1040,12 @@
           const outer = await r.json();
           const inner = JSON.parse(outer.contents || '{}');
           const data = inner.data || {};
-          if (await tryJinaContent(data.content || '', data.title || '')) return;
+          if (await tryJinaContent(data.content || '', data.title || '', data.url || '')) return;
         }
       } catch(e) {}
 
       showLocStatus('invalid',
-        'Could not read this link. Please use the "Use my current location" button above, ' +
+        'Could not read this link. Please tap "Share My Location" above, ' +
         'or open Google Maps → long-press your location → tap the coordinates shown ' +
         '(e.g. 30.0453, 31.2243) → paste them here.'
       );
