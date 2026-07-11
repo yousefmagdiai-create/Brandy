@@ -758,23 +758,24 @@
       document.getElementById('loc-status').className = 'loc-status';
     }
 
-    function doGps() {
+    async function doGps() {
       showLocStatus('loading', 'Getting your location — tap Allow when asked…');
-      function gotPos(pos) {
-        applyGpsCoords(pos.coords.latitude, pos.coords.longitude);
+      function gpsP(high, ms, maxAge) {
+        return new Promise((res, rej) => navigator.geolocation.getCurrentPosition(
+          p => res({ lat: p.coords.latitude, lng: p.coords.longitude }), rej,
+          { enableHighAccuracy: high, timeout: ms, maximumAge: maxAge }
+        ));
       }
-      async function onAllFail() {
-        showLocStatus('loading', 'Trying alternate location method…');
-        const ip = await tryIPLocation();
-        if (ip) { applyGpsCoords(ip.lat, ip.lng); } else { showLocBlocked(); }
+      try {
+        const loc = await Promise.any([
+          gpsP(false, 8000, 30000),
+          gpsP(true, 15000, 0),
+          tryIPLocation().then(r => { if (!r) throw new Error(); return r; })
+        ]);
+        applyGpsCoords(loc.lat, loc.lng);
+      } catch(e) {
+        showLocBlocked();
       }
-      // 1st: fast network location (Wi-Fi/cell, works indoors)
-      navigator.geolocation.getCurrentPosition(gotPos, () => {
-        // 2nd: hardware GPS (slower, more accurate)
-        navigator.geolocation.getCurrentPosition(gotPos, () => onAllFail(), {
-          enableHighAccuracy: true, timeout: 15000, maximumAge: 0
-        });
-      }, { enableHighAccuracy: false, timeout: 8000, maximumAge: 30000 });
     }
 
     function useMyLocation() {
