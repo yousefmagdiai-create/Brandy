@@ -697,6 +697,7 @@
 
     // ── LOCATION VERIFICATION ──
     let locationVerified = false;
+    let _ipLocCache = null; // pre-fetched on page load so first tap is instant
 
     const AREA_BOUNDS = {
       cairo:   { minLat: 29.85, maxLat: 30.45, minLng: 31.08, maxLng: 31.90 },
@@ -767,10 +768,14 @@
         ));
       }
       try {
+        const ipPromise = _ipLocCache
+          ? Promise.resolve(_ipLocCache)
+          : tryIPLocation().then(r => { if (!r) throw new Error(); return r; });
         const loc = await Promise.any([
-          gpsP(false, 8000, 30000),
-          gpsP(true, 15000, 0),
-          tryIPLocation().then(r => { if (!r) throw new Error(); return r; })
+          gpsP(false, 3000, Infinity),  // instant if browser has any cached GPS position
+          gpsP(false, 12000, 30000),    // fresh network location
+          gpsP(true, 20000, 0),         // hardware GPS
+          ipPromise                      // IP-based (pre-fetched = instant, else live fetch)
         ]);
         applyGpsCoords(loc.lat, loc.lng);
       } catch(e) {
@@ -904,16 +909,22 @@
     async function tryIPLocation() {
       try {
         return await Promise.any([
-          fetchTimeout('https://ipapi.co/json/', 5000).then(async r => {
+          fetchTimeout('https://ipapi.co/json/', 8000).then(async r => {
             if (!r.ok) throw new Error();
             const d = await r.json();
             if (d.error || !d.latitude) throw new Error();
             return { lat: parseFloat(d.latitude), lng: parseFloat(d.longitude) };
           }),
-          fetchTimeout('https://ipwho.is/', 5000).then(async r => {
+          fetchTimeout('https://ipwho.is/', 8000).then(async r => {
             if (!r.ok) throw new Error();
             const d = await r.json();
             if (!d.success || !d.latitude) throw new Error();
+            return { lat: parseFloat(d.latitude), lng: parseFloat(d.longitude) };
+          }),
+          fetchTimeout('https://freeipapi.com/api/json', 8000).then(async r => {
+            if (!r.ok) throw new Error();
+            const d = await r.json();
+            if (!d.latitude) throw new Error();
             return { lat: parseFloat(d.latitude), lng: parseFloat(d.longitude) };
           })
         ]);
@@ -980,6 +991,9 @@
         });
       };
     }
+
+    // Pre-fetch IP location silently on page load so it's ready when user taps the button
+    tryIPLocation().then(r => { if (r) _ipLocCache = r; }).catch(() => {});
 
     async function verifyMapsLink() {
       try {
