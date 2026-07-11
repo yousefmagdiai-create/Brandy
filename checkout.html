@@ -760,34 +760,20 @@
 
     function doGps() {
       showLocStatus('loading', 'Getting your location — tap Allow when asked…');
-      let bestPos = null, done = false;
-      const watcher = navigator.geolocation.watchPosition(
-        pos => {
-          if (done) return;
-          if (!bestPos || pos.coords.accuracy < bestPos.coords.accuracy) bestPos = pos;
-          if (pos.coords.accuracy <= 150) {
-            done = true;
-            navigator.geolocation.clearWatch(watcher);
-            clearTimeout(giveUpTimer);
-            applyGpsCoords(pos.coords.latitude, pos.coords.longitude);
-          }
-        },
+      // Try 1: high-accuracy, allow cached fix up to 5 min old (fast on most devices)
+      navigator.geolocation.getCurrentPosition(
+        pos => applyGpsCoords(pos.coords.latitude, pos.coords.longitude),
         err => {
-          if (done) return;
-          done = true;
-          clearTimeout(giveUpTimer);
-          navigator.geolocation.clearWatch(watcher);
-          showLocBlocked();
+          if (err.code === 1) { showLocBlocked(); return; } // permission denied — nothing we can do
+          // Try 2: low-accuracy network-based location, allow older cache
+          navigator.geolocation.getCurrentPosition(
+            pos => applyGpsCoords(pos.coords.latitude, pos.coords.longitude),
+            () => showLocBlocked(),
+            { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 }
+          );
         },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
       );
-      const giveUpTimer = setTimeout(() => {
-        if (done) return;
-        done = true;
-        navigator.geolocation.clearWatch(watcher);
-        if (bestPos) { applyGpsCoords(bestPos.coords.latitude, bestPos.coords.longitude); }
-        else { showLocBlocked(); }
-      }, 14000);
     }
 
     function useMyLocation() {
@@ -800,13 +786,7 @@
         return;
       }
       if (!navigator.geolocation) { showLocBlocked(); return; }
-      if (navigator.permissions) {
-        navigator.permissions.query({ name: 'geolocation' })
-          .then(r => { if (r.state === 'denied') { showLocBlocked(); } else { doGps(); } })
-          .catch(() => doGps());
-      } else {
-        doGps();
-      }
+      doGps();
     }
 
     // Parse raw coordinates: "30.0453, 31.2243"
