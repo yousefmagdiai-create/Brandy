@@ -759,21 +759,36 @@
     }
 
     function doGps() {
-      showLocStatus('loading', 'Getting your location — tap Allow when asked…');
-      // Try 1: high-accuracy, allow cached fix up to 5 min old (fast on most devices)
-      navigator.geolocation.getCurrentPosition(
-        pos => applyGpsCoords(pos.coords.latitude, pos.coords.longitude),
-        err => {
-          if (err.code === 1) { showLocBlocked(); return; } // permission denied — nothing we can do
-          // Try 2: low-accuracy network-based location, allow older cache
-          navigator.geolocation.getCurrentPosition(
-            pos => applyGpsCoords(pos.coords.latitude, pos.coords.longitude),
-            () => showLocBlocked(),
-            { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 }
-          );
+      showLocStatus('loading', 'Getting your location…');
+      let bestPos = null, done = false;
+      const watcher = navigator.geolocation.watchPosition(
+        pos => {
+          if (done) return;
+          if (!bestPos || pos.coords.accuracy < bestPos.coords.accuracy) bestPos = pos;
+          if (pos.coords.accuracy <= 500) {
+            done = true;
+            navigator.geolocation.clearWatch(watcher);
+            clearTimeout(giveUpTimer);
+            applyGpsCoords(pos.coords.latitude, pos.coords.longitude);
+          }
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
+        () => {
+          if (done) return;
+          done = true;
+          clearTimeout(giveUpTimer);
+          navigator.geolocation.clearWatch(watcher);
+          if (bestPos) { applyGpsCoords(bestPos.coords.latitude, bestPos.coords.longitude); }
+          else { showLocBlocked(); }
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
       );
+      const giveUpTimer = setTimeout(() => {
+        if (done) return;
+        done = true;
+        navigator.geolocation.clearWatch(watcher);
+        if (bestPos) { applyGpsCoords(bestPos.coords.latitude, bestPos.coords.longitude); }
+        else { showLocBlocked(); }
+      }, 10000);
     }
 
     function useMyLocation() {
@@ -963,85 +978,63 @@
 
       showLocStatus('loading', 'Resolving link…');
 
-      // 3. Fast: follow redirect via allorigins — the final URL after redirect contains @lat,lng
-      try {
-        const r = await fetchTimeout('https://api.allorigins.win/get?url=' + encodeURIComponent(raw), 8000);
-        if (r.ok) {
-          const d = await r.json();
-          const finalUrl = (d.status && d.status.url) || '';
-          const coords = deepExtract(d.contents || '', finalUrl);
-          if (coords) { validateCoords(coords.lat, coords.lng); return; }
-          // Final URL has a place name but no coords — geocode it
-          const placeName = extractPlaceName(finalUrl) || extractMapsQuery(finalUrl);
-          if (placeName) {
-            const geo = await geocodeQuery(placeName + ', Egypt');
-            if (geo) { validateCoords(geo.lat, geo.lng); return; }
-          }
-        }
-      } catch(e) {}
-
-      // 3b. corsproxy.io — different proxy server, different redirect handling
-      try {
-        const r = await fetchTimeout('https://corsproxy.io/?' + encodeURIComponent(raw), 8000);
-        if (r.ok) {
-          const html = await r.text();
-          const coords = deepExtract(html, '');
-          if (coords) { validateCoords(coords.lat, coords.lng); return; }
-          const canonUrl = extractCanonicalUrl(html);
-          if (canonUrl) {
-            const placeName = extractPlaceName(canonUrl) || extractMapsQuery(canonUrl);
-            if (placeName) {
-              const geo = await geocodeQuery(placeName + ', Egypt');
-              if (geo) { validateCoords(geo.lat, geo.lng); return; }
-            }
-          }
-        }
-      } catch(e) {}
-
-      // 4. Jina AI reader — renders the Maps page fully including tile URLs and data.url (final URL)
-      const tryJinaContent = async (content, title, jinaUrl) => {
-        // Check Jina's reported final URL for coords first
-        if (jinaUrl) {
-          const urlCoords = extractCoordsFromText(jinaUrl);
-          if (urlCoords) { validateCoords(urlCoords.lat, urlCoords.lng); return true; }
-          const placeName = extractPlaceName(jinaUrl) || extractMapsQuery(jinaUrl);
-          if (placeName) {
-            const geo = await geocodeQuery(placeName + ', Egypt');
-            if (geo) { validateCoords(geo.lat, geo.lng); return true; }
-          }
-        }
-        const tileCoords = extractCoordsFromTileUrl(content);
-        if (tileCoords) { validateCoords(tileCoords.lat, tileCoords.lng); return true; }
-        const urlCoords = extractCoordsFromText(content);
-        if (urlCoords) { validateCoords(urlCoords.lat, urlCoords.lng); return true; }
-        const name = placeNameFromTitle(title);
-        if (name) {
-          const geo = await geocodeQuery(name + ', Egypt');
-          if (geo) { validateCoords(geo.lat, geo.lng); return true; }
-        }
-        return false;
+      // Helper: pull coords or place name from any URL/HTML blob
+      const extractFromBlob = async (html, knownUrl) => {
+        const coords = deepExtract(html, knownUrl);
+        if (coords) return coords;
+        const name = extractPlaceName(knownUrl) || extractMapsQuery(knownUrl)
+                  || extractPlaceName(extractCanonicalUrl(html) || '') || extractMapsQuery(extractCanonicalUrl(html) || '');
+        if (name) { const g = await geocodeQuery(name + ', Egypt'); if (g) return g; }
+        return null;
       };
 
-      // 4a. Direct fetch to Jina AI
-      try {
-        const r = await fetchTimeout('https://r.jina.ai/' + raw, 15000, { 'Accept': 'application/json' });
-        if (r.ok) {
-          const d = await r.json();
-          const data = d.data || {};
-          if (await tryJinaContent(data.content || '', data.title || '', data.url || '')) return;
+      // Helper: pull coords from Jina AI data object
+      const extractFromJinaData = async (data) => {
+        const url = data.url || '';
+        if (url) {
+          const c = extractCoordsFromText(url); if (c) return c;
+          const name = extractPlaceName(url) || extractMapsQuery(url);
+          if (name) { const g = await geocodeQuery(name + ', Egypt'); if (g) return g; }
         }
-      } catch(e) {}
+        const tc = extractCoordsFromTileUrl(data.content || ''); if (tc) return tc;
+        const uc = extractCoordsFromText(data.content || '');     if (uc) return uc;
+        const n = placeNameFromTitle(data.title || '');
+        if (n) { const g = await geocodeQuery(n + ', Egypt'); if (g) return g; }
+        return null;
+      };
 
-      // 4b. Jina AI via allorigins proxy (handles CORS if direct fails)
+      // 3. Run all methods in parallel — first one that returns coords wins
+      const tryAllorigins = async () => {
+        const r = await fetchTimeout('https://api.allorigins.win/get?url=' + encodeURIComponent(raw), 10000);
+        if (!r.ok) throw new Error();
+        const d = await r.json();
+        const c = await extractFromBlob(d.contents || '', (d.status && d.status.url) || '');
+        if (c) return c; throw new Error();
+      };
+      const tryCorsProxy = async () => {
+        const r = await fetchTimeout('https://corsproxy.io/?' + encodeURIComponent(raw), 10000);
+        if (!r.ok) throw new Error();
+        const c = await extractFromBlob(await r.text(), '');
+        if (c) return c; throw new Error();
+      };
+      const tryJinaDirect = async () => {
+        const r = await fetchTimeout('https://r.jina.ai/' + raw, 18000, { 'Accept': 'application/json' });
+        if (!r.ok) throw new Error();
+        const c = await extractFromJinaData((await r.json()).data || {});
+        if (c) return c; throw new Error();
+      };
+      const tryJinaProxy = async () => {
+        const r = await fetchTimeout('https://api.allorigins.win/get?url=' + encodeURIComponent('https://r.jina.ai/' + raw), 20000);
+        if (!r.ok) throw new Error();
+        const inner = JSON.parse((await r.json()).contents || '{}');
+        const c = await extractFromJinaData(inner.data || {});
+        if (c) return c; throw new Error();
+      };
+
       try {
-        const jinaUrl = 'https://r.jina.ai/' + raw;
-        const r = await fetchTimeout('https://api.allorigins.win/get?url=' + encodeURIComponent(jinaUrl), 15000);
-        if (r.ok) {
-          const outer = await r.json();
-          const inner = JSON.parse(outer.contents || '{}');
-          const data = inner.data || {};
-          if (await tryJinaContent(data.content || '', data.title || '', data.url || '')) return;
-        }
+        const coords = await Promise.any([tryAllorigins(), tryCorsProxy(), tryJinaDirect(), tryJinaProxy()]);
+        validateCoords(coords.lat, coords.lng);
+        return;
       } catch(e) {}
 
       showLocStatus('invalid',
