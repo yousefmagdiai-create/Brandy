@@ -763,10 +763,15 @@
       function gotPos(pos) {
         applyGpsCoords(pos.coords.latitude, pos.coords.longitude);
       }
-      // First try: network-based location (Wi-Fi/cell, works indoors, returns in 1-3s)
+      async function onAllFail() {
+        showLocStatus('loading', 'Trying alternate location method…');
+        const ip = await tryIPLocation();
+        if (ip) { applyGpsCoords(ip.lat, ip.lng); } else { showLocBlocked(); }
+      }
+      // 1st: fast network location (Wi-Fi/cell, works indoors)
       navigator.geolocation.getCurrentPosition(gotPos, () => {
-        // Fallback: GPS-based location (slower, may take up to 15s outdoors)
-        navigator.geolocation.getCurrentPosition(gotPos, () => showLocBlocked(), {
+        // 2nd: hardware GPS (slower, more accurate)
+        navigator.geolocation.getCurrentPosition(gotPos, () => onAllFail(), {
           enableHighAccuracy: true, timeout: 15000, maximumAge: 0
         });
       }, { enableHighAccuracy: false, timeout: 8000, maximumAge: 30000 });
@@ -892,6 +897,26 @@
         const r = await fetch(url, { signal: ctrl.signal, headers: extraHeaders || {} });
         clearTimeout(t); return r;
       } catch(e) { clearTimeout(t); throw e; }
+    }
+
+    // IP-based location — no device permission needed, used only if GPS fails
+    async function tryIPLocation() {
+      try {
+        return await Promise.any([
+          fetchTimeout('https://ipapi.co/json/', 5000).then(async r => {
+            if (!r.ok) throw new Error();
+            const d = await r.json();
+            if (d.error || !d.latitude) throw new Error();
+            return { lat: parseFloat(d.latitude), lng: parseFloat(d.longitude) };
+          }),
+          fetchTimeout('https://ipwho.is/', 5000).then(async r => {
+            if (!r.ok) throw new Error();
+            const d = await r.json();
+            if (!d.success || !d.latitude) throw new Error();
+            return { lat: parseFloat(d.latitude), lng: parseFloat(d.longitude) };
+          })
+        ]);
+      } catch(e) { return null; }
     }
 
     // Google Maps tile coordinates → lat/lng (Web Mercator)
