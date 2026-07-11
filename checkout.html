@@ -780,7 +780,7 @@
           if (bestPos) { applyGpsCoords(bestPos.coords.latitude, bestPos.coords.longitude); }
           else { showLocBlocked(); }
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
       const giveUpTimer = setTimeout(() => {
         if (done) return;
@@ -788,7 +788,7 @@
         navigator.geolocation.clearWatch(watcher);
         if (bestPos) { applyGpsCoords(bestPos.coords.latitude, bestPos.coords.longitude); }
         else { showLocBlocked(); }
-      }, 10000);
+      }, 12000);
     }
 
     function useMyLocation() {
@@ -961,6 +961,17 @@
       if (!title) return null;
       const name = title.replace(/\s*[-–—]\s*Google Maps.*$/i, '').trim();
       return name.length > 2 ? name : null;
+    }
+
+    // Promise.any polyfill for older browsers
+    if (!Promise.any) {
+      Promise.any = function(ps) {
+        return new Promise((res, rej) => {
+          let n = ps.length, errs = [];
+          if (!n) { rej(new Error('All promises rejected')); return; }
+          ps.forEach(p => Promise.resolve(p).then(res, e => { errs.push(e); if (!--n) rej(new Error('All promises rejected')); }));
+        });
+      };
     }
 
     async function verifyMapsLink() {
@@ -1162,7 +1173,7 @@
       if (selectedPayment === 'instapay') {
         msg = `Your order has been received! Please complete your InstaPay transfer of <strong>${total} EGP</strong> to <strong>magdy.hassan1967@instapay</strong> and send a screenshot to WhatsApp <strong>01122266138</strong> to confirm. We'll start preparing your order once payment is verified.`;
       } else {
-        msg = `Your order has been received! Our team will contact you on <strong>${phone}</strong> to arrange delivery to <strong>${areaName}</strong>. Please have <strong>${total} EGP</strong> ready for the courier.`;
+        msg = `Your order has been received! Our team will contact you on <strong>${phone}</strong> to confirm the Uber delivery. Please have <strong>${total} EGP</strong> (+ delivery fee) ready for the courier.`;
       }
       document.getElementById('success-msg').innerHTML = msg;
       window.scrollTo({ top: 0, behavior: 'smooth' });
