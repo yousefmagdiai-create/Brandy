@@ -717,15 +717,10 @@
 
     function applyGpsCoords(lat, lng) {
       const flat = lat.toFixed(6), flng = lng.toFixed(6);
-      const url = 'https://www.google.com/maps/search/?api=1&query=' + flat + '%2C' + flng;
+      const url = 'https://www.google.com/maps/@' + flat + ',' + flng + ',17z';
       document.getElementById('maps-link').value = url;
       validateCoords(parseFloat(flat), parseFloat(flng));
       if (locationVerified) unlockPaymentSection();
-      showLocStatus('valid',
-        '✓ Location detected. ' +
-        'Please tap the link below to confirm it shows your correct location on the map — ' +
-        'if it\'s wrong, paste a correct Google Maps link instead.'
-      );
       const verifyEl = document.getElementById('loc-verify-link');
       if (verifyEl) verifyEl.remove();
       const a = document.createElement('a');
@@ -813,6 +808,8 @@
         /\[(-?\d{1,3}\.\d{6,}),\s*(-?\d{1,3}\.\d{6,})\]/,
         // URL-encoded @: %4030.0453%2C31.2243
         /%40(-?\d{1,3}\.\d{4,})%2C(-?\d{1,3}\.\d{4,})/i,
+        // query=lat,lng or query=lat%2Clng (our GPS auto-generated format)
+        /[?&]query=(-?\d{1,3}\.\d{4,})(?:,|%2C)(-?\d{1,3}\.\d{4,})/i,
       ];
       for (const p of patterns) {
         const m = text.match(p);
