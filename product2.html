@@ -339,8 +339,12 @@
       <!-- Size -->
       <p class="section-label">Size</p>
       <div class="size-grid" id="size-grid">
-        <div class="size-chip black-only active">M</div>
+        <div class="size-chip black-only active">XL</div>
+        <div class="size-chip black-only">L</div>
+        <div class="size-chip black-only">M</div>
+        <div class="size-chip white-only" style="display:none;">XL</div>
         <div class="size-chip white-only" style="display:none;">L</div>
+        <div class="size-chip white-only" style="display:none;">M</div>
       </div>
       <a href="#" class="size-guide-link">Size Guide →</a>
 
@@ -423,9 +427,10 @@
         s.style.display = 'none';
       });
       const visibleClass = isBlack ? '.black-only' : '.white-only';
+      let firstChip = true;
       document.querySelectorAll('.size-chip' + visibleClass).forEach(s => {
         s.style.display = '';
-        s.classList.add('active');
+        if (firstChip) { s.classList.add('active'); firstChip = false; }
       });
 
       const src = isBlack ? 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png' : 'mastermind-white.png';

@@ -809,10 +809,10 @@
 
       <!-- Floating product card -->
       <div class="reveal d2" style="position:relative;">
-        <a href="product1.html" style="text-decoration:none;display:block;cursor:pointer;" aria-label="View Floral Bicycle Tee">
+        <a href="product5.html" style="text-decoration:none;display:block;cursor:pointer;" aria-label="View Pull &amp; Bear T-Shirt">
         <div class="hero-card">
           <div id="hero-img-wrap" style="position:relative;aspect-ratio:2/3;overflow:hidden;">
-            <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="Featured piece" id="hero-main-img" style="width:100%;height:100%;object-fit:cover;display:block;">
+            <img src="tshirt2 1.png" alt="Featured piece" id="hero-main-img" style="width:100%;height:100%;object-fit:cover;display:block;">
             <div id="hero-img-overlay" style="position:absolute;inset:0;opacity:0;"></div>
             <div style="position:absolute;top:16px;left:16px;background:rgba(247,243,236,0.9);border:1px solid var(--border);backdrop-filter:blur(8px);padding:6px 12px;">
               <span style="font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--golden);">New Arrival</span>
@@ -821,18 +821,17 @@
           <div style="padding:20px 22px 22px;border-top:1px solid var(--border);">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;">
               <div>
-                <p style="font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--ink);margin-bottom:3px;">Off-White T-Shirt</p>
-                <p style="font-size:10px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;">Summer 2026</p>
+                <p style="font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--ink);margin-bottom:3px;">Pull &amp; Bear T-Shirt</p>
+                <p style="font-size:10px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;">Classic — 2026</p>
               </div>
-              <span style="font-size:17px;font-weight:600;color:var(--golden);">700 EGP</span>
+              <span style="font-size:17px;font-weight:600;color:var(--golden);">750 EGP</span>
             </div>
             <div id="hero-swatch-row" class="swatch-row" style="margin-bottom:16px;">
-              <div class="swatch-dot hero-selected" style="background:#F5F5F0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);outline:2px solid var(--forest);outline-offset:2px;" title="White" onclick="event.preventDefault();event.stopPropagation();selectHeroSwatch(this)"></div>
-              <div class="swatch-dot" style="background:#1C2318;" title="Black" onclick="event.preventDefault();event.stopPropagation();selectHeroSwatch(this)"></div>
+              <div class="swatch-dot hero-selected" style="background:#1F3560;outline:2px solid var(--forest);outline-offset:2px;" title="Navy"></div>
             </div>
             <div id="hero-size-grid" class="size-grid" style="margin-bottom:16px;">
-              <div class="size-chip white-only active" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">L</div>
-              <div class="size-chip black-only" style="display:none;" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">M</div>
+              <div class="size-chip active" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">L</div>
+              <div class="size-chip" onclick="event.preventDefault();event.stopPropagation();selectHeroSize(this)">XL</div>
             </div>
             <button class="btn-primary" style="width:100%;justify-content:center;padding:12px 20px;" onclick="event.preventDefault();event.stopPropagation();heroQuickAdd(event)">Add to Cart</button>
           </div>
@@ -1242,32 +1241,7 @@
     }
 
     function selectHeroSwatch(el) {
-      el.closest('.swatch-row').querySelectorAll('.swatch-dot').forEach(s => { s.style.outline = 'none'; s.classList.remove('hero-selected'); });
-      el.style.outline = '2px solid var(--forest)';
-      el.style.outlineOffset = '2px';
-      el.classList.add('hero-selected');
-      const isBlack = el.getAttribute('title') === 'Black';
-
-      document.querySelectorAll('#hero-size-grid .size-chip').forEach(s => {
-        s.classList.remove('active');
-        s.style.display = 'none';
-      });
-      const visibleClass = isBlack ? '.black-only' : '.white-only';
-      document.querySelectorAll('#hero-size-grid .size-chip' + visibleClass).forEach(s => {
-        s.style.display = '';
-        s.classList.add('active');
-      });
-
-      const src = isBlack ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
-      const wrap = document.getElementById('hero-img-wrap');
-      const img  = document.getElementById('hero-main-img');
-      const sy = window.scrollY;
-      img.src = src;
-      img.style.height       = '100%';
-      img.style.objectFit    = 'cover';
-      wrap.style.aspectRatio = '';
-      sessionStorage.setItem('brandy_color_product1', isBlack ? 'Black' : 'White');
-      requestAnimationFrame(() => window.scrollTo({ top: sy, behavior: 'instant' }));
+      // Pull & Bear has one colour — nothing to switch
     }
 
     function getCart() { try { return JSON.parse(localStorage.getItem('brandy_cart')) || []; } catch { return []; } }
@@ -1275,17 +1249,15 @@
 
     function heroQuickAdd(e) {
       e && e.stopPropagation();
-      const activeSwatch = document.querySelector('#hero-swatch-row .swatch-dot.hero-selected');
       const activeSize = document.querySelector('#hero-size-grid .size-chip.active');
-      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
       const size = activeSize ? activeSize.textContent.trim() : 'L';
+      const color = 'Navy';
       const cart = getCart();
-      const existing = cart.find(i => i.id === 'product1' && i.size === size && i.color === color);
-      const heroImg = color === 'Black' ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
+      const existing = cart.find(i => i.id === 'product5' && i.size === size && i.color === color);
       if (existing) { existing.qty += 1; }
-      else { cart.push({ id: 'product1', name: 'Off-White T-Shirt', price: 700, image: heroImg, color, size, qty: 1 }); }
+      else { cart.push({ id: 'product5', name: 'Pull & Bear T-Shirt', price: 750, image: 'tshirt2 1.png', color, size, qty: 1 }); }
       saveCart(cart);
-      showToast('Off-White T-Shirt · ' + color + ' · ' + size, '700 EGP');
+      showToast('Pull & Bear T-Shirt · ' + color + ' · ' + size, '750 EGP');
     }
 
     function quickAdd(name, priceStr, image, e) {
