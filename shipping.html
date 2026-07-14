@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shipping &amp; Returns — Brandy</title>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-13JN7BHRMC"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-13JN7BHRMC');</script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:          #EDE5D0;
+      --surface:     #E5DCC6;
+      --card:        #F5F0E8;
+      --border:      rgba(59,74,46,0.1);
+      --border-hover:rgba(59,74,46,0.22);
+      --forest:      #3B4A2E;
+      --forest-deep: #2A3620;
+      --golden:      #8B6419;
+      --natural:     #C4B896;
+      --cream:       #EDE5D0;
+      --muted:       rgba(59,74,46,0.5);
+      --ink:         #1C2318;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(237,229,208,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 48px;
+    }
+    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .nav-back:hover { color: var(--forest); }
+    .icon-btn {
+      width: 36px; height: 36px; border-radius: 50%; border: none;
+      background: transparent; color: var(--muted); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+      text-decoration: none;
+    }
+    .icon-btn:hover { background: rgba(59,74,46,0.07); color: var(--forest); transform: scale(1.1); }
+
+    /* ── PAGE ── */
+    .page-wrap {
+      max-width: 780px; margin: 0 auto; padding: 64px 48px 96px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .page-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--golden); margin-bottom: 16px;
+    }
+    .page-title {
+      font-size: clamp(32px, 5vw, 52px); font-weight: 500;
+      letter-spacing: -0.03em; line-height: 1.05;
+      color: var(--ink); margin-bottom: 16px;
+    }
+    .page-intro {
+      font-size: 15px; color: var(--ink); opacity: 0.65;
+      line-height: 1.85; margin-bottom: 56px;
+      max-width: 540px;
+    }
+
+    .divider { height: 1px; background: var(--border); margin: 48px 0; }
+
+    .section { margin-bottom: 48px; }
+    .section-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: rgba(59,74,46,0.07);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px; color: var(--forest);
+    }
+    .section-title {
+      font-size: 20px; font-weight: 500; letter-spacing: -0.02em;
+      color: var(--ink); margin-bottom: 16px;
+    }
+    .section-body {
+      font-size: 14px; color: var(--ink); opacity: 0.72;
+      line-height: 1.9;
+    }
+    .section-body p { margin-bottom: 12px; }
+    .section-body p:last-child { margin-bottom: 0; }
+
+    .info-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 28px 32px;
+      margin-top: 24px;
+    }
+    .info-row {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .info-row:first-child { padding-top: 0; }
+    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .info-label {
+      font-weight: 700; color: var(--ink); letter-spacing: 0.02em;
+      min-width: 140px; flex-shrink: 0;
+    }
+    .info-value { color: var(--ink); opacity: 0.7; line-height: 1.6; }
+
+    .highlight-box {
+      background: rgba(59,74,46,0.06);
+      border-left: 3px solid var(--forest);
+      padding: 18px 22px;
+      margin-top: 20px;
+      font-size: 13px; color: var(--ink); opacity: 0.8;
+      line-height: 1.7;
+    }
+
+    .step-list { list-style: none; margin-top: 20px; }
+    .step-list li {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+      font-size: 13px; color: var(--ink); opacity: 0.72;
+      line-height: 1.6;
+    }
+    .step-list li:last-child { border-bottom: none; }
+    .step-num {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--forest); color: var(--cream);
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    .contact-cta {
+      background: var(--forest); color: var(--cream);
+      padding: 36px 40px; margin-top: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap;
+    }
+    .contact-cta-text h3 {
+      font-size: 20px; font-weight: 500; margin-bottom: 6px; color: var(--cream);
+    }
+    .contact-cta-text p {
+      font-size: 13px; opacity: 0.7; color: var(--cream);
+    }
+    .contact-cta-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--golden); color: var(--cream);
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 13px 26px; border: none; cursor: pointer; text-decoration: none;
+      transition: background 0.2s ease, transform 0.2s ease;
+      white-space: nowrap;
+    }
+    .contact-cta-btn:hover { background: #7a5715; transform: translateY(-2px); }
+
+    @media (max-width: 768px) {
+      nav { padding: 12px 20px; }
+      .page-wrap { padding: 40px 24px 72px; }
+      .info-label { min-width: 110px; }
+      .contact-cta { padding: 28px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="index3.html" class="nav-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Back to Shop
+      </a>
+      <a href="index3.html">
+        <img src="brandassets/logo-transparent.png" alt="Brandy" style="height:44px;width:auto;display:block;">
+      </a>
+      <a href="cart.html" class="icon-btn" aria-label="Cart" style="position:relative;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </a>
+    </div>
+  </nav>
+
+  <!-- PAGE CONTENT -->
+  <div class="page-wrap">
+
+    <p class="page-label">Policies</p>
+    <h1 class="page-title">Shipping &amp; Returns</h1>
+    <p class="page-intro">Everything you need to know about how your order gets to you, and what to do if something isn't right.</p>
+
+    <!-- SHIPPING -->
+    <div class="section">
+      <div class="section-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="1"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
+      </div>
+      <h2 class="section-title">Shipping</h2>
+      <div class="section-body">
+        <p>We currently deliver across <strong>Cairo</strong> and <strong>6th of October City</strong>. Orders are handled through our Uber courier service, ensuring your items arrive safely and on time.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-row">
+          <span class="info-label">Delivery Areas</span>
+          <span class="info-value">Cairo &amp; 6th of October City only</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Delivery Time</span>
+          <span class="info-value">2–3 business days from order confirmation</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Delivery Fee</span>
+          <span class="info-value">Calculated at checkout based on the Uber courier rate to your location at the time of delivery</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Order Tracking</span>
+          <span class="info-value">You will receive an update once your order is out for delivery</span>
+        </div>
+      </div>
+      <div class="highlight-box">
+        📍 We are currently only able to deliver within <strong>Cairo</strong> and <strong>6th of October City</strong>. We hope to expand to more cities soon.
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- RETURNS -->
+    <div class="section">
+      <div class="section-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <h2 class="section-title">Returns</h2>
+      <div class="section-body">
+        <p>We want you to love what you ordered. If you're not satisfied for any reason, you can request a return within <strong>7 days</strong> of receiving your order.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-row">
+          <span class="info-label">Return Window</span>
+          <span class="info-value">7 days from the date of delivery</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Refund Method</span>
+          <span class="info-value">Full refund to your original payment method</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Return Shipping</span>
+          <span class="info-value">Contact us to arrange pickup — we'll coordinate the return courier</span>
+        </div>
+      </div>
+
+      <h3 style="font-size:15px;font-weight:600;color:var(--ink);margin-top:36px;margin-bottom:4px;">How to Return an Item</h3>
+      <ul class="step-list">
+        <li>
+          <div class="step-num">1</div>
+          <div>Contact us within 7 days of receiving your order via the <a href="contact.html" style="color:var(--golden);text-decoration:underline;">Contact page</a> or WhatsApp and let us know which item(s) you'd like to return.</div>
+        </li>
+        <li>
+          <div class="step-num">2</div>
+          <div>We'll confirm your return request and arrange a courier pickup from your address.</div>
+        </li>
+        <li>
+          <div class="step-num">3</div>
+          <div>Once the item is received and inspected, your refund will be processed promptly.</div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- CONTACT CTA -->
+    <div class="contact-cta">
+      <div class="contact-cta-text">
+        <h3>Still have questions?</h3>
+        <p>Our team is happy to help with anything shipping or returns related.</p>
+      </div>
+      <a href="contact.html" class="contact-cta-btn">
+        Contact Us
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    gtag('event', 'page_view', { page_title: 'Shipping & Returns', page_location: window.location.href });
+  </script>
+</body>
+</html>
