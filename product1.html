@@ -338,14 +338,14 @@
     <!-- GALLERY -->
     <div class="gallery">
       <div class="gallery-main" id="main-img-wrap">
-        <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="Off-White" id="main-img">
+        <img src="5E147019-5064-4F55-974F-1CA8AE14798E.png" alt="Off-White" id="main-img">
       </div>
       <div class="gallery-thumbs">
-        <div class="thumb active" onclick="setThumb(this, '5058ff11-1b2c-44ef-80f0-2daa8184b894.png')">
-          <img src="5058ff11-1b2c-44ef-80f0-2daa8184b894.png" alt="Front">
+        <div class="thumb active" onclick="setThumb(this, '5E147019-5064-4F55-974F-1CA8AE14798E.png')">
+          <img src="5E147019-5064-4F55-974F-1CA8AE14798E.png" alt="Front">
         </div>
-        <div class="thumb" id="thumb-back" onclick="setThumb(this, 'c135a054-a4e6-4f03-9fd4-57e6e86ca1c7.png')">
-          <img src="c135a054-a4e6-4f03-9fd4-57e6e86ca1c7.png" alt="Back">
+        <div class="thumb" id="thumb-back" onclick="setThumb(this, '8071449b-ead9-45a0-99a9-7b70109e4925.png')">
+          <img src="8071449b-ead9-45a0-99a9-7b70109e4925.png" alt="Back">
         </div>
       </div>
     </div>
@@ -374,17 +374,17 @@
       <div class="divider"></div>
 
       <!-- Color -->
-      <p class="section-label">Color — <span style="color:var(--ink);font-weight:500;letter-spacing:0;">White</span></p>
+      <p class="section-label">Color — <span style="color:var(--ink);font-weight:500;letter-spacing:0;">Black</span></p>
       <div class="swatch-row">
-        <div class="swatch active" style="background:#F5F5F0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);" title="White" onclick="selectSwatch(this,'White')"></div>
-        <div class="swatch" style="background:#1C2318;" title="Black" onclick="selectSwatch(this,'Black')"></div>
+        <div class="swatch" style="background:#F5F5F0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);" title="White" onclick="selectSwatch(this,'White')"></div>
+        <div class="swatch active" style="background:#1C2318;" title="Black" onclick="selectSwatch(this,'Black')"></div>
       </div>
 
       <!-- Size -->
       <p class="section-label">Size</p>
       <div class="size-grid" id="size-grid">
-        <div class="size-chip white-only active">L</div>
-        <div class="size-chip black-only" style="display:none;">M</div>
+        <div class="size-chip white-only" style="display:none;">L</div>
+        <div class="size-chip black-only active">M</div>
       </div>
       <a href="#" class="size-guide-link">Size Guide →</a>
 
@@ -501,7 +501,7 @@
       const activeSize = document.querySelector('.size-chip.active');
       const activeSwatch = document.querySelector('.swatch.active');
       const size = activeSize ? activeSize.textContent.trim() : 'M';
-      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
+      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
 
       const colorImage = color === 'Black' ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
       const cart = getCart();
@@ -518,7 +518,7 @@
       const activeSize = document.querySelector('.size-chip.active');
       const activeSwatch = document.querySelector('.swatch.active');
       const size = activeSize ? activeSize.textContent.trim() : 'M';
-      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
+      const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
       gtag('event', 'add_to_cart', { currency: 'EGP', value: 550, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', item_variant: color + ' / ' + size, price: 550, quantity: 1 }] });
       const colorImage = color === 'Black' ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
       sessionStorage.setItem('brandy_buynow', JSON.stringify(
@@ -573,7 +573,7 @@
 
   <script>
     const WISH_KEY = 'brandy_wishlist';
-    const PRODUCT = { id: 'product1', name: 'Off-White T-Shirt', category: 'Streetwear', price: '550 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png', href: 'product1.html' };
+    const PRODUCT = { id: 'product1', name: 'Off-White T-Shirt', category: 'Streetwear', price: '550 EGP', img: '5E147019-5064-4F55-974F-1CA8AE14798E.png', href: 'product1.html' };
 
     function getWishlist() { try { return JSON.parse(localStorage.getItem(WISH_KEY)) || []; } catch { return []; } }
     function saveWishlist(w) { localStorage.setItem(WISH_KEY, JSON.stringify(w)); }
@@ -583,7 +583,7 @@
       const idx = w.findIndex(i => i.id === PRODUCT.id);
       if (idx > -1) { w.splice(idx, 1); } else {
         const activeSwatch = document.querySelector('.swatch.active');
-        const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
+        const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
         const img = color === 'Black' ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
         w.push({ ...PRODUCT, img });
       }
