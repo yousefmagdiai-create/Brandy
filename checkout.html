@@ -714,14 +714,30 @@
       updateTotals();
     }
 
+    const WHATSAPP_NUMBER = '201032022422';
+
     function updateTotals() {
       const total = cartSubtotal;
-      document.getElementById('total-display').textContent = total.toFixed(2);
-      document.getElementById('instapay-amount').textContent = total + ' EGP';
-      document.getElementById('cod-amount').textContent = total + ' EGP';
+      // Write defensively: the COD option was removed from the markup but this
+      // function kept writing to #cod-amount, which threw on every call and
+      // stopped execution before the WhatsApp link below was ever built.
+      const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      };
+      setText('total-display', total.toFixed(2));
+      setText('instapay-amount', total + ' EGP');
 
-      const name = (document.getElementById('fname').value || 'Customer').trim();
-      const phone = (document.getElementById('phone').value || '').trim();
+      const waBtn = document.getElementById('whatsapp-btn');
+      if (!waBtn) return;
+      // Always leave the button with a working destination, even if the cart
+      // cannot be read — a bare wa.me link still opens the chat.
+      waBtn.href = `https://wa.me/${WHATSAPP_NUMBER}`;
+
+      const nameEl = document.getElementById('fname');
+      const phoneEl = document.getElementById('phone');
+      const name = ((nameEl && nameEl.value) || 'Customer').trim();
+      const phone = ((phoneEl && phoneEl.value) || '').trim();
       try {
         const cart = (JSON.parse(localStorage.getItem('brandy_cart')) || []).map(i => ({ ...i, price: parsePrice(i.price) }));
         const itemLines = cart.map(i => `• ${i.name} (${i.color || ''}, ${i.size || ''}) x${i.qty} — ${i.price * i.qty} EGP`).join('\n');
@@ -733,8 +749,11 @@
           `• Phone: ${phone}\n\n` +
           `Please find my payment screenshot attached.`
         );
-        document.getElementById('whatsapp-btn').href = `https://wa.me/201032022422?text=${msg}`;
-      } catch(e) {}
+        waBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+      } catch (e) {
+        // Keep the plain wa.me link set above rather than failing silently.
+        console.error('Could not build the WhatsApp order message:', e);
+      }
     }
 
     function copyText(text, btn) {
