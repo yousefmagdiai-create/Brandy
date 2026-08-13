@@ -745,21 +745,40 @@
       }
     }
 
-    function applyGpsCoords(lat, lng) {
+    // source: 'gps' (device) or 'ip' (rough network fallback). accuracy in metres, if known.
+    function applyGpsCoords(lat, lng, source, accuracy) {
       const flat = lat.toFixed(6), flng = lng.toFixed(6);
-      const url = 'https://www.google.com/maps/@' + flat + ',' + flng + ',17z';
+      // search/?api=1&query= drops an actual PIN at the coordinates. The older
+      // /maps/@lat,lng,17z form only re-centres the map and shows nothing, which
+      // is why the detected spot was impossible to see.
+      const url = 'https://www.google.com/maps/search/?api=1&query=' + flat + ',' + flng;
       document.getElementById('maps-link').value = url;
       validateCoords(parseFloat(flat), parseFloat(flng));
       if (locationVerified) unlockPaymentSection();
+
       const verifyEl = document.getElementById('loc-verify-link');
       if (verifyEl) verifyEl.remove();
+      const noteEl = document.getElementById('loc-accuracy-note');
+      if (noteEl) noteEl.remove();
+
       const a = document.createElement('a');
       a.id = 'loc-verify-link';
       a.href = url;
       a.target = '_blank';
-      a.textContent = '📍 Tap to view your detected location';
+      a.rel = 'noopener';
+      a.textContent = '📍 Tap to open the pin on Google Maps (' + flat + ', ' + flng + ')';
       a.style.cssText = 'display:block;margin-top:8px;font-size:12px;font-weight:600;color:#1a56a0;text-decoration:underline;';
       document.getElementById('loc-status').after(a);
+
+      // Be honest about how precise the fix actually is.
+      const rough = (source === 'ip') || (typeof accuracy === 'number' && accuracy > 1000);
+      const note = document.createElement('p');
+      note.id = 'loc-accuracy-note';
+      note.style.cssText = 'margin-top:6px;font-size:11px;line-height:1.6;color:' + (rough ? '#8a5a00' : '#6D7175') + ';';
+      note.innerHTML = rough
+        ? 'This is only an <strong>approximate area</strong>, not your exact address — your device did not give a precise GPS fix. Please open the pin, check it, and if it is wrong drop a pin on your real address in Google Maps, copy that link and paste it in the box below.'
+        : 'Open the pin and check it matches your address. If it is off, drop a pin on your real address in Google Maps, copy the link and paste it in the box below.';
+      a.after(note);
     }
 
     function showLocBlocked() {
@@ -771,7 +790,7 @@
       showLocStatus('loading', 'Getting your location — tap Allow when asked…');
       function gpsP(high, ms, maxAge) {
         return new Promise((res, rej) => navigator.geolocation.getCurrentPosition(
-          p => res({ lat: p.coords.latitude, lng: p.coords.longitude }), rej,
+          p => res({ lat: p.coords.latitude, lng: p.coords.longitude, accuracy: p.coords.accuracy }), rej,
           { enableHighAccuracy: high, timeout: ms, maximumAge: maxAge }
         ));
       }
@@ -781,10 +800,10 @@
         gpsP(false, 12000, 30000),    // Wi-Fi/cell positioning
         gpsP(true, 20000, 0),         // hardware GPS chip
       ]).catch(() => null);
-      if (gpsLoc) { applyGpsCoords(gpsLoc.lat, gpsLoc.lng); return; }
+      if (gpsLoc) { applyGpsCoords(gpsLoc.lat, gpsLoc.lng, 'gps', gpsLoc.accuracy); return; }
       // Step 2: GPS completely failed — use IP as last resort (pre-fetched = instant)
       const ip = _ipLocCache || await tryIPLocation();
-      if (ip) { applyGpsCoords(ip.lat, ip.lng); } else { showLocBlocked(); }
+      if (ip) { applyGpsCoords(ip.lat, ip.lng, 'ip'); } else { showLocBlocked(); }
     }
 
     function useMyLocation() {
@@ -792,6 +811,8 @@
       document.getElementById('loc-status').className = 'loc-status';
       const old = document.getElementById('loc-verify-link');
       if (old) old.remove();
+      const oldNote = document.getElementById('loc-accuracy-note');
+      if (oldNote) oldNote.remove();
       if (location.protocol === 'file:') {
         showLocStatus('invalid', '⚠️ Location only works on the live site — open the GitHub Pages link on your phone.');
         return;
