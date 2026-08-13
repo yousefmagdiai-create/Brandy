@@ -1001,7 +1001,7 @@
           <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Streetwear</p>
           <p style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:8px;">Mastermind T-Shirt</p>
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:14px;font-weight:600;color:var(--golden);">700 EGP</span>
+            <span style="font-size:14px;font-weight:600;color:var(--golden);">600 EGP</span>
             <div style="display:flex;gap:8px;"><div class="swatch-dot" style="background:#1C2318;outline:2px solid var(--forest);outline-offset:2px;" title="Black" onclick="event.stopPropagation();selectCard2Swatch(this,'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png')"></div><div class="swatch-dot" style="background:#F5F5F0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);" title="White" onclick="event.stopPropagation();selectCard2Swatch(this,'mastermind-white.png')"></div></div>
           </div>
         </div>
@@ -1247,9 +1247,9 @@
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product2' && i.color === color);
       if (existing) { existing.qty += 1; }
-      else { cart.push({ id: 'product2', name: 'Mastermind T-Shirt', price: 700, image: img, color, size: color === 'White' ? 'L' : 'M', qty: 1 }); }
+      else { cart.push({ id: 'product2', name: 'Mastermind T-Shirt', price: 600, image: img, color, size: color === 'White' ? 'L' : 'M', qty: 1 }); }
       saveCart(cart);
-      showToast('Mastermind T-Shirt · ' + color, '700 EGP');
+      showToast('Mastermind T-Shirt · ' + color, '600 EGP');
     }
 
     function card3QuickAdd(e) {
@@ -1404,7 +1404,7 @@
   <script>
     const CATALOG = [
       { type: 'product', name: 'Off-White T-Shirt',  category: 'Streetwear',    price: '550 EGP', img: '5E147019-5064-4F55-974F-1CA8AE14798E.png',                                   href: 'product1.html' },
-      { type: 'product', name: 'Mastermind T-Shirt', category: 'Streetwear', price: '700 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png',             href: 'product2.html' },
+      { type: 'product', name: 'Mastermind T-Shirt', category: 'Streetwear', price: '600 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png',             href: 'product2.html' },
       { type: 'product', name: 'Zara Short',          category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png',                                href: 'product3.html' },
       { type: 'product', name: 'Ralph Lauren Polo Shirt', category: 'Classic', price: '750 EGP', img: 'polo-blue.png',                                      href: 'product4.html' },
       { type: 'product', name: 'Pull & Bear T-Shirt', category: 'Classic', price: '750 EGP', img: 'tshirt2 1.png', href: 'product5.html' },
@@ -1564,7 +1564,7 @@
     (function injectHearts() {
       const cards = [
         { el: document.querySelectorAll('.product-card')[0], id: 'product1',  name: 'Off-White T-Shirt', category: 'Streetwear',   price: '550 EGP', img: '5E147019-5064-4F55-974F-1CA8AE14798E.png',                                  href: 'product1.html' },
-        { el: document.querySelectorAll('.product-card')[1], id: 'product2',  name: 'Mastermind T-Shirt', category: 'Streetwear', price: '700 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', href: 'product2.html' },
+        { el: document.querySelectorAll('.product-card')[1], id: 'product2',  name: 'Mastermind T-Shirt', category: 'Streetwear', price: '600 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', href: 'product2.html' },
         { el: document.querySelectorAll('.product-card')[2], id: 'product3',  name: 'Zara Short',        category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png',                              href: 'product3.html' },
         { el: document.querySelectorAll('.product-card')[3], id: 'product4',  name: 'Ralph Lauren Polo Shirt', category: 'Classic', price: '750 EGP', img: 'polo-blue.png',              href: 'product4.html' },
         { el: document.querySelectorAll('.product-card')[4], id: 'product5',  name: 'Pull & Bear T-Shirt', category: 'Classic', price: '750 EGP', img: 'tshirt2 1.png', href: 'product5.html' },

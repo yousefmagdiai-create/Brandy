@@ -394,7 +394,7 @@
       <h1 class="product-name">Mastermind T-Shirt</h1>
 
       <div class="price-row">
-        <span class="price">700 EGP</span>
+        <span class="price">600 EGP</span>
       </div>
 
       <p class="description">
@@ -431,7 +431,7 @@
           Add to Cart
         </button>
         <button class="btn-secondary" onclick="buyNow()">
-          Buy Now — 700 EGP
+          Buy Now — 600 EGP
         </button>
       </div>
 
@@ -541,10 +541,10 @@
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product2' && i.size === size && i.color === color);
       if (existing) { existing.qty += 1; }
-      else { cart.push({ id: 'product2', name: 'Mastermind T-Shirt', price: 700, image: colorImage, color, size, qty: 1 }); }
+      else { cart.push({ id: 'product2', name: 'Mastermind T-Shirt', price: 600, image: colorImage, color, size, qty: 1 }); }
       saveCart(cart);
-      BrandyAnalytics.trackAddToCart('Mastermind T-Shirt', 700);
-      gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product2', item_name: 'Mastermind T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
+      BrandyAnalytics.trackAddToCart('Mastermind T-Shirt', 600);
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 600, items: [{ item_id: 'product2', item_name: 'Mastermind T-Shirt', item_variant: color + ' / ' + size, price: 600, quantity: 1 }] });
       showToast(color, size);
     }
 
@@ -553,10 +553,10 @@
       const activeSwatch = document.querySelector('.swatch.active');
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
-      gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product2', item_name: 'Mastermind T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 600, items: [{ item_id: 'product2', item_name: 'Mastermind T-Shirt', item_variant: color + ' / ' + size, price: 600, quantity: 1 }] });
       const colorImage = color === 'White' ? 'mastermind-white.png' : 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png';
       sessionStorage.setItem('brandy_buynow', JSON.stringify(
-        { id: 'product2', name: 'Mastermind T-Shirt', price: 700, image: colorImage, color, size, qty: 1 }
+        { id: 'product2', name: 'Mastermind T-Shirt', price: 600, image: colorImage, color, size, qty: 1 }
       ));
       window.location.href = 'checkout.html';
     }
@@ -581,7 +581,7 @@
       if (logo.complete && logo.naturalWidth) removeWhiteBg(logo);
       else logo.addEventListener('load', () => removeWhiteBg(logo));
     }
-    gtag('event', 'view_item', { currency: 'EGP', value: 700, items: [{ item_id: 'product2', item_name: 'Mastermind T-Shirt', price: 700 }] });
+    gtag('event', 'view_item', { currency: 'EGP', value: 600, items: [{ item_id: 'product2', item_name: 'Mastermind T-Shirt', price: 600 }] });
     const _bu = sessionStorage.getItem('brandy_back_url');
     if (_bu) document.getElementById('back-link').href = _bu;
 
@@ -607,7 +607,7 @@
 
   <script>
     const WISH_KEY = 'brandy_wishlist';
-    const PRODUCT = { id: 'product2', name: 'Mastermind T-Shirt', category: 'Streetwear', price: '700 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', href: 'product2.html' };
+    const PRODUCT = { id: 'product2', name: 'Mastermind T-Shirt', category: 'Streetwear', price: '600 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', href: 'product2.html' };
 
     function getWishlist() { try { return JSON.parse(localStorage.getItem(WISH_KEY)) || []; } catch { return []; } }
     function saveWishlist(w) { localStorage.setItem(WISH_KEY, JSON.stringify(w)); }
