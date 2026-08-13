@@ -379,8 +379,52 @@
   <div id="brandy-announce" role="status">
     <span class="ba-dot"></span>
     <span><strong>First order — free delivery.</strong> Your first Brandy order ships on us.</span>
-    <button class="ba-close" aria-label="Dismiss" onclick="document.getElementById('brandy-announce').remove()">&times;</button>
+    <button class="ba-close" aria-label="Dismiss" onclick="dismissBrandyAnnounce()">&times;</button>
   </div>
+  <script>
+    // The bar's height changes with viewport (the text wraps on narrow phones),
+    // so never hard-code an offset. Pages with a FIXED nav need that nav pushed
+    // down by the bar's measured height; pages with a sticky nav need nothing,
+    // because the bar sits above it in normal flow.
+    function initBrandyAnnounce() {
+      var bar = document.getElementById('brandy-announce');
+      if (!bar) return;
+      var nav = document.querySelector('#nav') || document.querySelector('nav');
+      var isFixed = nav && getComputedStyle(nav).position === 'fixed';
+      if (!isFixed) return;
+      bar.style.position = 'fixed';
+      bar.style.top = '0';
+      bar.style.left = '0';
+      bar.style.right = '0';
+      function sync() {
+        var h = bar.offsetHeight;
+        nav.style.top = h + 'px';
+        document.body.style.paddingTop = h + 'px';
+      }
+      sync();
+      window.addEventListener('resize', sync);
+      window.addEventListener('load', sync);
+      if (window.ResizeObserver) new ResizeObserver(sync).observe(bar);
+      bar.addEventListener('brandy:dismissed', function () {
+        nav.style.top = '0px';
+        document.body.style.paddingTop = '';
+      });
+    }
+    // The bar is injected above the <nav>, so the nav does not exist yet at this
+    // point in parsing — wait for the document before measuring anything.
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initBrandyAnnounce);
+    } else {
+      initBrandyAnnounce();
+    }
+    function dismissBrandyAnnounce() {
+      var bar = document.getElementById('brandy-announce');
+      if (!bar) return;
+      bar.dispatchEvent(new Event('brandy:dismissed'));
+      bar.remove();
+    }
+  </script>
+
 
 
   <!-- SUCCESS SCREEN -->
@@ -441,7 +485,7 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#005BD3" stroke-width="1.75" stroke-linecap="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             <div>
               <p style="font-size:13px;font-weight:600;color:#1A1A1A;margin-bottom:4px;">Delivery via Uber Courier</p>
-              <p style="font-size:12px;color:#6D7175;line-height:1.6;">The delivery fee will be confirmed and sent to you via <strong>WhatsApp or email</strong> before your order is dispatched. You pay the delivery fee directly to the Uber courier upon receiving your order — it is not included in the total below.</p>
+              <p style="font-size:12px;color:#6D7175;line-height:1.6;">The delivery fee will be confirmed and sent to you via <strong>WhatsApp or email</strong> before your order is dispatched. You pay the delivery fee directly to the Uber courier upon receiving your order — it is not included in the total below. <strong>If this is your first Brandy order, we cover the delivery fee</strong> and will confirm that with you before dispatch.</p>
               <p style="font-size:12px;color:#1A1A1A;margin-top:8px;font-weight:600;">📍 Currently delivering to <span style="color:#005BD3;">Cairo</span> and <span style="color:#005BD3;">6th of October City</span> only.</p>
             </div>
           </div>

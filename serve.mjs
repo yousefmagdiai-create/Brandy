@@ -24,7 +24,9 @@ const MIME = {
 };
 
 createServer(async (req, res) => {
-  let url = req.url.split('?')[0];
+  // Browsers percent-encode spaces in filenames ("tshirt2 1.png" -> "tshirt2%201.png").
+  // Without decoding, every image whose name contains a space 404s in local preview.
+  let url = decodeURIComponent(req.url.split('?')[0]);
   if (url === '/' || url === '') url = '/index.html';
 
   const filePath = join(ROOT, url);

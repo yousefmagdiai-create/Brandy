@@ -209,8 +209,52 @@
   <div id="brandy-announce" role="status">
     <span class="ba-dot"></span>
     <span><strong>First order — free delivery.</strong> Your first Brandy order ships on us.</span>
-    <button class="ba-close" aria-label="Dismiss" onclick="document.getElementById('brandy-announce').remove()">&times;</button>
+    <button class="ba-close" aria-label="Dismiss" onclick="dismissBrandyAnnounce()">&times;</button>
   </div>
+  <script>
+    // The bar's height changes with viewport (the text wraps on narrow phones),
+    // so never hard-code an offset. Pages with a FIXED nav need that nav pushed
+    // down by the bar's measured height; pages with a sticky nav need nothing,
+    // because the bar sits above it in normal flow.
+    function initBrandyAnnounce() {
+      var bar = document.getElementById('brandy-announce');
+      if (!bar) return;
+      var nav = document.querySelector('#nav') || document.querySelector('nav');
+      var isFixed = nav && getComputedStyle(nav).position === 'fixed';
+      if (!isFixed) return;
+      bar.style.position = 'fixed';
+      bar.style.top = '0';
+      bar.style.left = '0';
+      bar.style.right = '0';
+      function sync() {
+        var h = bar.offsetHeight;
+        nav.style.top = h + 'px';
+        document.body.style.paddingTop = h + 'px';
+      }
+      sync();
+      window.addEventListener('resize', sync);
+      window.addEventListener('load', sync);
+      if (window.ResizeObserver) new ResizeObserver(sync).observe(bar);
+      bar.addEventListener('brandy:dismissed', function () {
+        nav.style.top = '0px';
+        document.body.style.paddingTop = '';
+      });
+    }
+    // The bar is injected above the <nav>, so the nav does not exist yet at this
+    // point in parsing — wait for the document before measuring anything.
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initBrandyAnnounce);
+    } else {
+      initBrandyAnnounce();
+    }
+    function dismissBrandyAnnounce() {
+      var bar = document.getElementById('brandy-announce');
+      if (!bar) return;
+      bar.dispatchEvent(new Event('brandy:dismissed'));
+      bar.remove();
+    }
+  </script>
+
 
 
   <!-- NAV -->
