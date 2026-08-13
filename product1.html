@@ -279,6 +279,36 @@
 </head>
 <body>
 
+  <!-- FIRST-ORDER FREE DELIVERY ANNOUNCEMENT -->
+  <style>
+    #brandy-announce {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      background: #3B4A2E; color: #EDE5D0;
+      font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 400;
+      letter-spacing: 0.06em; text-align: center;
+      padding: 9px 44px 9px 20px; position: relative; z-index: 60;
+    }
+    #brandy-announce strong { font-weight: 600; color: #E4C77B; letter-spacing: 0.1em; text-transform: uppercase; }
+    #brandy-announce .ba-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #E4C77B; flex-shrink: 0;
+      animation: ba-pulse 2s ease-in-out infinite;
+    }
+    @keyframes ba-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.75); } }
+    #brandy-announce .ba-close {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: rgba(237,229,208,0.6);
+      font-size: 16px; line-height: 1; cursor: pointer; padding: 4px;
+    }
+    #brandy-announce .ba-close:hover { color: #EDE5D0; }
+    @media (max-width: 700px) { #brandy-announce { font-size: 10px; padding: 8px 38px 8px 14px; } }
+  </style>
+  <div id="brandy-announce" role="status">
+    <span class="ba-dot"></span>
+    <span><strong>First order — free delivery.</strong> Your first Brandy order ships on us.</span>
+    <button class="ba-close" aria-label="Dismiss" onclick="document.getElementById('brandy-announce').remove()">&times;</button>
+  </div>
+
+
   <!-- NAV -->
   <nav>
     <div class="nav-inner">
@@ -334,7 +364,7 @@
       <h1 class="product-name">Off-White T-Shirt</h1>
 
       <div class="price-row">
-        <span class="price">700 EGP</span>
+        <span class="price">550 EGP</span>
       </div>
 
       <p class="description">
@@ -367,7 +397,7 @@
           Add to Cart
         </button>
         <button class="btn-secondary" onclick="buyNow()">
-          Buy Now — 700 EGP
+          Buy Now — 550 EGP
         </button>
       </div>
 
@@ -477,10 +507,10 @@
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product1' && i.size === size && i.color === color);
       if (existing) { existing.qty += 1; }
-      else { cart.push({ id: 'product1', name: 'Off-White T-Shirt', price: 700, image: colorImage, color, size, qty: 1 }); }
+      else { cart.push({ id: 'product1', name: 'Off-White T-Shirt', price: 550, image: colorImage, color, size, qty: 1 }); }
       saveCart(cart);
-      BrandyAnalytics.trackAddToCart('Off-White T-Shirt', 700);
-      gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
+      BrandyAnalytics.trackAddToCart('Off-White T-Shirt', 550);
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 550, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', item_variant: color + ' / ' + size, price: 550, quantity: 1 }] });
       showToast(color, size);
     }
 
@@ -489,10 +519,10 @@
       const activeSwatch = document.querySelector('.swatch.active');
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'White';
-      gtag('event', 'add_to_cart', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', item_variant: color + ' / ' + size, price: 700, quantity: 1 }] });
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 550, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', item_variant: color + ' / ' + size, price: 550, quantity: 1 }] });
       const colorImage = color === 'Black' ? '5E147019-5064-4F55-974F-1CA8AE14798E.png' : '5058ff11-1b2c-44ef-80f0-2daa8184b894.png';
       sessionStorage.setItem('brandy_buynow', JSON.stringify(
-        { id: 'product1', name: 'Off-White T-Shirt', price: 700, image: colorImage, color, size, qty: 1 }
+        { id: 'product1', name: 'Off-White T-Shirt', price: 550, image: colorImage, color, size, qty: 1 }
       ));
       window.location.href = 'checkout.html';
     }
@@ -517,7 +547,7 @@
       if (logo.complete && logo.naturalWidth) removeWhiteBg(logo);
       else logo.addEventListener('load', () => removeWhiteBg(logo));
     }
-    gtag('event', 'view_item', { currency: 'EGP', value: 700, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', price: 700 }] });
+    gtag('event', 'view_item', { currency: 'EGP', value: 550, items: [{ item_id: 'product1', item_name: 'Off-White T-Shirt', price: 550 }] });
     const _bu = sessionStorage.getItem('brandy_back_url');
     if (_bu) document.getElementById('back-link').href = _bu;
 
@@ -543,7 +573,7 @@
 
   <script>
     const WISH_KEY = 'brandy_wishlist';
-    const PRODUCT = { id: 'product1', name: 'Off-White T-Shirt', category: 'Streetwear', price: '700 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png', href: 'product1.html' };
+    const PRODUCT = { id: 'product1', name: 'Off-White T-Shirt', category: 'Streetwear', price: '550 EGP', img: '5058ff11-1b2c-44ef-80f0-2daa8184b894.png', href: 'product1.html' };
 
     function getWishlist() { try { return JSON.parse(localStorage.getItem(WISH_KEY)) || []; } catch { return []; } }
     function saveWishlist(w) { localStorage.setItem(WISH_KEY, JSON.stringify(w)); }
