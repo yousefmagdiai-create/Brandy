@@ -592,6 +592,24 @@
               <div class="pay-logo" style="background:#1A1A1A;color:#fff;font-family:inherit;font-size:13px;font-weight:800;">T</div>
             </div>
 
+            <!-- CASH ON DELIVERY -->
+            <div class="pay-option" id="pay-cod" onclick="selectPayment('cod')">
+              <input type="radio" name="payment" value="cod">
+              <div class="pay-radio"></div>
+              <div class="pay-info">
+                <p class="pay-name">Cash on Delivery</p>
+                <p class="pay-desc">Pay when your order arrives</p>
+              </div>
+              <div class="pay-logo" style="background:#F0F0F0;border:1px solid #E0E0E0;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6D7175" stroke-width="1.75" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+              </div>
+            </div>
+            <div class="cod-panel" id="panel-cod">
+              <p style="font-size:13px;color:#1A1A1A;line-height:1.65;">
+                You will pay <strong id="cod-amount">—</strong> in cash when your order is delivered.<br>
+                <span style="font-size:12px;color:#6D7175;">Please have the exact amount ready for the courier.</span>
+              </p>
+            </div>
 
           </div>
           <span class="group-error" id="err-payment">Please select a payment method.</span>
@@ -797,14 +815,25 @@
       }
     }
 
+    function inArea(lat, lng, b) {
+      return lat >= b.minLat && lat <= b.maxLat && lng >= b.minLng && lng <= b.maxLng;
+    }
+
     function validateCoords(lat, lng) {
-      if (lat >= 22.0 && lat <= 31.7 && lng >= 25.0 && lng <= 37.0) {
+      const inEgypt = lat >= 22.0 && lat <= 31.7 && lng >= 25.0 && lng <= 37.0;
+      if (!inEgypt) {
+        locationVerified = false;
+        showLocStatus('invalid', '✗ Location appears to be outside Egypt. Please share a valid Google Maps link for your delivery address.');
+        return;
+      }
+      const inDeliveryArea = inArea(lat, lng, AREA_BOUNDS.cairo) || inArea(lat, lng, AREA_BOUNDS.october);
+      if (inDeliveryArea) {
         locationVerified = true;
         showLocStatus('valid', '✓ Location verified — our Uber courier will deliver to you.');
         document.getElementById('err-location').classList.remove('show');
       } else {
         locationVerified = false;
-        showLocStatus('invalid', '✗ Location appears to be outside Egypt. Please share a valid Google Maps link for your delivery address.');
+        showLocStatus('invalid', '✗ We only deliver to Cairo and 6th of October City right now. Please share a location within one of these areas, or contact us on WhatsApp if you believe this is a mistake.');
       }
     }
 
@@ -858,8 +887,14 @@
         ));
       }
       // Step 1: GPS always wins if available (accurate device location)
+      // maximumAge here MUST stay short: Promise.any resolves on whichever
+      // branch settles first, and an unbounded cache (previously Infinity)
+      // let the browser hand back a fix from a past session/location that
+      // "won" the race purely by being instant, silently reporting the
+      // wrong place. 60s still gives an instant result for a genuinely
+      // fresh fix without resurrecting stale ones.
       const gpsLoc = await Promise.any([
-        gpsP(false, 3000, Infinity),  // instant if browser has any cached GPS
+        gpsP(false, 3000, 60000),      // instant only if the cached GPS is < 60s old
         gpsP(false, 12000, 30000),    // Wi-Fi/cell positioning
         gpsP(true, 20000, 0),         // hardware GPS chip
       ]).catch(() => null);
