@@ -825,7 +825,6 @@
         <img src="brandassets/logo-transparent.png" alt="Brandy" style="height:44px;width:auto;display:block;">
       </a>
       <ul class="nav-links">
-        <li><a href="#collections">Collections</a></li>
         <li><a href="#story">Our Story</a></li>
         <li><a href="#arrivals">Featured Products</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -873,7 +872,7 @@
           Brandy crafts timeless clothing that moves with your ambition — designed for people who wear their confidence as boldly as their style.
         </p>
         <div class="reveal d3" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:52px;">
-          <button class="btn-primary" onclick="document.getElementById('collections').scrollIntoView({behavior:'smooth'})">
+          <button class="btn-primary" onclick="document.getElementById('arrivals').scrollIntoView({behavior:'smooth'})">
             Shop Collection
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
@@ -929,33 +928,7 @@
 
 
   <!-- COLLECTIONS -->
-  <section id="collections" style="background:var(--bg);padding-top:80px;padding-bottom:0;">
-    <div class="collections">
-      <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;" class="reveal">
-        <div>
-          <h2 style="font-size:clamp(28px,4vw,48px);font-weight:500;color:var(--ink);letter-spacing:-0.03em;">Our Collections</h2>
-        </div>
-      </div>
-      <div class="coll-grid">
-        <div class="coll-card reveal d1" tabindex="0" role="link" aria-label="Classic Collection" style="cursor:pointer;" onclick="window.location='collection.html?cat=Classic'">
-          <img src="https://placehold.co/580x380/3B4A2E/EDE5D0?text=." alt="Classic">
-          <div class="coll-overlay"></div><div class="coll-color"></div>
-          <div class="coll-label">
-            <h3 style="font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:var(--cream);letter-spacing:-0.02em;margin-bottom:10px;">Classic</h3>
-            <span style="font-size:10px;font-weight:600;color:var(--natural);letter-spacing:0.14em;text-transform:uppercase;border-bottom:1px solid currentColor;padding-bottom:2px;">Explore →</span>
-          </div>
-        </div>
-        <div class="coll-card reveal d2" tabindex="0" role="link" aria-label="Streetwear Collection" style="cursor:pointer;" onclick="window.location='collection.html?cat=Streetwear'">
-          <img src="https://placehold.co/580x380/1C2318/C4B896?text=." alt="Streetwear">
-          <div class="coll-overlay"></div><div class="coll-color"></div>
-          <div class="coll-label">
-            <h3 style="font-family:'Playfair Display',serif;font-size:26px;font-weight:500;color:var(--cream);letter-spacing:-0.02em;margin-bottom:10px;">Streetwear</h3>
-            <span style="font-size:10px;font-weight:600;color:var(--natural);letter-spacing:0.14em;text-transform:uppercase;border-bottom:1px solid currentColor;padding-bottom:2px;">Explore →</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- COLLECTIONS section temporarily removed — see git history to restore -->
 
   <!-- MARQUEE 2 -->
   <div class="marquee-section">
@@ -1023,25 +996,7 @@
           </div>
         </div>
       </div>
-      <div class="product-card reveal d3" tabindex="0" style="cursor:pointer;" onclick="if(!event.target.closest('.swatch-dot,.quick-add-btn')){window.location='product4.html';}">
-        <div class="product-img" id="card4-img-wrap">
-          <img src="polo-blue.png" alt="Ralph Lauren Polo Shirt" id="card4-img">
-          <div class="product-img-overlay" style="opacity:0;"></div><button class="quick-add-btn" onclick="card4QuickAdd(event)">Add to Cart</button>
-          <div style="position:absolute;top:10px;left:10px;background:var(--golden);color:var(--cream);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 8px;">New</div>
-        </div>
-        <div class="product-info">
-          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Classic</p>
-          <p style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:8px;">Ralph Lauren Polo Shirt</p>
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:14px;font-weight:600;color:var(--golden);">750 EGP</span>
-            <div style="display:flex;gap:8px;">
-              <div class="swatch-dot" style="background:#3A6EA5;outline:2px solid var(--forest);outline-offset:2px;" title="Blue" onclick="event.stopPropagation();selectCard4Swatch(this,'polo-blue.png')"></div>
-              <div class="swatch-dot" style="background:#1F3560;" title="Navy" onclick="event.stopPropagation();selectCard4Swatch(this,'polo-navy.png')"></div>
-              <div class="swatch-dot" style="background:#1C2318;" title="Black" onclick="event.stopPropagation();selectCard4Swatch(this,'polo-black.png')"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Ralph Lauren Polo Shirt (product4) temporarily removed from sale — see git history to restore -->
       <div class="product-card reveal d4" tabindex="0" onclick="window.location.href='product5.html'" style="cursor:pointer;">
         <div class="product-img">
           <img src="tshirt2 1.png" alt="Pull &amp; Bear T-Shirt">
@@ -1157,7 +1112,7 @@
         </div>
         <div>
           <p class="footer-col-title">Shop</p>
-          <ul class="footer-links"><li><a href="index3.html#arrivals">New Arrivals</a></li><li><a href="index3.html#collections">Collections</a></li><!-- <li><a href="#">Bestsellers</a></li> --><!-- <li><a href="#">Sale</a></li> --></ul>
+          <ul class="footer-links"><li><a href="index3.html#arrivals">New Arrivals</a></li><!-- <li><a href="index3.html#collections">Collections</a></li> --><!-- <li><a href="#">Bestsellers</a></li> --><!-- <li><a href="#">Sale</a></li> --></ul>
         </div>
         <!-- COMPANY SECTION — hidden temporarily, restore when needed
         <div>
@@ -1406,10 +1361,9 @@
       { type: 'product', name: 'Off-White T-Shirt',  category: 'Streetwear',    price: '550 EGP', img: '5E147019-5064-4F55-974F-1CA8AE14798E.png',                                   href: 'product1.html' },
       { type: 'product', name: 'Mastermind T-Shirt', category: 'Streetwear', price: '600 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png',             href: 'product2.html' },
       { type: 'product', name: 'Zara Short',          category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png',                                href: 'product3.html' },
-      { type: 'product', name: 'Ralph Lauren Polo Shirt', category: 'Classic', price: '750 EGP', img: 'polo-blue.png',                                      href: 'product4.html' },
       { type: 'product', name: 'Pull & Bear T-Shirt', category: 'Classic', price: '750 EGP', img: 'tshirt2 1.png', href: 'product5.html' },
-      { type: 'collection', name: 'Classic',    category: 'Collection', price: '', img: 'https://placehold.co/44x44/3B4A2E/EDE5D0?text=.', href: 'collection.html?cat=Classic' },
-      { type: 'collection', name: 'Streetwear', category: 'Collection', price: '', img: 'https://placehold.co/44x44/1C2318/C4B896?text=.', href: 'collection.html?cat=Streetwear' },
+      // Ralph Lauren Polo Shirt (product4) and the Classic/Streetwear collection
+      // entries are temporarily removed from search — see git history to restore.
     ];
 
     function openSearch() {
@@ -1566,8 +1520,10 @@
         { el: document.querySelectorAll('.product-card')[0], id: 'product1',  name: 'Off-White T-Shirt', category: 'Streetwear',   price: '550 EGP', img: '5E147019-5064-4F55-974F-1CA8AE14798E.png',                                  href: 'product1.html' },
         { el: document.querySelectorAll('.product-card')[1], id: 'product2',  name: 'Mastermind T-Shirt', category: 'Streetwear', price: '600 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', href: 'product2.html' },
         { el: document.querySelectorAll('.product-card')[2], id: 'product3',  name: 'Zara Short',        category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png',                              href: 'product3.html' },
-        { el: document.querySelectorAll('.product-card')[3], id: 'product4',  name: 'Ralph Lauren Polo Shirt', category: 'Classic', price: '750 EGP', img: 'polo-blue.png',              href: 'product4.html' },
-        { el: document.querySelectorAll('.product-card')[4], id: 'product5',  name: 'Pull & Bear T-Shirt', category: 'Classic', price: '750 EGP', img: 'tshirt2 1.png', href: 'product5.html' },
+        { el: document.querySelectorAll('.product-card')[3], id: 'product5',  name: 'Pull & Bear T-Shirt', category: 'Classic', price: '750 EGP', img: 'tshirt2 1.png', href: 'product5.html' },
+        // product4 (Ralph Lauren Polo Shirt) card removed from the DOM — temporarily
+        // dropped from this list too. Re-add its entry (with a fresh DOM index) when
+        // the product card comes back.
       ];
       cards.forEach(({ el, id, name, category, price, img, href }) => {
         if (!el) return;
