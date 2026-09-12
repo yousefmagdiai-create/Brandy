@@ -793,7 +793,6 @@
 
     // ── LOCATION VERIFICATION ──
     let locationVerified = false;
-    let _ipLocCache = null; // pre-fetched on page load so first tap is instant
 
     const AREA_BOUNDS = {
       cairo:   { minLat: 29.85, maxLat: 30.45, minLng: 31.08, maxLng: 31.90 },
@@ -943,16 +942,25 @@
       // first (it doesn't wait on the GPS chip), so it kept "winning" the race
       // and reporting a location that could be off by kilometres even though
       // the accurate fix was available a few seconds later. Accuracy must
-      // decide the winner here, not speed.
-      const preciseLoc = await gpsP(true, 15000, 60000).catch(() => null);
+      // decide the winner here, not speed. 20s gives a cold GPS fix a real
+      // chance to complete instead of bailing out early.
+      const preciseLoc = await gpsP(true, 20000, 60000).catch(() => null);
       if (preciseLoc) { applyGpsCoords(preciseLoc.lat, preciseLoc.lng, 'gps', preciseLoc.accuracy); return; }
       // Step 2: precise fix unavailable/denied/timed out — fall back to
       // coarser device-based (Wi-Fi/cell) positioning before giving up on GPS.
-      const coarseLoc = await gpsP(false, 10000, 60000).catch(() => null);
+      const coarseLoc = await gpsP(false, 12000, 60000).catch(() => null);
       if (coarseLoc) { applyGpsCoords(coarseLoc.lat, coarseLoc.lng, 'gps', coarseLoc.accuracy); return; }
-      // Step 3: GPS completely failed — use IP as last resort (pre-fetched = instant)
-      const ip = _ipLocCache || await tryIPLocation();
-      if (ip) { applyGpsCoords(ip.lat, ip.lng, 'ip'); } else { showLocBlocked(); }
+      // Step 3: device geolocation (GPS chip AND Wi-Fi/cell positioning) both
+      // failed. We deliberately do NOT fall back to IP-based geolocation here
+      // any more — on Egyptian mobile networks, carrier-grade NAT means an
+      // IP address is often shared across a huge number of subscribers and
+      // registered to the carrier's core network hub, not the phone's actual
+      // position. That previously produced a "detected" pin that could be an
+      // entire governorate away from the real address — confirmable-looking,
+      // but built on data that never had a chance of being right. Silently
+      // guessing is worse than admitting detection failed, so we now send
+      // the customer straight to manual pin-drop instead.
+      showLocBlocked();
     }
 
     function useMyLocation() {
@@ -1085,32 +1093,6 @@
       } catch(e) { clearTimeout(t); throw e; }
     }
 
-    // IP-based location — no device permission needed, used only if GPS fails
-    async function tryIPLocation() {
-      try {
-        return await Promise.any([
-          fetchTimeout('https://ipapi.co/json/', 8000).then(async r => {
-            if (!r.ok) throw new Error();
-            const d = await r.json();
-            if (d.error || !d.latitude) throw new Error();
-            return { lat: parseFloat(d.latitude), lng: parseFloat(d.longitude) };
-          }),
-          fetchTimeout('https://ipwho.is/', 8000).then(async r => {
-            if (!r.ok) throw new Error();
-            const d = await r.json();
-            if (!d.success || !d.latitude) throw new Error();
-            return { lat: parseFloat(d.latitude), lng: parseFloat(d.longitude) };
-          }),
-          fetchTimeout('https://freeipapi.com/api/json', 8000).then(async r => {
-            if (!r.ok) throw new Error();
-            const d = await r.json();
-            if (!d.latitude) throw new Error();
-            return { lat: parseFloat(d.latitude), lng: parseFloat(d.longitude) };
-          })
-        ]);
-      } catch(e) { return null; }
-    }
-
     // Google Maps tile coordinates → lat/lng (Web Mercator)
     function tileToLatLng(zoom, tileX, tileY) {
       const n = Math.pow(2, zoom);
@@ -1172,8 +1154,6 @@
       };
     }
 
-    // Pre-fetch IP location silently on page load so it's ready when user taps the button
-    tryIPLocation().then(r => { if (r) _ipLocCache = r; }).catch(() => {});
 
     async function verifyMapsLink() {
       // A manually pasted/typed location is user-picked, not auto-detected,
