@@ -411,7 +411,7 @@
       </div>
 
       <!-- Size -->
-      <p class="section-label">Size</p>
+      <p class="section-label">Size <span id="sold-out-badge" style="display:none;color:#C0392B;font-weight:700;letter-spacing:0.1em;">— SOLD OUT</span></p>
       <div class="size-grid" id="size-grid">
         <div class="size-chip black-only active">XL</div>
         <div class="size-chip black-only">L</div>
@@ -425,11 +425,11 @@
 
       <!-- CTA -->
       <div class="cta-stack">
-        <button class="btn-primary" onclick="addToCart()">
+        <button class="btn-primary" id="btn-add-to-cart" onclick="addToCart()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           Add to Cart
         </button>
-        <button class="btn-secondary" onclick="buyNow()">
+        <button class="btn-secondary" id="btn-buy-now" onclick="buyNow()">
           Buy Now — 650 EGP
         </button>
       </div>
@@ -481,6 +481,21 @@
         const firstAvailable = Array.from(document.querySelectorAll('.size-chip')).find(c => c.style.display !== 'none' && !c.classList.contains('sold-out'));
         if (firstAvailable) firstAvailable.classList.add('active');
       }
+
+      const visibleChips = Array.from(document.querySelectorAll('.size-chip')).filter(c => c.style.display !== 'none');
+      const colorSoldOut = visibleChips.length > 0 && visibleChips.every(c => c.classList.contains('sold-out'));
+      const badge = document.getElementById('sold-out-badge');
+      const addBtn = document.getElementById('btn-add-to-cart');
+      const buyBtn = document.getElementById('btn-buy-now');
+      if (badge) badge.style.display = colorSoldOut ? '' : 'none';
+      [addBtn, buyBtn].forEach(btn => {
+        if (!btn) return;
+        btn.disabled = colorSoldOut;
+        btn.style.opacity = colorSoldOut ? '0.5' : '';
+        btn.style.cursor = colorSoldOut ? 'not-allowed' : '';
+      });
+      if (addBtn) addBtn.lastChild.textContent = colorSoldOut ? 'Sold Out' : 'Add to Cart';
+      if (buyBtn) buyBtn.textContent = colorSoldOut ? 'Sold Out' : 'Buy Now — 650 EGP';
     }
 
     function setThumb(el, src) {
@@ -565,6 +580,30 @@
       }, 2800);
     }
 
+    function showSoldOutToast(color, size) {
+      let toast = document.getElementById('cart-toast');
+      if (toast) { toast.remove(); }
+      toast = document.createElement('div');
+      toast.id = 'cart-toast';
+      toast.className = 'toast in';
+      toast.style.borderLeftColor = '#C0392B';
+      toast.innerHTML = `
+        <div class="toast-check" style="background:#C0392B;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+        <div>
+          <p class="toast-title">Sold Out</p>
+          <p class="toast-sub">Mastermind T-Shirt · ${color} · ${size} is no longer available</p>
+        </div>
+      `;
+      document.body.appendChild(toast);
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.className = 'toast out';
+        setTimeout(() => toast.remove(), 400);
+      }, 2800);
+    }
+
     function addToCart() {
       const activeSize = document.querySelector('.size-chip.active');
       const activeSwatch = document.querySelector('.swatch.active');
@@ -572,7 +611,7 @@
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
 
       const stock = (STOCK[color] && STOCK[color][size]) || 0;
-      if (getCartQty(color, size) >= stock) { updateSoldOut(); return; }
+      if (getCartQty(color, size) >= stock) { updateSoldOut(); showSoldOutToast(color, size); return; }
 
       const colorImage = color === 'White' ? 'mastermind-white.png' : 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png';
       const cart = getCart();
@@ -593,7 +632,7 @@
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
 
       const stock = (STOCK[color] && STOCK[color][size]) || 0;
-      if (getCartQty(color, size) >= stock) { updateSoldOut(); return; }
+      if (getCartQty(color, size) >= stock) { updateSoldOut(); showSoldOutToast(color, size); return; }
 
       gtag('event', 'add_to_cart', { currency: 'EGP', value: 650, items: [{ item_id: 'product2', item_name: 'Mastermind T-Shirt', item_variant: color + ' / ' + size, price: 650, quantity: 1 }] });
       const colorImage = color === 'White' ? 'mastermind-white.png' : 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png';
