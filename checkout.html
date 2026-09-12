@@ -888,20 +888,21 @@
           { enableHighAccuracy: high, timeout: ms, maximumAge: maxAge }
         ));
       }
-      // Step 1: GPS always wins if available (accurate device location)
-      // maximumAge here MUST stay short: Promise.any resolves on whichever
-      // branch settles first, and an unbounded cache (previously Infinity)
-      // let the browser hand back a fix from a past session/location that
-      // "won" the race purely by being instant, silently reporting the
-      // wrong place. 60s still gives an instant result for a genuinely
-      // fresh fix without resurrecting stale ones.
-      const gpsLoc = await Promise.any([
-        gpsP(false, 3000, 60000),      // instant only if the cached GPS is < 60s old
-        gpsP(false, 12000, 30000),    // Wi-Fi/cell positioning
-        gpsP(true, 20000, 0),         // hardware GPS chip
-      ]).catch(() => null);
-      if (gpsLoc) { applyGpsCoords(gpsLoc.lat, gpsLoc.lng, 'gps', gpsLoc.accuracy); return; }
-      // Step 2: GPS completely failed — use IP as last resort (pre-fetched = instant)
+      // Step 1: always ask for the real GPS-chip fix first, and WAIT for it —
+      // do not race it against a coarse Wi-Fi/cell lookup. A previous version
+      // used Promise.any to run a coarse (enableHighAccuracy:false) request
+      // alongside the accurate one; the coarse request almost always resolves
+      // first (it doesn't wait on the GPS chip), so it kept "winning" the race
+      // and reporting a location that could be off by kilometres even though
+      // the accurate fix was available a few seconds later. Accuracy must
+      // decide the winner here, not speed.
+      const preciseLoc = await gpsP(true, 15000, 60000).catch(() => null);
+      if (preciseLoc) { applyGpsCoords(preciseLoc.lat, preciseLoc.lng, 'gps', preciseLoc.accuracy); return; }
+      // Step 2: precise fix unavailable/denied/timed out — fall back to
+      // coarser device-based (Wi-Fi/cell) positioning before giving up on GPS.
+      const coarseLoc = await gpsP(false, 10000, 60000).catch(() => null);
+      if (coarseLoc) { applyGpsCoords(coarseLoc.lat, coarseLoc.lng, 'gps', coarseLoc.accuracy); return; }
+      // Step 3: GPS completely failed — use IP as last resort (pre-fetched = instant)
       const ip = _ipLocCache || await tryIPLocation();
       if (ip) { applyGpsCoords(ip.lat, ip.lng, 'ip'); } else { showLocBlocked(); }
     }
