@@ -450,6 +450,33 @@
   </div>
 
   <script>
+    const STOCK = { Black: { XL: 1, L: 1, M: 1 }, White: { L: 1, XL: 1, M: 1 } };
+    function getCartQty(color, size) {
+      const c = getCart();
+      const item = c.find(i => i.id === 'product2' && i.color === color && i.size === size);
+      return item ? item.qty : 0;
+    }
+    function updateSoldOut() {
+      const color = document.querySelector('.swatch.active') ? document.querySelector('.swatch.active').getAttribute('title') : 'Black';
+      document.querySelectorAll('.size-chip').forEach(chip => {
+        if (chip.style.display === 'none') return;
+        const size = chip.textContent.trim();
+        const stock = (STOCK[color] && STOCK[color][size]) || 0;
+        const remaining = stock - getCartQty(color, size);
+        if (remaining <= 0) {
+          chip.classList.add('sold-out');
+          chip.classList.remove('active');
+        } else {
+          chip.classList.remove('sold-out');
+        }
+      });
+      const anyActive = document.querySelector('.size-chip.active:not(.sold-out)');
+      if (!anyActive) {
+        const firstAvailable = Array.from(document.querySelectorAll('.size-chip')).find(c => c.style.display !== 'none' && !c.classList.contains('sold-out'));
+        if (firstAvailable) firstAvailable.classList.add('active');
+      }
+    }
+
     function setThumb(el, src) {
       document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
       el.classList.add('active');
@@ -474,6 +501,7 @@
         s.style.display = '';
         if (firstChip) { s.classList.add('active'); firstChip = false; }
       });
+      updateSoldOut();
 
       const src = isBlack ? 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png' : 'mastermind-white.png';
       const mainImg = document.getElementById('main-img');
@@ -495,8 +523,9 @@
       });
     }
 
-    document.querySelectorAll('.size-chip:not(.sold-out)').forEach(chip => {
+    document.querySelectorAll('.size-chip').forEach(chip => {
       chip.addEventListener('click', () => {
+        if (chip.classList.contains('sold-out')) return;
         document.querySelectorAll('.size-chip').forEach(s => s.classList.remove('active'));
         chip.classList.add('active');
       });
@@ -536,6 +565,9 @@
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
 
+      const stock = (STOCK[color] && STOCK[color][size]) || 0;
+      if (getCartQty(color, size) >= stock) { updateSoldOut(); return; }
+
       const colorImage = color === 'White' ? 'mastermind-white.png' : 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png';
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product2' && i.size === size && i.color === color);
@@ -545,6 +577,7 @@
       BrandyAnalytics.trackAddToCart('Mastermind T-Shirt', 650);
       gtag('event', 'add_to_cart', { currency: 'EGP', value: 650, items: [{ item_id: 'product2', item_name: 'Mastermind T-Shirt', item_variant: color + ' / ' + size, price: 650, quantity: 1 }] });
       showToast(color, size);
+      updateSoldOut();
     }
 
     function buyNow() {
@@ -552,6 +585,10 @@
       const activeSwatch = document.querySelector('.swatch.active');
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
+
+      const stock = (STOCK[color] && STOCK[color][size]) || 0;
+      if (getCartQty(color, size) >= stock) { updateSoldOut(); return; }
+
       gtag('event', 'add_to_cart', { currency: 'EGP', value: 650, items: [{ item_id: 'product2', item_name: 'Mastermind T-Shirt', item_variant: color + ' / ' + size, price: 650, quantity: 1 }] });
       const colorImage = color === 'White' ? 'mastermind-white.png' : 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png';
       sessionStorage.setItem('brandy_buynow', JSON.stringify(
@@ -588,6 +625,8 @@
     if (savedColor) {
       const swatch = document.querySelector(`.swatch[title="${savedColor}"]`);
       if (swatch) selectSwatch(swatch, savedColor);
+    } else {
+      updateSoldOut();
     }
   </script>
 

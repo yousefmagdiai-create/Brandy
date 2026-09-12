@@ -187,6 +187,7 @@
     }
     .size-chip:hover { background: rgba(59,74,46,0.06); border-color: var(--border-hover); color: var(--forest); transform: scale(1.06); }
     .size-chip.active { background: var(--forest); color: var(--cream); border-color: var(--forest); }
+    .size-chip.sold-out { opacity: 0.35; cursor: not-allowed; text-decoration: line-through; }
     .size-guide-link {
       font-size: 11px; color: var(--golden); text-decoration: none;
       border-bottom: 1px solid rgba(139,100,25,0.3);
@@ -432,8 +433,34 @@
       sessionStorage.setItem('brandy_color_product5', color);
     }
 
+    const STOCK = { Navy: { L: 1, XL: 1 } };
+    function getCartQty(color, size) {
+      const c = getCart();
+      const item = c.find(i => i.id === 'product5' && i.color === color && i.size === size);
+      return item ? item.qty : 0;
+    }
+    function updateSoldOut() {
+      document.querySelectorAll('.size-chip').forEach(chip => {
+        const size = chip.textContent.trim();
+        const stock = (STOCK.Navy && STOCK.Navy[size]) || 0;
+        const remaining = stock - getCartQty('Navy', size);
+        if (remaining <= 0) {
+          chip.classList.add('sold-out');
+          chip.classList.remove('active');
+        } else {
+          chip.classList.remove('sold-out');
+        }
+      });
+      const anyActive = document.querySelector('.size-chip.active:not(.sold-out)');
+      if (!anyActive) {
+        const firstAvailable = Array.from(document.querySelectorAll('.size-chip')).find(c => !c.classList.contains('sold-out'));
+        if (firstAvailable) firstAvailable.classList.add('active');
+      }
+    }
+
     document.querySelectorAll('.size-chip').forEach(chip => {
       chip.addEventListener('click', () => {
+        if (chip.classList.contains('sold-out')) return;
         document.querySelectorAll('.size-chip').forEach(s => s.classList.remove('active'));
         chip.classList.add('active');
       });
@@ -472,6 +499,10 @@
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = 'Navy';
       const image = 'tshirt2 1.png';
+
+      const stock = (STOCK.Navy && STOCK.Navy[size]) || 0;
+      if (getCartQty(color, size) >= stock) { updateSoldOut(); return; }
+
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product5' && i.size === size && i.color === color);
       if (existing) { existing.qty += 1; }
@@ -480,6 +511,7 @@
       if (typeof BrandyAnalytics !== 'undefined') BrandyAnalytics.trackAddToCart('Pull & Bear T-Shirt', 600);
       gtag('event', 'add_to_cart', { currency: 'EGP', value: 600, items: [{ item_id: 'product5', item_name: 'Pull & Bear T-Shirt', item_variant: color + ' / ' + size, price: 600, quantity: 1 }] });
       showToast(color, size);
+      updateSoldOut();
     }
 
     function buyNow() {
@@ -487,6 +519,10 @@
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = 'Navy';
       const image = 'tshirt2 1.png';
+
+      const stock = (STOCK.Navy && STOCK.Navy[size]) || 0;
+      if (getCartQty(color, size) >= stock) { updateSoldOut(); return; }
+
       gtag('event', 'add_to_cart', { currency: 'EGP', value: 600, items: [{ item_id: 'product5', item_name: 'Pull & Bear T-Shirt', item_variant: color + ' / ' + size, price: 600, quantity: 1 }] });
       sessionStorage.setItem('brandy_buynow', JSON.stringify(
         { id: 'product5', name: 'Pull & Bear T-Shirt', price: 600, image, color, size, qty: 1 }
@@ -497,6 +533,7 @@
     gtag('event', 'view_item', { currency: 'EGP', value: 600, items: [{ item_id: 'product5', item_name: 'Pull & Bear T-Shirt', price: 600 }] });
     const _bu = sessionStorage.getItem('brandy_back_url');
     if (_bu) document.getElementById('back-link').href = _bu;
+    updateSoldOut();
   </script>
 
   <!-- WISHLIST SIDEBAR -->
