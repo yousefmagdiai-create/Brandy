@@ -839,6 +839,10 @@
       }
     }
 
+    // Coordinates from an auto-detected source (device GPS/network or IP) sit
+    // here awaiting the customer's confirmation — see applyGpsCoords below.
+    let _pendingAutoLocation = null;
+
     // source: 'gps' (device) or 'ip' (rough network fallback). accuracy in metres, if known.
     function applyGpsCoords(lat, lng, source, accuracy) {
       const flat = lat.toFixed(6), flng = lng.toFixed(6);
@@ -847,13 +851,25 @@
       // is why the detected spot was impossible to see.
       const url = 'https://www.google.com/maps/search/?api=1&query=' + flat + ',' + flng;
       document.getElementById('maps-link').value = url;
-      validateCoords(parseFloat(flat), parseFloat(flng));
-      if (locationVerified) unlockPaymentSection();
+
+      // IMPORTANT: do NOT auto-verify here. Device/network geolocation has
+      // repeatedly come back with a completely wrong fix in the field (no
+      // GPS chip on the machine, a mismapped Wi-Fi network, a VPN/mobile
+      // network, etc.) — timing and caching fixes don't help when the
+      // underlying coordinate itself is simply wrong. The only reliable
+      // safeguard is a human actually looking at the dropped pin and
+      // confirming it before checkout is allowed to unlock. Manually pasted
+      // Google Maps links (verifyMapsLink) stay auto-verified, since the
+      // customer picked that location themselves.
+      locationVerified = false;
+      _pendingAutoLocation = { lat: parseFloat(flat), lng: parseFloat(flng) };
 
       const verifyEl = document.getElementById('loc-verify-link');
       if (verifyEl) verifyEl.remove();
       const noteEl = document.getElementById('loc-accuracy-note');
       if (noteEl) noteEl.remove();
+      const confirmEl = document.getElementById('loc-confirm-row');
+      if (confirmEl) confirmEl.remove();
 
       const a = document.createElement('a');
       a.id = 'loc-verify-link';
@@ -870,9 +886,41 @@
       note.id = 'loc-accuracy-note';
       note.style.cssText = 'margin-top:6px;font-size:11px;line-height:1.6;color:' + (rough ? '#8a5a00' : '#6D7175') + ';';
       note.innerHTML = rough
-        ? 'This is only an <strong>approximate area</strong>, not your exact address — your device did not give a precise GPS fix. Please open the pin, check it, and if it is wrong drop a pin on your real address in Google Maps, copy that link and paste it in the box below.'
-        : 'Open the pin and check it matches your address. If it is off, drop a pin on your real address in Google Maps, copy the link and paste it in the box below.';
+        ? 'This is only an <strong>approximate area</strong>, not your exact address — your device did not give a precise GPS fix. Open the pin above and check it carefully before confirming.'
+        : 'Open the pin above and check it carefully — device location can still be wrong — before confirming.';
       a.after(note);
+
+      showLocStatus('loading', '📍 We found a location — please open the pin above and confirm it is correct.');
+
+      const row = document.createElement('div');
+      row.id = 'loc-confirm-row';
+      row.style.cssText = 'display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;';
+      row.innerHTML =
+        '<button type="button" onclick="confirmAutoLocation()" style="flex:1;min-width:160px;padding:10px 14px;background:#0A7A40;color:#fff;border:none;border-radius:5px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;">✓ Yes, that\'s my address</button>' +
+        '<button type="button" onclick="rejectAutoLocation()" style="flex:1;min-width:160px;padding:10px 14px;background:#fff;color:#C0392B;border:1.5px solid #C0392B;border-radius:5px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;">✗ No, let me set it myself</button>';
+      note.after(row);
+    }
+
+    function confirmAutoLocation() {
+      if (!_pendingAutoLocation) return;
+      validateCoords(_pendingAutoLocation.lat, _pendingAutoLocation.lng);
+      if (locationVerified) unlockPaymentSection();
+      const row = document.getElementById('loc-confirm-row');
+      if (row) row.remove();
+    }
+
+    function rejectAutoLocation() {
+      _pendingAutoLocation = null;
+      locationVerified = false;
+      const row = document.getElementById('loc-confirm-row');
+      if (row) row.remove();
+      const verifyEl = document.getElementById('loc-verify-link');
+      if (verifyEl) verifyEl.remove();
+      const noteEl = document.getElementById('loc-accuracy-note');
+      if (noteEl) noteEl.remove();
+      document.getElementById('maps-link').value = '';
+      showLocBlocked();
+      showLocStatus('invalid', 'No problem — drop a pin on your real address in Google Maps below and paste the link, or type coordinates directly.');
     }
 
     function showLocBlocked() {
@@ -914,6 +962,10 @@
       if (old) old.remove();
       const oldNote = document.getElementById('loc-accuracy-note');
       if (oldNote) oldNote.remove();
+      const oldRow = document.getElementById('loc-confirm-row');
+      if (oldRow) oldRow.remove();
+      _pendingAutoLocation = null;
+      locationVerified = false;
       if (location.protocol === 'file:') {
         showLocStatus('invalid', '⚠️ Location only works on the live site — open the GitHub Pages link on your phone.');
         return;
@@ -1124,6 +1176,12 @@
     tryIPLocation().then(r => { if (r) _ipLocCache = r; }).catch(() => {});
 
     async function verifyMapsLink() {
+      // A manually pasted/typed location is user-picked, not auto-detected,
+      // so it stays immediately verified — clear any leftover auto-detection
+      // confirm UI from a previous GPS attempt so it doesn't linger.
+      _pendingAutoLocation = null;
+      const staleRow = document.getElementById('loc-confirm-row');
+      if (staleRow) staleRow.remove();
       try {
       const raw = document.getElementById('maps-link').value.trim();
       if (!raw) { showLocStatus('invalid', 'Please paste your coordinates or a Google Maps link.'); return; }
