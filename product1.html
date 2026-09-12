@@ -461,10 +461,16 @@
 
   <script>
     const STOCK = { Black: { M: 1 }, White: { L: 1 } };
+    function getSoldQty(color, size) {
+      try {
+        const sold = JSON.parse(localStorage.getItem('brandy_sold_stock')) || {};
+        return sold[`product1|${color}|${size}`] || 0;
+      } catch (e) { return 0; }
+    }
     function getCartQty(color, size) {
       const c = getCart();
       const item = c.find(i => i.id === 'product1' && i.color === color && i.size === size);
-      return item ? item.qty : 0;
+      return (item ? item.qty : 0) + getSoldQty(color, size);
     }
     function updateSoldOut() {
       document.querySelectorAll('.size-chip').forEach(chip => {

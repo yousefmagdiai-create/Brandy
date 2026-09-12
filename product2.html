@@ -451,10 +451,16 @@
 
   <script>
     const STOCK = { Black: { XL: 1, L: 1, M: 1 }, White: { L: 1, XL: 1, M: 1 } };
+    function getSoldQty(color, size) {
+      try {
+        const sold = JSON.parse(localStorage.getItem('brandy_sold_stock')) || {};
+        return sold[`product2|${color}|${size}`] || 0;
+      } catch (e) { return 0; }
+    }
     function getCartQty(color, size) {
       const c = getCart();
       const item = c.find(i => i.id === 'product2' && i.color === color && i.size === size);
-      return item ? item.qty : 0;
+      return (item ? item.qty : 0) + getSoldQty(color, size);
     }
     function updateSoldOut() {
       const color = document.querySelector('.swatch.active') ? document.querySelector('.swatch.active').getAttribute('title') : 'Black';

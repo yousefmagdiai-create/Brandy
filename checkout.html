@@ -817,6 +817,18 @@
           if (existing) { existing.qty += bn.qty; } else { cart = [bn, ...cart]; }
         } catch(e) {}
       }
+      // Permanently record what was bought (separate from the cart, which is
+      // about to be cleared) so product pages can keep treating a sold-out
+      // variant as sold out for this browser even after the cart empties.
+      try {
+        const sold = JSON.parse(localStorage.getItem('brandy_sold_stock')) || {};
+        cart.forEach(i => {
+          const key = `${i.id}|${i.color || ''}|${i.size || ''}`;
+          sold[key] = (sold[key] || 0) + (i.qty || 1);
+        });
+        localStorage.setItem('brandy_sold_stock', JSON.stringify(sold));
+      } catch (e) {}
+
       sessionStorage.removeItem('brandy_buynow');
       localStorage.removeItem('brandy_cart');
       document.getElementById('checkout-content').classList.add('hide');
