@@ -825,7 +825,6 @@
         <img src="brandassets/logo-transparent.png" alt="Brandy" style="height:44px;width:auto;display:block;">
       </a>
       <ul class="nav-links">
-        <li><a href="#story">Our Story</a></li>
         <li><a href="#arrivals">Featured Products</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
@@ -897,7 +896,7 @@
                 <p style="font-family:'Playfair Display',serif;font-size:17px;font-weight:500;color:var(--ink);margin-bottom:3px;">Pull &amp; Bear T-Shirt</p>
                 <p style="font-size:10px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;">Classic — 2026</p>
               </div>
-              <span style="font-size:17px;font-weight:600;color:var(--golden);">750 EGP</span>
+              <span style="font-size:17px;font-weight:600;color:var(--golden);">600 EGP</span>
             </div>
             <div id="hero-swatch-row" class="swatch-row" style="margin-bottom:16px;">
               <div class="swatch-dot hero-selected" style="background:#1F3560;outline:2px solid var(--forest);outline-offset:2px;" title="Navy"></div>
@@ -930,16 +929,12 @@
   <!-- COLLECTIONS -->
   <!-- COLLECTIONS section temporarily removed — see git history to restore -->
 
-  <!-- MARQUEE 2 -->
-  <div class="marquee-section">
-    <div class="marquee-track">
-      <div class="marquee-item"><span>Natural</span><div class="marquee-dot"></div><span>Focused</span><div class="marquee-dot"></div><span>Forward</span><div class="marquee-dot"></div><span>Timeless</span><div class="marquee-dot"></div><span>Intentional</span><div class="marquee-dot"></div><span>Elevated</span><div class="marquee-dot"></div><span>Minimal</span><div class="marquee-dot"></div><span>Confident</span><div class="marquee-dot"></div><span>Curated</span><div class="marquee-dot"></div><span>Sustainable</span><div class="marquee-dot"></div></div>
-      <div class="marquee-item"><span>Natural</span><div class="marquee-dot"></div><span>Focused</span><div class="marquee-dot"></div><span>Forward</span><div class="marquee-dot"></div><span>Timeless</span><div class="marquee-dot"></div><span>Intentional</span><div class="marquee-dot"></div><span>Elevated</span><div class="marquee-dot"></div><span>Minimal</span><div class="marquee-dot"></div><span>Confident</span><div class="marquee-dot"></div><span>Curated</span><div class="marquee-dot"></div><span>Sustainable</span><div class="marquee-dot"></div></div>
-    </div>
-  </div>
+  <!-- MARQUEE 2 removed: with the Collections section (which used to separate
+       the two marquee bands) temporarily gone, this duplicate row sat directly
+       under the first marquee and just repeated it. Restore alongside Collections. -->
 
   <!-- PRODUCTS -->
-  <section id="arrivals" style="padding-top:80px;background:var(--bg);">
+  <section id="arrivals" style="padding-top:80px;padding-bottom:80px;background:var(--bg);">
     <div class="products-header reveal">
       <div>
         <p class="label" style="margin-bottom:10px;">Bestsellers</p>
@@ -951,7 +946,7 @@
         <div class="product-img" id="card1-img-wrap">
           <img src="5E147019-5064-4F55-974F-1CA8AE14798E.png" alt="Off-White T-Shirt" id="card1-img">
           <div class="product-img-overlay" id="card1-overlay" style="opacity:0;"></div><button class="quick-add-btn" onclick="card1QuickAdd(event)">Add to Cart</button>
-          <div style="position:absolute;top:10px;left:10px;background:var(--golden);color:var(--cream);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 8px;">New</div>
+          <div style="position:absolute;top:10px;left:10px;background:var(--golden);color:var(--cream);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 8px;">Sale</div>
         </div>
         <div class="product-info">
           <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Streetwear</p>
@@ -974,39 +969,24 @@
           <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Streetwear</p>
           <p style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:8px;">Mastermind T-Shirt</p>
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:14px;font-weight:600;color:var(--golden);">600 EGP</span>
+            <span style="font-size:14px;font-weight:600;color:var(--golden);">650 EGP</span>
             <div style="display:flex;gap:8px;"><div class="swatch-dot" style="background:#1C2318;outline:2px solid var(--forest);outline-offset:2px;" title="Black" onclick="event.stopPropagation();selectCard2Swatch(this,'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png')"></div><div class="swatch-dot" style="background:#F5F5F0;box-shadow:inset 0 0 0 1px rgba(59,74,46,0.2);" title="White" onclick="event.stopPropagation();selectCard2Swatch(this,'mastermind-white.png')"></div></div>
           </div>
         </div>
       </div>
-      <div class="product-card reveal d2" tabindex="0" style="cursor:pointer;" onclick="if(!event.target.closest('.swatch-dot,.quick-add-btn')){window.location='product3.html';}">
-        <div class="product-img" id="card3-img-wrap">
-          <img src="cargo-shorts-black.png" alt="Zara Short" id="card3-img">
-          <div class="product-img-overlay" style="opacity:0;"></div><button class="quick-add-btn" onclick="card3QuickAdd(event)">Add to Cart</button>
-          <div style="position:absolute;top:10px;left:10px;background:var(--golden);color:var(--cream);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 8px;">New</div>
-        </div>
-        <div class="product-info">
-          <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Streetwear</p>
-          <p style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:8px;">Zara Short</p>
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:14px;font-weight:600;color:var(--golden);">800 EGP</span>
-            <div style="display:flex;gap:8px;">
-              <div class="swatch-dot" style="background:#1C2318;outline:2px solid var(--forest);outline-offset:2px;" title="Black"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Zara Short (product3) temporarily removed from sale — see git history to restore -->
       <!-- Ralph Lauren Polo Shirt (product4) temporarily removed from sale — see git history to restore -->
       <div class="product-card reveal d4" tabindex="0" onclick="window.location.href='product5.html'" style="cursor:pointer;">
         <div class="product-img">
           <img src="tshirt2 1.png" alt="Pull &amp; Bear T-Shirt">
-          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Pull &amp; Bear T-Shirt','750 EGP','tshirt2 1.png', event)">Add to Cart</button>
+          <div class="product-img-overlay"></div><button class="quick-add-btn" onclick="quickAdd('Pull &amp; Bear T-Shirt','600 EGP','tshirt2 1.png', event)">Add to Cart</button>
+          <div style="position:absolute;top:10px;left:10px;background:var(--golden);color:var(--cream);font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 8px;">New</div>
         </div>
         <div class="product-info">
           <p style="font-size:9px;color:var(--ink);opacity:0.75;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;">Classic</p>
           <p style="font-size:17px;font-weight:600;color:var(--ink);margin-bottom:8px;">Pull &amp; Bear T-Shirt</p>
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:14px;font-weight:600;color:var(--golden);">750 EGP</span>
+            <span style="font-size:14px;font-weight:600;color:var(--golden);">600 EGP</span>
             <div style="display:flex;gap:8px;"><div class="swatch-dot" style="background:#1F3560;"></div></div>
           </div>
         </div>
@@ -1014,29 +994,7 @@
     </div>
   </section>
 
-  <div class="glow-divider reveal"></div>
-
-  <!-- STORY -->
-  <section id="story">
-    <div class="story-section">
-      <div class="reveal">
-        <p class="label" style="margin-bottom:20px;">Our Philosophy</p>
-        <h2 style="font-size:clamp(28px,3.5vw,44px);font-weight:500;color:var(--ink);letter-spacing:-0.03em;line-height:1.1;margin-bottom:32px;">
-          Fashion built<br>on intention
-        </h2>
-        <p style="font-size:14px;font-weight:400;color:var(--ink);opacity:0.75;line-height:1.85;margin-bottom:32px;">
-          Brandy exists for those who believe clothing is more than what you wear — it's how you show up. We design with purpose, source with care, and craft with the conviction that your wardrobe should accelerate your life.
-        </p>
-      </div>
-      <div class="story-image-wrap reveal d2">
-        <img src="https://placehold.co/560x480/3B4A2E/EDE5D0?text=." alt="Our story">
-        <div class="story-image-overlay"></div>
-        <div class="story-quote">
-          <p style="font-family:'Playfair Display',serif;font-size:20px;font-style:italic;color:var(--cream);line-height:1.45;">"Wear what moves you forward."</p>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- STORY ("Our Philosophy") section temporarily removed — see git history to restore -->
 
   <!-- VALUES (dark forest bg) -->
 
@@ -1127,7 +1085,10 @@
       </div>
       <div class="footer-bottom">
         <p class="footer-copy">© 2026 Brandy. All rights reserved.</p>
+        <!-- Privacy Policy / Terms of Use / Cookies links temporarily removed —
+             pages kept in the repo (privacy.html, terms.html, cookies.html) to restore later.
         <div class="footer-legal"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a><a href="cookies.html">Cookies</a></div>
+        -->
       </div>
     </div>
   </footer>
@@ -1202,9 +1163,9 @@
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product2' && i.color === color);
       if (existing) { existing.qty += 1; }
-      else { cart.push({ id: 'product2', name: 'Mastermind T-Shirt', price: 600, image: img, color, size: color === 'White' ? 'L' : 'M', qty: 1 }); }
+      else { cart.push({ id: 'product2', name: 'Mastermind T-Shirt', price: 650, image: img, color, size: color === 'White' ? 'L' : 'M', qty: 1 }); }
       saveCart(cart);
-      showToast('Mastermind T-Shirt · ' + color, '600 EGP');
+      showToast('Mastermind T-Shirt · ' + color, '650 EGP');
     }
 
     function card3QuickAdd(e) {
@@ -1212,9 +1173,9 @@
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product3' && i.color === 'Black');
       if (existing) { existing.qty += 1; }
-      else { cart.push({ id: 'product3', name: 'Zara Short', price: 800, image: 'cargo-shorts-black.png', color: 'Black', size: 'M', qty: 1 }); }
+      else { cart.push({ id: 'product3', name: 'Zara Short', price: 500, image: 'cargo-shorts-black.png', color: 'Black', size: 'M', qty: 1 }); }
       saveCart(cart);
-      showToast('Zara Short · Black', '800 EGP');
+      showToast('Zara Short · Black', '500 EGP');
     }
 
     function selectCard4Swatch(el, img) {
@@ -1284,9 +1245,9 @@
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product5' && i.size === size && i.color === color);
       if (existing) { existing.qty += 1; }
-      else { cart.push({ id: 'product5', name: 'Pull & Bear T-Shirt', price: 750, image: 'tshirt2 1.png', color, size, qty: 1 }); }
+      else { cart.push({ id: 'product5', name: 'Pull & Bear T-Shirt', price: 600, image: 'tshirt2 1.png', color, size, qty: 1 }); }
       saveCart(cart);
-      showToast('Pull & Bear T-Shirt · ' + color + ' · ' + size, '750 EGP');
+      showToast('Pull & Bear T-Shirt · ' + color + ' · ' + size, '600 EGP');
     }
 
     function quickAdd(name, priceStr, image, e) {
@@ -1359,11 +1320,11 @@
   <script>
     const CATALOG = [
       { type: 'product', name: 'Off-White T-Shirt',  category: 'Streetwear',    price: '550 EGP', img: '5E147019-5064-4F55-974F-1CA8AE14798E.png',                                   href: 'product1.html' },
-      { type: 'product', name: 'Mastermind T-Shirt', category: 'Streetwear', price: '600 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png',             href: 'product2.html' },
-      { type: 'product', name: 'Zara Short',          category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png',                                href: 'product3.html' },
-      { type: 'product', name: 'Pull & Bear T-Shirt', category: 'Classic', price: '750 EGP', img: 'tshirt2 1.png', href: 'product5.html' },
-      // Ralph Lauren Polo Shirt (product4) and the Classic/Streetwear collection
-      // entries are temporarily removed from search — see git history to restore.
+      { type: 'product', name: 'Mastermind T-Shirt', category: 'Streetwear', price: '650 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png',             href: 'product2.html' },
+      { type: 'product', name: 'Pull & Bear T-Shirt', category: 'Classic', price: '600 EGP', img: 'tshirt2 1.png', href: 'product5.html' },
+      // Zara Short (product3), Ralph Lauren Polo Shirt (product4), and the
+      // Classic/Streetwear collection entries are temporarily removed from
+      // search — see git history to restore.
     ];
 
     function openSearch() {
@@ -1518,9 +1479,10 @@
     (function injectHearts() {
       const cards = [
         { el: document.querySelectorAll('.product-card')[0], id: 'product1',  name: 'Off-White T-Shirt', category: 'Streetwear',   price: '550 EGP', img: '5E147019-5064-4F55-974F-1CA8AE14798E.png',                                  href: 'product1.html' },
-        { el: document.querySelectorAll('.product-card')[1], id: 'product2',  name: 'Mastermind T-Shirt', category: 'Streetwear', price: '600 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', href: 'product2.html' },
-        { el: document.querySelectorAll('.product-card')[2], id: 'product3',  name: 'Zara Short',        category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png',                              href: 'product3.html' },
-        { el: document.querySelectorAll('.product-card')[3], id: 'product5',  name: 'Pull & Bear T-Shirt', category: 'Classic', price: '750 EGP', img: 'tshirt2 1.png', href: 'product5.html' },
+        { el: document.querySelectorAll('.product-card')[1], id: 'product2',  name: 'Mastermind T-Shirt', category: 'Streetwear', price: '650 EGP', img: 'fe30f63e-57d1-4fd3-80a3-4dc6d8d043ae.png', href: 'product2.html' },
+        { el: document.querySelectorAll('.product-card')[2], id: 'product5',  name: 'Pull & Bear T-Shirt', category: 'Classic', price: '600 EGP', img: 'tshirt2 1.png', href: 'product5.html' },
+        // product3 (Zara Short) and product4 (Ralph Lauren Polo Shirt) cards
+        // removed from the DOM — temporarily dropped from this list too.
         // product4 (Ralph Lauren Polo Shirt) card removed from the DOM — temporarily
         // dropped from this list too. Re-add its entry (with a fresh DOM index) when
         // the product card comes back.

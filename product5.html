@@ -374,7 +374,7 @@
       <h1 class="product-name">Pull &amp; Bear<br>T-Shirt</h1>
 
       <div class="price-row">
-        <span class="price">750 EGP</span>
+        <span class="price">600 EGP</span>
       </div>
 
       <p class="description">
@@ -405,7 +405,7 @@
           Add to Cart
         </button>
         <button class="btn-secondary" onclick="buyNow()">
-          Buy Now — 750 EGP
+          Buy Now — 600 EGP
         </button>
       </div>
 
@@ -475,10 +475,10 @@
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product5' && i.size === size && i.color === color);
       if (existing) { existing.qty += 1; }
-      else { cart.push({ id: 'product5', name: 'Pull & Bear T-Shirt', price: 750, image, color, size, qty: 1 }); }
+      else { cart.push({ id: 'product5', name: 'Pull & Bear T-Shirt', price: 600, image, color, size, qty: 1 }); }
       saveCart(cart);
-      if (typeof BrandyAnalytics !== 'undefined') BrandyAnalytics.trackAddToCart('Pull & Bear T-Shirt', 750);
-      gtag('event', 'add_to_cart', { currency: 'EGP', value: 750, items: [{ item_id: 'product5', item_name: 'Pull & Bear T-Shirt', item_variant: color + ' / ' + size, price: 750, quantity: 1 }] });
+      if (typeof BrandyAnalytics !== 'undefined') BrandyAnalytics.trackAddToCart('Pull & Bear T-Shirt', 600);
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 600, items: [{ item_id: 'product5', item_name: 'Pull & Bear T-Shirt', item_variant: color + ' / ' + size, price: 600, quantity: 1 }] });
       showToast(color, size);
     }
 
@@ -487,14 +487,14 @@
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = 'Navy';
       const image = 'tshirt2 1.png';
-      gtag('event', 'add_to_cart', { currency: 'EGP', value: 750, items: [{ item_id: 'product5', item_name: 'Pull & Bear T-Shirt', item_variant: color + ' / ' + size, price: 750, quantity: 1 }] });
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 600, items: [{ item_id: 'product5', item_name: 'Pull & Bear T-Shirt', item_variant: color + ' / ' + size, price: 600, quantity: 1 }] });
       sessionStorage.setItem('brandy_buynow', JSON.stringify(
-        { id: 'product5', name: 'Pull & Bear T-Shirt', price: 750, image, color, size, qty: 1 }
+        { id: 'product5', name: 'Pull & Bear T-Shirt', price: 600, image, color, size, qty: 1 }
       ));
       window.location.href = 'checkout.html';
     }
 
-    gtag('event', 'view_item', { currency: 'EGP', value: 750, items: [{ item_id: 'product5', item_name: 'Pull & Bear T-Shirt', price: 750 }] });
+    gtag('event', 'view_item', { currency: 'EGP', value: 600, items: [{ item_id: 'product5', item_name: 'Pull & Bear T-Shirt', price: 600 }] });
     const _bu = sessionStorage.getItem('brandy_back_url');
     if (_bu) document.getElementById('back-link').href = _bu;
   </script>
@@ -514,7 +514,7 @@
 
   <script>
     const WISH_KEY = 'brandy_wishlist';
-    const PRODUCT = { id: 'product5', name: 'Pull & Bear T-Shirt', category: 'Classic', price: '750 EGP', img: 'tshirt2 1.png', href: 'product5.html' };
+    const PRODUCT = { id: 'product5', name: 'Pull & Bear T-Shirt', category: 'Classic', price: '600 EGP', img: 'tshirt2 1.png', href: 'product5.html' };
 
     function getWishlist() { try { return JSON.parse(localStorage.getItem(WISH_KEY)) || []; } catch { return []; } }
     function saveWishlist(w) { localStorage.setItem(WISH_KEY, JSON.stringify(w)); }

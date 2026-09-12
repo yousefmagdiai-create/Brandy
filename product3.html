@@ -385,7 +385,7 @@
       <h1 class="product-name">Zara Short</h1>
 
       <div class="price-row">
-        <span class="price">800 EGP</span>
+        <span class="price">500 EGP</span>
       </div>
 
       <p class="description">
@@ -418,7 +418,7 @@
           Add to Cart
         </button>
         <button class="btn-secondary" onclick="buyNow()">
-          Buy Now — 800 EGP
+          Buy Now — 500 EGP
         </button>
       </div>
 
@@ -494,10 +494,10 @@
       const cart = getCart();
       const existing = cart.find(i => i.id === 'product3' && i.size === size && i.color === color);
       if (existing) { existing.qty += 1; }
-      else { cart.push({ id: 'product3', name: 'Zara Short', price: 800, image: 'cargo-shorts-black.png', color, size, qty: 1 }); }
+      else { cart.push({ id: 'product3', name: 'Zara Short', price: 500, image: 'cargo-shorts-black.png', color, size, qty: 1 }); }
       saveCart(cart);
-      BrandyAnalytics.trackAddToCart('Zara Short', 800);
-      gtag('event', 'add_to_cart', { currency: 'EGP', value: 800, items: [{ item_id: 'product3', item_name: 'Zara Short', item_variant: color + ' / ' + size, price: 800, quantity: 1 }] });
+      BrandyAnalytics.trackAddToCart('Zara Short', 500);
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 500, items: [{ item_id: 'product3', item_name: 'Zara Short', item_variant: color + ' / ' + size, price: 500, quantity: 1 }] });
       showToast(color, size);
     }
 
@@ -506,9 +506,9 @@
       const activeSwatch = document.querySelector('.swatch.active');
       const size = activeSize ? activeSize.textContent.trim() : 'M';
       const color = activeSwatch ? activeSwatch.getAttribute('title') : 'Black';
-      gtag('event', 'add_to_cart', { currency: 'EGP', value: 800, items: [{ item_id: 'product3', item_name: 'Zara Short', item_variant: color + ' / ' + size, price: 800, quantity: 1 }] });
+      gtag('event', 'add_to_cart', { currency: 'EGP', value: 500, items: [{ item_id: 'product3', item_name: 'Zara Short', item_variant: color + ' / ' + size, price: 500, quantity: 1 }] });
       sessionStorage.setItem('brandy_buynow', JSON.stringify(
-        { id: 'product3', name: 'Zara Short', price: 800, image: 'cargo-shorts-black.png', color, size, qty: 1 }
+        { id: 'product3', name: 'Zara Short', price: 500, image: 'cargo-shorts-black.png', color, size, qty: 1 }
       ));
       window.location.href = 'checkout.html';
     }
@@ -533,7 +533,7 @@
       if (logo.complete && logo.naturalWidth) removeWhiteBg(logo);
       else logo.addEventListener('load', () => removeWhiteBg(logo));
     }
-    gtag('event', 'view_item', { currency: 'EGP', value: 800, items: [{ item_id: 'product3', item_name: 'Zara Short', price: 800 }] });
+    gtag('event', 'view_item', { currency: 'EGP', value: 500, items: [{ item_id: 'product3', item_name: 'Zara Short', price: 500 }] });
     const _bu = sessionStorage.getItem('brandy_back_url');
     if (_bu) document.getElementById('back-link').href = _bu;
   </script>
@@ -553,7 +553,7 @@
 
   <script>
     const WISH_KEY = 'brandy_wishlist';
-    const PRODUCT = { id: 'product3', name: 'Zara Short', category: 'Streetwear', price: '800 EGP', img: 'cargo-shorts-black.png', href: 'product3.html' };
+    const PRODUCT = { id: 'product3', name: 'Zara Short', category: 'Streetwear', price: '500 EGP', img: 'cargo-shorts-black.png', href: 'product3.html' };
 
     function getWishlist() { try { return JSON.parse(localStorage.getItem(WISH_KEY)) || []; } catch { return []; } }
     function saveWishlist(w) { localStorage.setItem(WISH_KEY, JSON.stringify(w)); }
